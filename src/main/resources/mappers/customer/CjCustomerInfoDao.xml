@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.CjCustomerInfoDao">
+
+  <sql id="Base_Column_List">
+    id, customer_id, customer_name, identity_card_type, identity_card_no, mobile_phone, 
+    customer_email, sex, user_money
+  </sql>
+
+
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjCustomerInfo" useGeneratedKeys="true">
+    insert into cj_customer_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="customerName != null">
+        customer_name,
+      </if>
+      <if test="identityCardType != null">
+        identity_card_type,
+      </if>
+      <if test="identityCardNo != null">
+        identity_card_no,
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone,
+      </if>
+      <if test="customerEmail != null">
+        customer_email,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="userMoney != null">
+        user_money,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="customerId != null">
+        #{customerId},
+      </if>
+      <if test="customerName != null">
+        #{customerName},
+      </if>
+      <if test="identityCardType != null">
+        #{identityCardType},
+      </if>
+      <if test="identityCardNo != null">
+        #{identityCardNo},
+      </if>
+      <if test="mobilePhone != null">
+        #{mobilePhone},
+      </if>
+      <if test="customerEmail != null">
+        #{customerEmail},
+      </if>
+      <if test="sex != null">
+        #{sex},
+      </if>
+      <if test="userMoney != null">
+        #{userMoney},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjCustomerInfo">
+    update cj_customer_info
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId},
+      </if>
+      <if test="customerName != null">
+        customer_name = #{customerName},
+      </if>
+      <if test="identityCardType != null">
+        identity_card_type = #{identityCardType},
+      </if>
+      <if test="identityCardNo != null">
+        identity_card_no = #{identityCardNo},
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone = #{mobilePhone},
+      </if>
+      <if test="customerEmail != null">
+        customer_email = #{customerEmail},
+      </if>
+      <if test="sex != null">
+        sex = #{sex},
+      </if>
+      <if test="userMoney != null">
+        user_money = #{userMoney},
+      </if>
+
+    </set>
+    where id = #{id}
+  </update>
+
+</mapper>

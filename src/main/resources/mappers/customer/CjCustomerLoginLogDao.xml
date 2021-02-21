@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.CjCustomerLoginLogDao">
+
+  <sql id="filed">
+    id, unique_code, customer_id,  `status`
+  </sql>
+  <select id="selectUserIdByToken" resultType="java.lang.Integer">
+    select 
+    customer_id
+    from cj_customer_login_log
+    where unique_code = #{token}
+    and is_delete =0
+    and status = 0
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from cj_customer_login_log
+    where id = #{id}
+  </delete>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjCustomerLoginLog" useGeneratedKeys="true">
+    insert into cj_customer_login_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uniqueCode != null">
+        unique_code,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="loginIp != null">
+        login_ip,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uniqueCode != null">
+        #{uniqueCode},
+      </if>
+      <if test="customerId != null">
+        #{customerId},
+      </if>
+      <if test="loginIp != null">
+        #{loginIp},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+
+    </trim>
+  </insert>
+
+
+</mapper>
