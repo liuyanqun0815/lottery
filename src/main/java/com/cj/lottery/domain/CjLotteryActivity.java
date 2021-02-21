@@ -14,7 +14,10 @@ public class CjLotteryActivity implements Serializable {
      * 主键id
      */
     private Integer id;
-
+    /**
+     * 活动编码
+     */
+    private String activityCode;
     /**
      * 活动名称
      */

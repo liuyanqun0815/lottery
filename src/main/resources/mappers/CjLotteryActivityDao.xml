@@ -3,7 +3,7 @@
 <mapper namespace="com.cj.lottery.dao.CjLotteryActivityDao">
 
   <sql id="Base_Column_List">
-    id, activity_name, activity_desc, activity_deadline, activity_img, `status`, shelf_life
+    id,activity_code activity_name, activity_desc, activity_deadline, activity_img, `status`, shelf_life
   </sql>
 
 <sql id="tableName">
@@ -12,6 +12,9 @@
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjLotteryActivity" useGeneratedKeys="true">
     insert into cj_lottery_activity
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="activityCode !=null">
+        activity_code,
+      </if>
       <if test="activityName != null">
         activity_name,
       </if>
@@ -33,6 +36,9 @@
 
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="activityCode != null">
+        #{activityCode}
+      </if>
       <if test="activityName != null">
         #{activityName},
       </if>
@@ -83,6 +89,13 @@
   <select id="selectPageVo" resultType="com.cj.lottery.domain.CjLotteryActivity">
   select <include refid="Base_Column_List"/>
     from <include refid="tableName"/>
+  </select>
+  <select id="selectActivityByCode" resultType="com.cj.lottery.domain.CjLotteryActivity">
+    select <include refid="Base_Column_List"></include>
+    from <include refid="tableName"></include>
+    where is_delete = 0
+    and activity_code = #{code}
+    limit 1
   </select>
 
 </mapper>

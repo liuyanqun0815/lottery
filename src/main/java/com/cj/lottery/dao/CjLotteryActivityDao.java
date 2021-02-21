@@ -3,6 +3,7 @@ package com.cj.lottery.dao;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cj.lottery.domain.CjLotteryActivity;
+import org.apache.ibatis.annotations.Param;
 
 public interface CjLotteryActivityDao {
 
@@ -12,5 +13,7 @@ public interface CjLotteryActivityDao {
     int updateByPrimaryKeySelective(CjLotteryActivity record);
 
     IPage<CjLotteryActivity> selectPageVo(Page<?> page);
+
+    CjLotteryActivity selectActivityByCode(@Param("code") String code);
 
 }

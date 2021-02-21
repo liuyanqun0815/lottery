@@ -1,44 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cj.lottery.dao.CjPrizePoolDao">
-  <resultMap id="BaseResultMap" type="com.cj.lottery.domain.CjPrizePool">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="product_id" jdbcType="INTEGER" property="productId" />
-    <result column="activity_id" jdbcType="INTEGER" property="activityId" />
-    <result column="product_num" jdbcType="INTEGER" property="productNum" />
-    <result column="product_latest_num" jdbcType="INTEGER" property="productLatestNum" />
-    <result column="sort" jdbcType="INTEGER" property="sort" />
-    <result column="obtain_probility" jdbcType="INTEGER" property="obtainProbility" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="shelf_life" jdbcType="TIMESTAMP" property="shelfLife" />
-    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
+
   <sql id="Base_Column_List">
     id, product_id, activity_id, product_num, product_latest_num, sort, obtain_probility, 
-    `status`, shelf_life, is_delete, create_time, update_time
+    `status`, shelf_life
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from cj_prize_pool
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from cj_prize_pool
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjPrizePool" useGeneratedKeys="true">
-    insert into cj_prize_pool (product_id, activity_id, product_num, 
-      product_latest_num, sort, obtain_probility, 
-      `status`, shelf_life, is_delete, 
-      create_time, update_time)
-    values (#{productId,jdbcType=INTEGER}, #{activityId,jdbcType=INTEGER}, #{productNum,jdbcType=INTEGER}, 
-      #{productLatestNum,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{obtainProbility,jdbcType=INTEGER}, 
-      #{status,jdbcType=TINYINT}, #{shelfLife,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=TINYINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
-  </insert>
+  <sql id="tableName">
+    cj_prize_pool
+  </sql>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjPrizePool" useGeneratedKeys="true">
     insert into cj_prize_pool
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -66,15 +36,7 @@
       <if test="shelfLife != null">
         shelf_life,
       </if>
-      <if test="isDelete != null">
-        is_delete,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="productId != null">
@@ -101,15 +63,7 @@
       <if test="shelfLife != null">
         #{shelfLife,jdbcType=TIMESTAMP},
       </if>
-      <if test="isDelete != null">
-        #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjPrizePool">
@@ -139,31 +93,14 @@
       <if test="shelfLife != null">
         shelf_life = #{shelfLife,jdbcType=TIMESTAMP},
       </if>
-      <if test="isDelete != null">
-        is_delete = #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cj.lottery.domain.CjPrizePool">
-    update cj_prize_pool
-    set product_id = #{productId,jdbcType=INTEGER},
-      activity_id = #{activityId,jdbcType=INTEGER},
-      product_num = #{productNum,jdbcType=INTEGER},
-      product_latest_num = #{productLatestNum,jdbcType=INTEGER},
-      sort = #{sort,jdbcType=INTEGER},
-      obtain_probility = #{obtainProbility,jdbcType=INTEGER},
-      `status` = #{status,jdbcType=TINYINT},
-      shelf_life = #{shelfLife,jdbcType=TIMESTAMP},
-      is_delete = #{isDelete,jdbcType=TINYINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  <select id="selectProductByActivityCode" resultType="com.cj.lottery.domain.CjPrizePool">
+    select <include refid="Base_Column_List"/>
+    from <include refid="tableName"/>
+    where is_delete = 0
+    and activity_id = #{activityId}
+  </select>
 </mapper>

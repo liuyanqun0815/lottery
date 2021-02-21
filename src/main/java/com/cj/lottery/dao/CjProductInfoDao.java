@@ -2,16 +2,14 @@ package com.cj.lottery.dao;
 
 import com.cj.lottery.domain.CjProductInfo;
 
-public interface CjProductInfoDao {
-    int deleteByPrimaryKey(Integer id);
+import java.util.List;
 
-    int insert(CjProductInfo record);
+public interface CjProductInfoDao {
+
 
     int insertSelective(CjProductInfo record);
 
-    CjProductInfo selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(CjProductInfo record);
 
-    int updateByPrimaryKey(CjProductInfo record);
 }
