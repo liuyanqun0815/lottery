@@ -1,17 +1,17 @@
 package com.cj.lottery.dao;
 
 import com.cj.lottery.domain.CjPrizePool;
+import com.cj.lottery.domain.CjProductInfo;
+
+import java.util.List;
 
 public interface CjPrizePoolDao {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(CjPrizePool record);
 
     int insertSelective(CjPrizePool record);
 
-    CjPrizePool selectByPrimaryKey(Integer id);
-
     int updateByPrimaryKeySelective(CjPrizePool record);
 
-    int updateByPrimaryKey(CjPrizePool record);
+    List<CjPrizePool> selectProductByActivityCode(int activityId );
+
 }

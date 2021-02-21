@@ -43,7 +43,7 @@ public class CjProductInfo implements Serializable {
     /**
      * 上下架状态：0上架1下架
      */
-    private Byte status;
+    private Integer status;
 
     /**
      * 商品有效期
@@ -60,20 +60,7 @@ public class CjProductInfo implements Serializable {
      */
     private Integer callbackRate;
 
-    /**
-     * 删除状态，默认0，1删除
-     */
-    private Byte isDelete;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private String productImgUrl;
 
     private static final long serialVersionUID = 1L;
 }
