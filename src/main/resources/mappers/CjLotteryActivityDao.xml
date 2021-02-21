@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.CjLotteryActivityDao">
+
+  <sql id="Base_Column_List">
+    id, activity_name, activity_desc, activity_deadline, activity_img, `status`, shelf_life
+  </sql>
+
+<sql id="tableName">
+  cj_lottery_activity
+</sql>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjLotteryActivity" useGeneratedKeys="true">
+    insert into cj_lottery_activity
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="activityName != null">
+        activity_name,
+      </if>
+      <if test="activityDesc != null">
+        activity_desc,
+      </if>
+      <if test="activityDeadline != null">
+        activity_deadline,
+      </if>
+      <if test="activityImg != null">
+        activity_img,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="shelfLife != null">
+        shelf_life,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="activityName != null">
+        #{activityName},
+      </if>
+      <if test="activityDesc != null">
+        #{activityDesc},
+      </if>
+      <if test="activityDeadline != null">
+        #{activityDeadline},
+      </if>
+      <if test="activityImg != null">
+        #{activityImg
+        },
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="shelfLife != null">
+        #{shelfLife},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjLotteryActivity">
+    update cj_lottery_activity
+    <set>
+      <if test="activityName != null">
+        activity_name = #{activityName},
+      </if>
+      <if test="activityDesc != null">
+        activity_desc = #{activityDesc},
+      </if>
+      <if test="activityDeadline != null">
+        activity_deadline = #{activityDeadline},
+      </if>
+      <if test="activityImg != null">
+        activity_img = #{activityImg},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="shelfLife != null">
+        shelf_life = #{shelfLife},
+      </if>
+
+    </set>
+    where id = #{id}
+  </update>
+  <select id="selectPageVo" resultType="com.cj.lottery.domain.CjLotteryActivity">
+  select <include refid="Base_Column_List"/>
+    from <include refid="tableName"/>
+  </select>
+
+</mapper>

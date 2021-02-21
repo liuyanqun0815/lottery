@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.CjLotteryRecordDao">
+
+  <sql id="Base_Column_List">
+    id, customer_id, product_id, consumer_num, status
+  </sql>
+
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjLotteryRecord" useGeneratedKeys="true">
+    insert into cj_lottery_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="consumerNum != null">
+        consumer_num,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="customerId != null">
+        #{customerId},
+      </if>
+      <if test="productId != null">
+        #{productId},
+      </if>
+      <if test="consumerNum != null">
+        #{consumerNum},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjLotteryRecord">
+    update cj_lottery_record
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId},
+      </if>
+      <if test="consumerNum != null">
+        consumer_num = #{consumerNum},
+      </if>
+      <if test="status != null">
+        type = #{status},
+      </if>
+
+    </set>
+    where id = #{id}
+  </update>
+
+</mapper>
