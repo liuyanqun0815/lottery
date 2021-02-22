@@ -2,7 +2,10 @@ package com.cj.lottery.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * cj_customer_address
@@ -19,6 +22,10 @@ public class CjCustomerAddress implements Serializable {
      * 用户唯一标识userId
      */
     private Integer customerId;
+    @ApiModelProperty("收货姓名")
+    private String name;
+    @ApiModelProperty("收货手机")
+    private String phone;
 
     /**
      * 省份
@@ -38,6 +45,7 @@ public class CjCustomerAddress implements Serializable {
     /**
      * 具体的地址门牌号
      */
+    @ApiModelProperty("收货地址")
     private String address;
 
     /**

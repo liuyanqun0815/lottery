@@ -1,2 +1,16 @@
-2021-02-20 10:22:37.437 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
-2021-02-20 10:22:37.447 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-0} closing ...
+2021-02-22 23:30:00.856 [main] INFO  com.cj.lottery.LotteryApplication - Starting LotteryApplication using Java 11.0.2 on liuyanqundeMBP.lan with PID 27725 (/Users/liuyanqun/Downloads/lottery/target/classes started by liuyanqun in /Users/liuyanqun/Downloads/lottery)
+2021-02-22 23:30:00.862 [main] INFO  com.cj.lottery.LotteryApplication - No active profile set, falling back to default profiles: default
+2021-02-22 23:30:02.132 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 80 (http)
+2021-02-22 23:30:02.142 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-80"]
+2021-02-22 23:30:02.143 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2021-02-22 23:30:02.143 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.41]
+2021-02-22 23:30:02.246 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2021-02-22 23:30:02.246 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1327 ms
+2021-02-22 23:30:03.062 [main] INFO  s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-02-22 23:30:03.144 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2021-02-22 23:30:03.310 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-80"]
+2021-02-22 23:30:03.386 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 80 (http) with context path ''
+2021-02-22 23:30:03.387 [main] INFO  s.d.s.web.plugins.DocumentationPluginsBootstrapper - Context refreshed
+2021-02-22 23:30:03.407 [main] INFO  s.d.s.web.plugins.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2021-02-22 23:30:03.433 [main] INFO  s.d.spring.web.scanners.ApiListingReferenceScanner - Scanning for api listing references
+2021-02-22 23:30:03.647 [main] INFO  com.cj.lottery.LotteryApplication - Started LotteryApplication in 3.525 seconds (JVM running for 4.352)
