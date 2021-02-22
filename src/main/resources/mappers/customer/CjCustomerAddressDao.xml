@@ -3,9 +3,11 @@
 <mapper namespace="com.cj.lottery.dao.CjCustomerAddressDao">
 
   <sql id="Base_Column_List">
-    id, customer_id, province, city, district, address, is_default
+    id, customer_id, province, city, district, address, is_default,name,phone
   </sql>
-
+<sql id="tableName">
+  cj_customer_address
+</sql>
 
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjCustomerAddress" useGeneratedKeys="true">
     insert into cj_customer_address
@@ -101,5 +103,11 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+    <select id="selectByCustmerId" resultType="com.cj.lottery.domain.CjCustomerAddress">
+      select <include refid="Base_Column_List"/>
+      from <include refid="tableName"/>
+      where is_delete = 0
+      and customer_id = #{custmerId}
+    </select>
 
 </mapper>

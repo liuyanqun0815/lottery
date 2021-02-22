@@ -13,6 +13,6 @@ public interface LotteryActivityService {
      */
     PageView queryActivityListByPage(int current,int size);
 
-    LotteryActivityInfoVo queryActivityInfo();
+//    LotteryActivityInfoVo queryActivityInfo();
 
 }
