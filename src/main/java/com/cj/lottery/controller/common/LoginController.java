@@ -56,6 +56,7 @@ public class LoginController {
         if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(code)) {
             return CjResult.fail(ErrorEnum.PARAM_ERROR);
         }
+
         return CjResult.success(UuidUtils.getUUid());
     }
 
