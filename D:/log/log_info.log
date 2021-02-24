@@ -14,3 +14,5 @@
 2021-02-22 23:30:03.407 [main] INFO  s.d.s.web.plugins.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
 2021-02-22 23:30:03.433 [main] INFO  s.d.spring.web.scanners.ApiListingReferenceScanner - Scanning for api listing references
 2021-02-22 23:30:03.647 [main] INFO  com.cj.lottery.LotteryApplication - Started LotteryApplication in 3.525 seconds (JVM running for 4.352)
+2021-02-22 23:31:23.536 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2021-02-22 23:31:23.540 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-0} closing ...
