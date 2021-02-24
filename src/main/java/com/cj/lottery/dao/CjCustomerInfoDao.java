@@ -8,6 +8,7 @@ public interface CjCustomerInfoDao {
 
     int updateByPrimaryKeySelective(CjCustomerInfo record);
 
+
     CjCustomerInfo selectById(int id);
 
 }
