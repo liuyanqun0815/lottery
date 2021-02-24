@@ -35,7 +35,6 @@ public class ValidUtil {
 
     /**
      * 手机号星号脱敏
-     *
      * @param phoneNumber
      * @return
      */
