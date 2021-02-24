@@ -43,6 +43,7 @@ public class ValidUtil {
         if (!phoneCheck(phoneNumber)) {
             return "";
         }
+
         return phoneNumber.substring(0, 3) + "****" + phoneNumber.substring(7, 11);
     }
 }
