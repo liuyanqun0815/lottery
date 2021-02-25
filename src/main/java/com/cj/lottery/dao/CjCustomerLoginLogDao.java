@@ -9,5 +9,7 @@ public interface CjCustomerLoginLogDao {
 
     Integer selectUserIdByToken(String token);
 
+    String selectTokenByCustomerId(int customerId);
+
 
 }

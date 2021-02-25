@@ -22,6 +22,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -52,7 +53,7 @@ public class HttpClientUtils {
      * @return
      * @throws Exception
      */
-    public static HttpClientResult doGet(String url) throws Exception {
+    public static HttpClientResult doGet(String url) {
         return doGet(url, null, null,true);
     }
 
@@ -77,7 +78,7 @@ public class HttpClientUtils {
      * @return
      * @throws Exception
      */
-    public static HttpClientResult doGet(String url, Map<String, String> headers, Map<String, String> params,boolean isIgnoreSSL) throws Exception {
+    public static HttpClientResult doGet(String url, Map<String, String> headers, Map<String, String> params,boolean isIgnoreSSL) {
         // 创建httpClient对象
         CloseableHttpClient httpClient = null;
         try {
@@ -110,10 +111,17 @@ public class HttpClientUtils {
             packageHeader(headers, httpGet);
             // 执行请求并获得响应结果
             return getHttpClientResult( httpClient, httpGet);
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             // 释放资源
-            release(null, httpClient);
+            try {
+                release(null, httpClient);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        return new HttpClientResult(HttpStatus.SC_INTERNAL_SERVER_ERROR,null);
     }
 
     /**

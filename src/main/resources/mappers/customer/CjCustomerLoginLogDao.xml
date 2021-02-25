@@ -5,6 +5,9 @@
   <sql id="filed">
     id, unique_code, customer_id,  `status`
   </sql>
+  <sql id="tableName">
+    cj_customer_login_log
+  </sql>
   <select id="selectUserIdByToken" resultType="java.lang.Integer">
     select 
     customer_id
@@ -12,6 +15,14 @@
     where unique_code = #{token}
     and is_delete =0
     and status = 0
+  </select>
+  <select id="selectTokenByCustomerId" resultType="java.lang.String">
+    select <include refid="filed"/>
+    from <include refid="tableName"/>
+    where is_delete = 0
+    and status = 0
+    and customer_id = #{customerId}
+    limit 1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from cj_customer_login_log

@@ -33,22 +33,8 @@ public class CjCustomerLoginLog implements Serializable {
     /**
      * 登陆状态：0有效，1无效
      */
-    private Byte status;
+    private Integer status;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 删除，默认0，1删除
-     */
-    private Byte isDelete;
 
     private static final long serialVersionUID = 1L;
 }

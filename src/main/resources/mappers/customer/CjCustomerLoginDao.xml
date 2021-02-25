@@ -2,65 +2,79 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cj.lottery.dao.CjCustomerLoginDao">
 
-  <sql id="Base_Column_List">
+    <sql id="Base_Column_List">
     id, login_phone, `password`, `status`
   </sql>
+    <sql id="tableName">
+    cj_customer_login
+  </sql>
 
-
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjCustomerLogin" useGeneratedKeys="true">
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjCustomerLogin"
+            useGeneratedKeys="true">
     insert into cj_customer_login (login_phone, `password`, `status`,
       )
     values (#{loginPhone}, #{password}, #{status},
       )
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjCustomerLogin" useGeneratedKeys="true">
-    insert into cj_customer_login
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="loginPhone != null">
-        login_phone,
-      </if>
-      <if test="password != null">
-        `password`,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="loginPhone != null">
-        #{loginPhone},
-      </if>
-      <if test="password != null">
-        #{password},
-      </if>
-      <if test="status != null">
-        #{status},
-      </if>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjCustomerLogin"
+            useGeneratedKeys="true">
+        insert into cj_customer_login
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="loginPhone != null">
+                login_phone,
+            </if>
+            <if test="password != null">
+                `password`,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="loginPhone != null">
+                #{loginPhone},
+            </if>
+            <if test="password != null">
+                #{password},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
 
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjCustomerLogin">
-    update cj_customer_login
-    <set>
-      <if test="loginPhone != null">
-        login_phone = #{loginPhone},
-      </if>
-      <if test="password != null">
-        `password` = #{password},
-      </if>
-      <if test="status != null">
-        `status` = #{status},
-      </if>
-      <if test="isDelete != null">
-        is_delete = #{isDelete},
-      </if>
-    </set>
-    where id = #{id}
-  </update>
-  <select id="selectById" resultType="com.cj.lottery.domain.CjCustomerLogin">
-    select  <include refid="Base_Column_List"/>
-    from  cj_customer_login
-    where id = #{id}
-  </select>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjCustomerLogin">
+        update cj_customer_login
+        <set>
+            <if test="loginPhone != null">
+                login_phone = #{loginPhone},
+            </if>
+            <if test="password != null">
+                `password` = #{password},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="selectById" resultType="com.cj.lottery.domain.CjCustomerLogin">
+        select
+        <include refid="Base_Column_List"/>
+        from cj_customer_login
+        where id = #{id}
+    </select>
+    <select id="selectByLoginPhone" resultType="com.cj.lottery.domain.CjCustomerLogin">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="tableName"/>
+        where is_delete = 0
+        and login_phone = #{login}
+        limit 1
+    </select>
 
 </mapper>

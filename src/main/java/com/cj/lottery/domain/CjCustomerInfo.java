@@ -48,7 +48,7 @@ public class CjCustomerInfo implements Serializable {
     /**
      * 性别，1男，2女
      */
-    private Byte sex;
+    private Integer sex;
 
     /**
      * 用户余额单位（分）
@@ -56,19 +56,12 @@ public class CjCustomerInfo implements Serializable {
     private Integer userMoney;
 
     /**
-     * 创建时间
+     * 头像地址
      */
-    private Date createTime;
-
+    private String headUrl;
     /**
-     * 更新时间
+     * 扭扭币数量
      */
-    private Date updateTime;
-
-    /**
-     * 删除，默认0，1删除
-     */
-    private Byte isDelete;
-
+    private Integer niuniuNum;
     private static final long serialVersionUID = 1L;
 }

@@ -71,4 +71,5 @@ public class UserInfoController {
         int userId = ContextUtils.getUserId();
         return CjResult.success(userInfoService.queryAddressListByConstmerId(userId));
     }
+
 }

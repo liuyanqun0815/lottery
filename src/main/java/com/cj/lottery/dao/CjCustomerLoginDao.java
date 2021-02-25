@@ -13,4 +13,6 @@ public interface CjCustomerLoginDao {
     CjCustomerLogin selectById(Integer id);
 
 
+    CjCustomerLogin selectByLoginPhone(String login);
+
 }

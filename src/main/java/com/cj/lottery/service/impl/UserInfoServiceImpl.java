@@ -2,8 +2,10 @@ package com.cj.lottery.service.impl;
 
 import com.cj.lottery.dao.CjCustomerAddressDao;
 import com.cj.lottery.dao.CjCustomerInfoDao;
+import com.cj.lottery.dao.CjCustomerLoginDao;
 import com.cj.lottery.domain.CjCustomerAddress;
 import com.cj.lottery.domain.CjCustomerInfo;
+import com.cj.lottery.domain.CjCustomerLogin;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
 import com.cj.lottery.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     private CjCustomerAddressDao cjCustomerAddressDao;
     @Autowired
     private CjCustomerInfoDao customerInfoDao;
+    @Autowired
+    private CjCustomerLoginDao customerLoginDao;
 
 
     @Override
@@ -32,5 +36,11 @@ public class UserInfoServiceImpl implements UserInfoService {
             return null;
         }
         return cjCustomerAddresses.stream().map(s->ConstumerAddressInfoVo.DoToVo(s)).collect(Collectors.toList());
+    }
+
+    @Override
+    public CjCustomerLogin queryLoginInfoByLoginPhone(String login) {
+
+        return customerLoginDao.selectByLoginPhone(login);
     }
 }
