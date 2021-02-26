@@ -118,5 +118,14 @@
         and id = #{id}
 
     </select>
+    <select id="selectByCustomerId" resultType="com.cj.lottery.domain.CjCustomerInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="tableName"/>
+        where is_delete =0
+        and  customer_id = #{customerId}
+
+    </select>
 
 </mapper>

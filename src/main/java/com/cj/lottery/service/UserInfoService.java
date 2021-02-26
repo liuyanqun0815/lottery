@@ -1,5 +1,6 @@
 package com.cj.lottery.service;
 
+import com.cj.lottery.domain.CjCustomerInfo;
 import com.cj.lottery.domain.CjCustomerLogin;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
 
@@ -10,4 +11,6 @@ public interface UserInfoService {
     List<ConstumerAddressInfoVo> queryAddressListByConstmerId(int constmerId);
 
     CjCustomerLogin queryLoginInfoByLoginPhone(String login);
+
+    CjCustomerInfo queryUserInfoByCustomerId(int coustmerId);
 }

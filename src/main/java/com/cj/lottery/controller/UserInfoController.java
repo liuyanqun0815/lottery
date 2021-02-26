@@ -7,6 +7,7 @@ import com.cj.lottery.domain.CjPayNiuniuRecord;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
 import com.cj.lottery.domain.view.PayNiuniuRecordVo;
+import com.cj.lottery.domain.view.UserInfoVo;
 import com.cj.lottery.service.PayNiuniuRecordService;
 import com.cj.lottery.service.UserInfoService;
 import com.cj.lottery.util.ContextUtils;
@@ -44,14 +45,6 @@ public class UserInfoController {
     @Autowired
     private UserInfoService userInfoService;
 
-    @GetMapping("add-user")
-    public CjResult<String> userController(HttpServletRequest request) throws Exception {
-        int userId = ContextUtils.getUserId();
-        log.info("param:{},add userId:{}",JSON.toJSONString(request.getParameterMap()),userId);
-        CjCustomerLogin cjCustomerLogin = cjCustomerLoginDao.selectById(1);
-        log.info("data:{}",JSON.toJSONString(cjCustomerLogin));
-        return CjResult.success(JSON.toJSONString(request.getParameterMap()));
-    }
 
     @ApiOperation("充值扭扭币记录列表")
     @PostMapping("list-pay-niuniu")
@@ -71,5 +64,14 @@ public class UserInfoController {
         int userId = ContextUtils.getUserId();
         return CjResult.success(userInfoService.queryAddressListByConstmerId(userId));
     }
+
+    @ApiOperation("用户信息")
+    @PostMapping("user-info")
+    public CjResult<UserInfoVo> userInfo() {
+        int userId = ContextUtils.getUserId();
+        return CjResult.success(UserInfoVo.doToVo(userInfoService.queryUserInfoByCustomerId(userId)));
+    }
+
+
 
 }

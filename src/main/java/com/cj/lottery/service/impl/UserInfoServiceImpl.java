@@ -43,4 +43,9 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         return customerLoginDao.selectByLoginPhone(login);
     }
+
+    @Override
+    public CjCustomerInfo queryUserInfoByCustomerId(int coustmerId) {
+        return customerInfoDao.selectByCustomerId(coustmerId);
+    }
 }
