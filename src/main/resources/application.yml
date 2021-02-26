@@ -25,6 +25,9 @@ app:
     gzh:
       appid: '123'
       secret: '222'
+    pay:
+      appid: '22'
+      mchid: '11'
   domain:
       url: 'http://www.baidu.com'
 
