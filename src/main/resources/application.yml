@@ -28,6 +28,7 @@ app:
     pay:
       appid: '22'
       mchid: '11'
+      notifyUrl: ''
   domain:
       url: 'http://www.baidu.com'
 
