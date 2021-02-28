@@ -38,12 +38,12 @@ public class CjOrderPay implements Serializable {
     /**
      * 公众账号ID
      */
-    private Integer appid;
+    private String appid;
 
     /**
      * 商户号
      */
-    private Integer mchId;
+    private String mchId;
 
     /**
      * 交易类型
@@ -63,22 +63,9 @@ public class CjOrderPay implements Serializable {
     /**
      * 订单状态，0未支付，1已支付，2已退款
      */
-    private Byte status;
+    private Integer status;
 
-    /**
-     * 删除状态，默认0，1删除
-     */
-    private Byte isDelete;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 }

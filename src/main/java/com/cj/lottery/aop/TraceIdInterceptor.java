@@ -33,7 +33,7 @@ public class TraceIdInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String traceId = UuidUtils.getUUid();
+        String traceId = UuidUtils.getTraceUUid();
         MDC.put(ContextCons.TRACE_ID, traceId);
         log.info("request url:{} ,traceId:{}",request.getRequestURI(),traceId);
         ContextUtils.setTraceId(traceId);

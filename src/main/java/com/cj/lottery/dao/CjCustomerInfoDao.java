@@ -11,4 +11,6 @@ public interface CjCustomerInfoDao {
 
     CjCustomerInfo selectById(int id);
 
+    CjCustomerInfo selectByCustomerId(int customerId);
+
 }

@@ -1,5 +1,6 @@
 package com.cj.lottery.service;
 
+import com.cj.lottery.domain.CjCustomerInfo;
 import com.cj.lottery.domain.CjCustomerLogin;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
 
@@ -11,7 +12,11 @@ public interface UserInfoService {
 
     CjCustomerLogin queryLoginInfoByLoginPhone(String login);
 
+<<<<<<< HEAD
     int updateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo);
 
     int deleteUserAddress(Integer id);
+=======
+    CjCustomerInfo queryUserInfoByCustomerId(int coustmerId);
+>>>>>>> b6ff83c609995db1a010c87a223667b437d89982
 }

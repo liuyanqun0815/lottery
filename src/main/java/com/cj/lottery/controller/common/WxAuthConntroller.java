@@ -31,7 +31,7 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequestMapping("/wxapi")
-public class WXConntroller {
+public class WxAuthConntroller {
 
     @Value("${app.weixin.gzh.appid}")
     String appidgzh;
