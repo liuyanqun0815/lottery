@@ -29,14 +29,14 @@ public class LuckDrawLotteryController {
     @ApiOperation("点击抽奖结果")
     @PostMapping("click-prize")
     public CjResult<Object> clickPrize(@RequestParam(value = "activityCode") String activityCode,
-                                                @ApiParam("是否试玩")@RequestParam(value = "test",required = true)boolean test) {
-        if(true){
+                                                @ApiParam("是否试玩")@RequestParam(value = "test")boolean test) {
+        if(test){
             return CjResult.success(null);
         }
         int userId = ContextUtils.getUserId();
         boolean authority = luckDrawLotteryService.checkAuthority(userId, activityCode);
         if(!authority){
-            return CjResult.success("只有新用户可以参加此活动");
+            return CjResult.fail("只有新用户可以参加此活动");
         }
 
         prizePoolService.queryRealProduct(activityCode);
