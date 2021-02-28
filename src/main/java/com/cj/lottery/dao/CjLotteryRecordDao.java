@@ -13,4 +13,6 @@ public interface CjLotteryRecordDao {
 
     List<CjLotteryRecord> selectRecordByConsumerIdAndStatus(@Param("status")int status,
                                                             @Param("consumerId")int consumerId);
+
+    int countByConsumerId(int consumerId);
 }

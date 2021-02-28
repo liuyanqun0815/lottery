@@ -68,4 +68,11 @@
     and status = #{status}
   </select>
 
+
+  <select id="countByConsumerId" resultType="java.lang.Integer">
+    select count(*)
+    from  <include refid="tableName"/>
+    where customer_id = #{customerId}
+  </select>
+
 </mapper>

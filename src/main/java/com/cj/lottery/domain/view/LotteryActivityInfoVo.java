@@ -27,4 +27,7 @@ public class LotteryActivityInfoVo {
 
     @ApiModelProperty("消耗扭扭币数量")
     private int consumerNum;
+
+    @ApiModelProperty("活动标识:0:普通活动 1:新人活动")
+    private Byte activityFlag;
 }

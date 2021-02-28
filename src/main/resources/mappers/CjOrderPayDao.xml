@@ -27,6 +27,21 @@
     from cj_order_pay
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByUserId" resultType="com.cj.lottery.domain.CjOrderPay">
+    select
+    <include refid="Base_Column_List" />
+    from cj_order_pay
+    where customer_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="countByUserId" resultType="java.lang.Integer">
+    select count(*)
+    from  cj_order_pay
+    where
+    customer_id = #{userId,jdbcType=INTEGER}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from cj_order_pay
     where id = #{id,jdbcType=INTEGER}

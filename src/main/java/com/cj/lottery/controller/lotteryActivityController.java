@@ -1,5 +1,6 @@
 package com.cj.lottery.controller;
 
+import com.cj.lottery.domain.CjLotteryActivityImg;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.LotteryResultVo;
@@ -41,11 +42,11 @@ public class lotteryActivityController {
 
     @ApiOperation("获取活动详情")
     @PostMapping("activity-info")
-    public CjResult<PageView> actityInfo(@RequestParam(value = "activityCode") String activityCode,
+    public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam(value = "activityCode") String activityCode,
                                                       @RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
-                                                      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize ){
-        PageView pageView = lotteryActivityService.queryActivityDetailsByPage(activityCode,pageIndex,pageSize);
-        return CjResult.success(pageView);
+                                                      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        LotteryActivityInfoVo lotteryActivityInfoVo = lotteryActivityService.queryActivityDetailsByPage(activityCode, pageIndex, pageSize);
+        return CjResult.success(lotteryActivityInfoVo);
     }
 
     @ApiOperation("获取弹幕列表")

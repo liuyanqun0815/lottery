@@ -43,6 +43,17 @@ public class CjLotteryActivity implements Serializable {
      */
     private Byte status;
 
+    /**
+     * 扭扭币消耗数量
+     */
+    private Integer consumerNum;
+
+
+    /**
+     * 活动标识
+     */
+    private Byte activityFlag;
+
 
 
     private static final long serialVersionUID = 1L;

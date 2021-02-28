@@ -51,10 +51,13 @@ public class UserInfoServiceImpl implements UserInfoService {
         return cjCustomerAddressDao.updateByPrimaryKeySelective(cjCustomerAddress);
     }
 
+
+    @Override
     public int deleteUserAddress(Integer id) {
         return cjCustomerAddressDao.deleteByPrimaryKey(id);
     }
 
+    @Override
     public CjCustomerInfo queryUserInfoByCustomerId(int coustmerId) {
         return customerInfoDao.selectByCustomerId(coustmerId);
     }

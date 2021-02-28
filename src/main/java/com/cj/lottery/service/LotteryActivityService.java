@@ -1,7 +1,10 @@
 package com.cj.lottery.service;
 
+import com.cj.lottery.domain.CjLotteryActivityImg;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.PageView;
+
+import java.util.List;
 
 public interface LotteryActivityService {
 
@@ -21,7 +24,7 @@ public interface LotteryActivityService {
      * @param size 页数
      * @return
      */
-    PageView queryActivityDetailsByPage(String activityCode,int current,int size);
+    LotteryActivityInfoVo queryActivityDetailsByPage(String activityCode, int current, int size);
 
 
 }

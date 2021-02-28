@@ -3,7 +3,7 @@
 <mapper namespace="com.cj.lottery.dao.CjLotteryActivityDao">
 
   <sql id="Base_Column_List">
-    id,activity_code activity_name, activity_desc, activity_deadline, activity_img, `status`, shelf_life
+    id,activity_code activity_name, activity_desc, activity_deadline, activity_img, `status`, shelf_life, consumer_num, activity_flag
   </sql>
 
 <sql id="tableName">
@@ -33,6 +33,12 @@
       <if test="shelfLife != null">
         shelf_life,
       </if>
+      <if test="consumerNum != null">
+        consumer_num,
+      </if>
+      <if test="activityFlag != null">
+        activity_flag,
+      </if>
 
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -58,7 +64,12 @@
       <if test="shelfLife != null">
         #{shelfLife},
       </if>
-
+      <if test="consumerNum != null">
+        #{consumerNum},
+      </if>
+      <if test="activityFlag != null">
+        #{activityFlag},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjLotteryActivity">
@@ -81,6 +92,12 @@
       </if>
       <if test="shelfLife != null">
         shelf_life = #{shelfLife},
+      </if>
+      <if test="consumerNum != null">
+        consumer_num = #{consumerNum},
+      </if>
+      <if test="activityFlag != null">
+        activity_flag = #{activityFlag}
       </if>
 
     </set>
