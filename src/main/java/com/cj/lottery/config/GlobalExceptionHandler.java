@@ -61,5 +61,4 @@ public class GlobalExceptionHandler {
         return CjResult.fail(ErrorEnum.SYSTEM_ERROR);
     }
 
-
 }

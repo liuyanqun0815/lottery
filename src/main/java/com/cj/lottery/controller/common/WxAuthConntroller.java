@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +50,7 @@ public class WxAuthConntroller {
 
     @PostMapping("/weixin/login")
     @ApiOperation(value = "微信授权登录", httpMethod = "POST", produces = "application/json;charset=UTF-8")
-    public void weixinLogin(HttpServletRequest request, HttpServletResponse response) {
+    public void weixinLogin(HttpServletRequest request, HttpServletResponse response, @RequestParam(required = false,defaultValue = "lottery_channel") String channel) {
 
         try {
             //这里是回调的url
@@ -102,7 +99,7 @@ public class WxAuthConntroller {
             //去数据库查询此微信是否注册过
             CjCustomerLogin loginInfo = userInfoService.queryLoginInfoByLoginPhone(openid);
             if (loginInfo != null) {
-                String data = this.queryLatestToken(loginInfo.getId());
+                String data = userInfoService.queryLatestToken(openid);
                 return CjResult.success(data);
             }
             String nickname = userInfo.getString("nickname");
@@ -143,24 +140,7 @@ public class WxAuthConntroller {
         return uniqueCode;
     }
 
-    /**
-     * 获取用户最新的token
-     *
-     * @param customerId
-     * @return
-     */
-    private String queryLatestToken(int customerId) {
-        String token = cjCustomerLoginLogDao.selectTokenByCustomerId(customerId);
-        if (ObjectUtils.isEmpty(token)) {
-            token = UuidUtils.getUUid();
-            CjCustomerLoginLog loginLog = new CjCustomerLoginLog();
-            loginLog.setCustomerId(customerId);
-            loginLog.setUniqueCode(token);
-            cjCustomerLoginLogDao.insertSelective(loginLog);
-        }
-        return token;
 
-    }
 
     @GetMapping("/register")
     public String register(String openid, ModelMap map) {

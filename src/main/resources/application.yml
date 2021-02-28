@@ -20,6 +20,7 @@ logging:
   config: classpath:logback-spring.xml
 #debug: true
 
+#######微信公众号配置信息
 app:
   weixin:
     gzh:
@@ -29,6 +30,14 @@ app:
       appid: '22'
       mchid: '11'
       notifyUrl: ''
+      url: 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi'
   domain:
       url: 'http://www.baidu.com'
 
+###### 阿里云短信
+aliyun:
+  accessKeyId: ''
+  secret: ''
+  signName: ''
+  templateCode: ''
+  paramName: ''
