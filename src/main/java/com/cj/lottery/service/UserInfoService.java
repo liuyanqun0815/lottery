@@ -25,4 +25,14 @@ public interface UserInfoService {
      * @return
      */
     String queryLatestToken(String loginAccount);
+
+    /**
+     * 首次登录，保存用户信息
+     * @param loginMark
+     * @param nickname
+     * @param sex  默认男性
+     * @param headimgurl
+     * @return
+     */
+    String saveUserInfo(String loginMark, String nickname, Integer sex, String headimgurl);
 }

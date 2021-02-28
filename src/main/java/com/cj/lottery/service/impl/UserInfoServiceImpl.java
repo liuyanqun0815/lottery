@@ -84,15 +84,8 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     }
 
-    /**
-     *
-     * @param loginMark
-     * @param nickname
-     * @param sex  默认男性
-     * @param headimgurl
-     * @return
-     */
-    private String saveUserInfo(String loginMark, String nickname, Integer sex, String headimgurl) {
+    @Override
+    public String saveUserInfo(String loginMark, String nickname, Integer sex, String headimgurl) {
         CjCustomerLogin login = new CjCustomerLogin();
         login.setLoginPhone(loginMark);
         customerLoginDao.insertSelective(login);
