@@ -11,4 +11,6 @@ public interface CjCustomerAddressDao {
 
     List<CjCustomerAddress> selectByCustmerId(int custmerId);
 
+    int deleteByPrimaryKey(Integer id);
+
 }

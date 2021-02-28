@@ -110,4 +110,10 @@
       and customer_id = #{custmerId}
     </select>
 
+  <delete id="deleteByPrimaryKey" parameterType="integer">
+     update <include refid="tableName"/>
+      set is_delete = 1
+      where id = #{id}
+  </delete>
+
 </mapper>

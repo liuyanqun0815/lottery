@@ -7,6 +7,7 @@ import com.cj.lottery.domain.CjCustomerAddress;
 import com.cj.lottery.domain.CjCustomerInfo;
 import com.cj.lottery.domain.CjCustomerLogin;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
+import com.cj.lottery.mapper.ConstumerAddressInfoMapper;
 import com.cj.lottery.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,15 @@ public class UserInfoServiceImpl implements UserInfoService {
     public CjCustomerLogin queryLoginInfoByLoginPhone(String login) {
 
         return customerLoginDao.selectByLoginPhone(login);
+    }
+
+    @Override
+    public int updateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo) {
+        CjCustomerAddress cjCustomerAddress = ConstumerAddressInfoMapper.INSTANCE.toDo(constumerAddressInfoVo);
+        return cjCustomerAddressDao.updateByPrimaryKeySelective(cjCustomerAddress);
+    }
+
+    public int deleteUserAddress(Integer id){
+        return  cjCustomerAddressDao.deleteByPrimaryKey(id);
     }
 }

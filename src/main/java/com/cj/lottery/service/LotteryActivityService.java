@@ -15,4 +15,13 @@ public interface LotteryActivityService {
 
 //    LotteryActivityInfoVo queryActivityInfo();
 
+    /**
+     * 根据活动编号分页查询
+     * @param current 当前页
+     * @param size 页数
+     * @return
+     */
+    PageView queryActivityDetailsByPage(String activityCode,int current,int size);
+
+
 }

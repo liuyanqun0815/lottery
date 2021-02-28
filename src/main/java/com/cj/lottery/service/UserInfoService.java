@@ -10,4 +10,8 @@ public interface UserInfoService {
     List<ConstumerAddressInfoVo> queryAddressListByConstmerId(int constmerId);
 
     CjCustomerLogin queryLoginInfoByLoginPhone(String login);
+
+    int updateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo);
+
+    int deleteUserAddress(Integer id);
 }

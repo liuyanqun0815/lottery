@@ -14,6 +14,9 @@ public interface CjLotteryActivityDao {
 
     IPage<CjLotteryActivity> selectPageVo(Page<?> page);
 
+
     CjLotteryActivity selectActivityByCode(@Param("code") String code);
+
+
 
 }

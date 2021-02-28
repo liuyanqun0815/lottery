@@ -41,8 +41,11 @@ public class lotteryActivityController {
 
     @ApiOperation("获取活动详情")
     @PostMapping("activity-info")
-    public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam(value = "activityCode") String activityCode) {
-        return CjResult.success(null);
+    public CjResult<PageView> actityInfo(@RequestParam(value = "activityCode") String activityCode,
+                                                      @RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
+                                                      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize ){
+        PageView pageView = lotteryActivityService.queryActivityDetailsByPage(activityCode,pageIndex,pageSize);
+        return CjResult.success(pageView);
     }
 
     @ApiOperation("获取弹幕列表")
@@ -55,14 +58,5 @@ public class lotteryActivityController {
 
         return CjResult.success(danmuList);
     }
-
-    @ApiOperation("点击抽奖结果")
-    @PostMapping("click-prize")
-    public CjResult<LotteryResultVo> clickPrize(@RequestParam(value = "activityCode") String activityCode,
-                                                @ApiParam("是否试玩")@RequestParam(value = "test",required = true)boolean test) {
-        prizePoolService.queryRealProduct(activityCode);
-        return CjResult.success(null);
-    }
-
 
 }

@@ -2,6 +2,7 @@ package com.cj.lottery.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.cj.lottery.dao.CjCustomerLoginDao;
+import com.cj.lottery.domain.CjCustomerAddress;
 import com.cj.lottery.domain.CjCustomerLogin;
 import com.cj.lottery.domain.CjPayNiuniuRecord;
 import com.cj.lottery.domain.view.CjResult;
@@ -17,10 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -70,6 +68,26 @@ public class UserInfoController {
     public CjResult<List<ConstumerAddressInfoVo>> listAddress() {
         int userId = ContextUtils.getUserId();
         return CjResult.success(userInfoService.queryAddressListByConstmerId(userId));
+    }
+
+    @ApiOperation("地址修改")
+    @GetMapping("/update-address")
+    public CjResult<String> updateAddress(@RequestBody ConstumerAddressInfoVo constumerAddressInfoVo){
+        int result = userInfoService.updateUserAddress(constumerAddressInfoVo);
+        if(result>0){
+            return CjResult.success("保存成功");
+        }
+        return CjResult.fail("保存失败");
+    }
+
+    @ApiOperation("地址删除")
+    @DeleteMapping("/delete-address")
+    public CjResult<String> deleteAddress(@RequestParam("addressId")Integer addressId){
+        int result = userInfoService.deleteUserAddress(addressId);
+        if(result>0){
+            return CjResult.success("删除成功");
+        }
+        return CjResult.fail("删除失败");
     }
 
 }
