@@ -38,12 +38,12 @@ public class CjNotifyPay implements Serializable {
     /**
      * 公众账号ID
      */
-    private Integer appid;
+    private String appid;
 
     /**
      * 商户号
      */
-    private Integer mchId;
+    private String mchId;
 
     /**
      * 交易类型

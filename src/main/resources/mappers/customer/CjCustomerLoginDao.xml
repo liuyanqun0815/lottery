@@ -11,9 +11,9 @@
 
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjCustomerLogin"
             useGeneratedKeys="true">
-    insert into cj_customer_login (login_phone, `password`, `status`,
+    insert into cj_customer_login (login_phone, `password`
       )
-    values (#{loginPhone}, #{password}, #{status},
+    values (#{loginPhone}, #{password}
       )
   </insert>
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjCustomerLogin"

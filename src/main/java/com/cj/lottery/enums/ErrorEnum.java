@@ -11,12 +11,19 @@ public enum  ErrorEnum {
     SYSTEM_ERROR(1001,"系统异常"),
     NullPointer(1002,"空指针异常"),
     SQL_ERROR(1003,"查询异常"),
+    PHONE_FORMAT_ERROR(1004,"手机号格式有误"),
+    SMS_FREQUENTLY(1005,"发送验证码太频繁"),
+    SMS_FAILED(1006,"发送验证码失败"),
+    SMS_CODE(1007,"验证码错误"),
 
     //业务异常
     PARAM_ERROR(2000,"参数错误"),
 
     USERINFO_NOT_EXIST(2001,"用户信息不存在"),
     NOT_TOKEN(2002,"缺少必填参数token"),
+
+
+
 
             ;
 

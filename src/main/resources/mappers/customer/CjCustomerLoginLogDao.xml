@@ -17,11 +17,12 @@
     and status = 0
   </select>
   <select id="selectTokenByCustomerId" resultType="java.lang.String">
-    select <include refid="filed"/>
+    select unique_code
     from <include refid="tableName"/>
     where is_delete = 0
     and status = 0
     and customer_id = #{customerId}
+    order by id desc
     limit 1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

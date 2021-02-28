@@ -1,16 +1,27 @@
 package com.cj.lottery.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cj.lottery.dao.CjCustomerLoginDao;
 import com.cj.lottery.dao.CjOrderPayDao;
 import com.cj.lottery.domain.CjCustomerLogin;
+import com.cj.lottery.domain.CjNotifyPay;
 import com.cj.lottery.domain.CjOrderPay;
+import com.cj.lottery.domain.pay.PayAmount;
+import com.cj.lottery.domain.pay.Payer;
+import com.cj.lottery.domain.pay.WxGzhOrderParam;
+import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.enums.PayStatusEnum;
 import com.cj.lottery.enums.PayTypeEnum;
 import com.cj.lottery.service.OrderPayService;
+import com.cj.lottery.util.HttpClientResult;
+import com.cj.lottery.util.HttpClientUtils;
 import com.cj.lottery.util.UuidUtils;
+import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Service;
 
 
@@ -20,38 +31,92 @@ public class OrderPayServiceImpl implements OrderPayService {
 
     @Value("${app.weixin.pay.appid}")
     private String appid;
+
     @Value("${app.weixin.pay.mchid}")
     private String mchid;
+
     @Value("${app.weixin.pay.notifyUrl}")
     private String notifyUrl;
+
+    @Value("${app.weixin.pay.url}")
+    private String gzhPayUrl;
+
     @Autowired
     private CjOrderPayDao orderPayDao;
+
     @Autowired
     private CjCustomerLoginDao cjCustomerLoginDao;
 
+    private String description = "充值扭扭币";
+
     @Override
-    public String createWxOrderPay(int customerId, int totalFee) {
-        totalFee = totalFee *100;
+    public CjResult<String> createWxOrderPay(int customerId, int totalFee) {
+        totalFee = totalFee * 100;
         CjCustomerLogin login = cjCustomerLoginDao.selectById(customerId);
+        if (login == null) {
+            return CjResult.fail(ErrorEnum.USERINFO_NOT_EXIST);
+        }
+        String openid = login.getLoginPhone();
         String out_trade_no = UuidUtils.getOrderNo();
-        this.buildOrderParam(customerId);
+        WxGzhOrderParam orderParam = this.buildOrderParam(customerId, totalFee, out_trade_no, openid);
+        HttpClientResult data = HttpClientUtils.doPost(gzhPayUrl, null, BeanMap.create(orderParam), true);
+        if (data.getCode() != 200) {
+            return CjResult.fail(ErrorEnum.SYSTEM_ERROR);
+        }
+        String content = data.getContent();
+        JSONObject object = JSONObject.parseObject(content);
+        String prepay_id = object.getString("prepay_id");
         CjOrderPay cjOrderPay = this.buildOrderPayDO(customerId, totalFee, out_trade_no);
+        orderPayDao.insertSelective(cjOrderPay);
+        return CjResult.success(prepay_id);
+    }
+
+    @Override
+    public CjResult<Void> wxOrderNotify() {
         return null;
     }
 
-    private void buildOrderParam (int customerId){
-        CjCustomerLogin login = cjCustomerLoginDao.selectById(customerId);
-        String openid = login.getLoginPhone();
-        String out_trade_no = UuidUtils.getOrderNo();
-        String notify_url = notifyUrl;
+    @Override
+    public CjResult<Void> savePaySuccess(WxPayOrderNotifyResult result) {
 
-
-
+        CjNotifyPay pay = new CjNotifyPay();
+        pay.setAppid(result.getAppid());
+        pay.setMchId(result.getMchId());
+//        pay.setCreateTime(result.gets());
+        return null;
     }
 
-    private CjOrderPay buildOrderPayDO (int customerId,int totalFee,String out_trade_no){
+    /**
+     * 构建公众号支付参数
+     *
+     * @param customerId
+     * @param totalFee
+     * @param out_trade_no
+     * @param openId
+     * @return
+     */
+    private WxGzhOrderParam buildOrderParam(int customerId, int totalFee, String out_trade_no, String openId) {
+        WxGzhOrderParam param = new WxGzhOrderParam();
+        param.setAmount(PayAmount.builder().total(totalFee).build());
+        param.setAppid(appid);
+        param.setMchid(mchid);
+        param.setDescription(description);
+        param.setNotify_url(notifyUrl);
+        param.setOut_trade_no(out_trade_no);
+        param.setPayer(Payer.builder().openid(openId).build());
+        return param;
+    }
+
+    /**
+     * 构建订单表参数
+     *
+     * @param customerId
+     * @param totalFee
+     * @param out_trade_no
+     * @return
+     */
+    private CjOrderPay buildOrderPayDO(int customerId, int totalFee, String out_trade_no) {
         CjOrderPay orderPay = new CjOrderPay();
-        String description = "充值扭扭币";
         orderPay.setAppid(appid);
         orderPay.setBody(description);
         orderPay.setCustomerId(customerId);
@@ -62,4 +127,5 @@ public class OrderPayServiceImpl implements OrderPayService {
         orderPay.setTotalFee(totalFee);
         return orderPay;
     }
+
 }

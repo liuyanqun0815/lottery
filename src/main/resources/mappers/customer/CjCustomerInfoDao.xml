@@ -39,7 +39,7 @@
             <if test="userMoney != null">
                 user_money,
             </if>
-            <if test="headurl!= null">
+            <if test="headUrl!= null">
                 head_url,
             </if>
 

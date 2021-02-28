@@ -1,5 +1,7 @@
 package com.cj.lottery.util;
 
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -33,6 +35,7 @@ import java.util.Map.Entry;
  * @author: wanghui
  * @create: 2018/11/8 5:26 PM
  */
+@Slf4j
 public class HttpClientUtils {
 
     // 编码格式。发送编码格式统一用UTF-8
@@ -44,7 +47,8 @@ public class HttpClientUtils {
     // 请求获取数据的超时时间(即响应时间)，单位毫秒。
     private static final int SOCKET_TIMEOUT = 10000;
 
-    private HttpClientUtils(){}
+    private HttpClientUtils() {
+    }
 
     /**
      * 发送get请求；不带请求头和请求参数
@@ -54,37 +58,37 @@ public class HttpClientUtils {
      * @throws Exception
      */
     public static HttpClientResult doGet(String url) {
-        return doGet(url, null, null,true);
+        return doGet(url, null, null, true);
     }
 
     /**
      * 发送get请求；带请求参数
      *
-     * @param url 请求地址
+     * @param url    请求地址
      * @param params 请求参数集合
      * @return
      * @throws Exception
      */
     public static HttpClientResult doGet(String url, Map<String, String> params) throws Exception {
-        return doGet(url, null, params,true);
+        return doGet(url, null, params, true);
     }
 
     /**
      * 发送get请求；带请求头和请求参数
      *
-     * @param url 请求地址
+     * @param url     请求地址
      * @param headers 请求头集合
-     * @param params 请求参数集合
+     * @param params  请求参数集合
      * @return
      * @throws Exception
      */
-    public static HttpClientResult doGet(String url, Map<String, String> headers, Map<String, String> params,boolean isIgnoreSSL) {
+    public static HttpClientResult doGet(String url, Map<String, String> headers, Map<String, String> params, boolean isIgnoreSSL) {
         // 创建httpClient对象
         CloseableHttpClient httpClient = null;
         try {
-            if (isIgnoreSSL){
+            if (isIgnoreSSL) {
                 httpClient = getHttpClient();
-            }else {
+            } else {
                 httpClient = HttpClients.createDefault();
             }
             // 创建访问的地址
@@ -110,7 +114,7 @@ public class HttpClientUtils {
             // 设置请求头
             packageHeader(headers, httpGet);
             // 执行请求并获得响应结果
-            return getHttpClientResult( httpClient, httpGet);
+            return getHttpClientResult(httpClient, httpGet);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -121,7 +125,7 @@ public class HttpClientUtils {
                 e.printStackTrace();
             }
         }
-        return new HttpClientResult(HttpStatus.SC_INTERNAL_SERVER_ERROR,null);
+        return new HttpClientResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, null);
     }
 
     /**
@@ -132,37 +136,37 @@ public class HttpClientUtils {
      * @throws Exception
      */
     public static HttpClientResult doPost(String url) throws Exception {
-        return doPost(url, null, null,true);
+        return doPost(url, null, null, true);
     }
 
     /**
      * 发送post请求；带请求参数
      *
-     * @param url 请求地址
+     * @param url    请求地址
      * @param params 参数集合
      * @return
      * @throws Exception
      */
     public static HttpClientResult doPost(String url, Map<String, String> params) throws Exception {
-        return doPost(url, null, params,true);
+        return doPost(url, null, params, true);
     }
 
     /**
      * 发送post请求；带请求头和请求参数
      *
-     * @param url 请求地址
+     * @param url     请求地址
      * @param headers 请求头集合
-     * @param params 请求参数集合
+     * @param params  请求参数集合
      * @return
      * @throws Exception
      */
-    public static HttpClientResult doPost(String url, Map<String, String> headers, Map<String, String> params,boolean isIgnoreSSL) throws Exception {
+    public static HttpClientResult doPost(String url, Map<String, String> headers, Map<String, String> params, boolean isIgnoreSSL) {
         // 创建httpClient对象
         CloseableHttpClient httpClient = null;
         try {
-            if (isIgnoreSSL){
+            if (isIgnoreSSL) {
                 httpClient = getHttpClient();
-            }else {
+            } else {
                 httpClient = HttpClients.createDefault();
             }
             // 创建http对象
@@ -181,10 +185,17 @@ public class HttpClientUtils {
             packageParam(params, httpPost);
             // 执行请求并获得响应结果
             return getHttpClientResult(httpClient, httpPost);
+        } catch (Exception ex) {
+            log.error("doPost exception,params:{},e", JSON.toJSONString(params), ex);
         } finally {
             // 释放资源
-            release(null, httpClient);
+            try {
+                release(null, httpClient);
+            } catch (IOException e) {
+                log.error("doPost realse exception params:{},e", JSON.toJSONString(params), e);
+            }
         }
+        return new HttpClientResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, null);
     }
 
     /**
@@ -201,18 +212,18 @@ public class HttpClientUtils {
     /**
      * 发送put请求；带请求参数
      *
-     * @param url 请求地址
+     * @param url    请求地址
      * @param params 参数集合
      * @return
      * @throws Exception
      */
-    public static HttpClientResult doPut(String url, Map<String, String> params,boolean isIgnoreSSL) throws Exception {
+    public static HttpClientResult doPut(String url, Map<String, String> params, boolean isIgnoreSSL) throws Exception {
         // 创建httpClient对象
         CloseableHttpClient httpClient = null;
         try {
-            if (isIgnoreSSL){
+            if (isIgnoreSSL) {
                 httpClient = getHttpClient();
-            }else {
+            } else {
                 httpClient = HttpClients.createDefault();
             }
             HttpPut httpPut = new HttpPut(url);
@@ -233,12 +244,12 @@ public class HttpClientUtils {
      * @return
      * @throws Exception
      */
-    public static HttpClientResult doDelete(String url,boolean isIgnoreSSL) throws Exception {
+    public static HttpClientResult doDelete(String url, boolean isIgnoreSSL) throws Exception {
         // 创建httpClient对象
         CloseableHttpClient httpClient = null;
-        if (isIgnoreSSL){
+        if (isIgnoreSSL) {
             httpClient = getHttpClient();
-        }else {
+        } else {
             httpClient = HttpClients.createDefault();
         }
         HttpDelete httpDelete = new HttpDelete(url);
@@ -246,7 +257,7 @@ public class HttpClientUtils {
         httpDelete.setConfig(requestConfig);
 
         try {
-            return getHttpClientResult( httpClient, httpDelete);
+            return getHttpClientResult(httpClient, httpDelete);
         } finally {
             release(null, httpClient);
         }
@@ -255,7 +266,7 @@ public class HttpClientUtils {
     /**
      * 发送delete请求；带请求参数
      *
-     * @param url 请求地址
+     * @param url    请求地址
      * @param params 参数集合
      * @return
      * @throws Exception
@@ -271,6 +282,7 @@ public class HttpClientUtils {
 
     /**
      * Description: 封装请求头
+     *
      * @param params
      * @param httpMethod
      */
@@ -327,7 +339,7 @@ public class HttpClientUtils {
             }
             return new HttpClientResult(httpResponse.getStatusLine().getStatusCode(), content);
         }
-        return new HttpClientResult(HttpStatus.SC_INTERNAL_SERVER_ERROR,null);
+        return new HttpClientResult(HttpStatus.SC_INTERNAL_SERVER_ERROR, null);
     }
 
     /**
@@ -346,6 +358,7 @@ public class HttpClientUtils {
             httpClient.close();
         }
     }
+
     public static CloseableHttpClient getHttpClient() throws KeyManagementException, NoSuchAlgorithmException {
         //采用绕过验证的方式处理https请求
         SSLContext sslcontext = createIgnoreVerifySSL();
@@ -381,7 +394,7 @@ public class HttpClientUtils {
             }
         };
 
-        sc.init(null, new TrustManager[] { trustManager }, null);
+        sc.init(null, new TrustManager[]{trustManager}, null);
         return sc;
     }
 }

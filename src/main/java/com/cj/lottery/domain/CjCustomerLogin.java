@@ -33,7 +33,7 @@ public class CjCustomerLogin implements Serializable {
     /**
      * 删除状态，默认0，1删除
      */
-    private Byte isDelete;
+    private Integer isDelete;
 
     /**
      * 创建时间
