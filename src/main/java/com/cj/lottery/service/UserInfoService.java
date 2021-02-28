@@ -17,8 +17,6 @@ public interface UserInfoService {
     int deleteUserAddress(Integer id);
 
     CjCustomerInfo queryUserInfoByCustomerId(int coustmerId);
-<<<<<<< HEAD
-=======
 
     /**
      * 获取用户最新的token
@@ -37,5 +35,4 @@ public interface UserInfoService {
      * @return
      */
     String saveUserInfo(String loginMark, String nickname, Integer sex, String headimgurl);
->>>>>>> 7cbff33016c12c0d3b803f1ed9b95b2463f86c17
 }
