@@ -9,7 +9,7 @@ import com.cj.lottery.util.ContextUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
+//import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +44,7 @@ public class PayController {
     public CjResult wxNotify(HttpServletRequest request) {
 
         try {
-            String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
+//            String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
 //            WxPayOrderNotifyResult notifyResult = wxService.parseOrderNotifyResult(xmlResult);
 //            if ("SUCCESS".equals(notifyResult.getResultCode())){
 //
