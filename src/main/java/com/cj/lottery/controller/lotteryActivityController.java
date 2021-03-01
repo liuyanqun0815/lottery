@@ -7,6 +7,7 @@ import com.cj.lottery.domain.view.LotteryResultVo;
 import com.cj.lottery.domain.view.PageView;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.PrizePoolService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import java.util.List;
 /**
  * @author liuyanqun
  */
+@Api(value = "活动",description = "活动接口")
 @Slf4j
 @RestController
 @RequestMapping("api/cj/activity")

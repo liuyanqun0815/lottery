@@ -23,6 +23,7 @@ import java.util.UUID;
 /**
  * @author liuyanqun
  */
+@Api(value = "H5登录",description = "H5登录接口")
 @Slf4j
 @RestController
 @RequestMapping("api/cj/login")

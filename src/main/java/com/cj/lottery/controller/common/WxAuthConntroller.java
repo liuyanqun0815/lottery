@@ -4,19 +4,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.cj.lottery.dao.CjCustomerInfoDao;
 import com.cj.lottery.dao.CjCustomerLoginDao;
 import com.cj.lottery.dao.CjCustomerLoginLogDao;
-import com.cj.lottery.domain.CjCustomerInfo;
 import com.cj.lottery.domain.CjCustomerLogin;
-import com.cj.lottery.domain.CjCustomerLoginLog;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.service.UserInfoService;
 import com.cj.lottery.util.AuthUtil;
-import com.cj.lottery.util.UuidUtils;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +22,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+@Api(value = "微信公众号",description = "微信公众号接口")
 @RestController
 @Slf4j
 @RequestMapping("/wxapi")

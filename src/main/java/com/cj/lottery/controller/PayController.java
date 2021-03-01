@@ -6,6 +6,7 @@ import com.cj.lottery.service.OrderPayService;
 import com.cj.lottery.util.ContextUtils;
 //import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 //import com.github.binarywang.wxpay.service.WxPayService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author lyq
  */
+@Api(value = "支付",description = "支付相关接口")
 @RestController
 @Slf4j
 @RequestMapping("api/pay")

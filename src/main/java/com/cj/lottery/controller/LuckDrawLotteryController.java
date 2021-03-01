@@ -7,6 +7,7 @@ import com.cj.lottery.domain.view.LotteryResultVo;
 import com.cj.lottery.service.LuckDrawLotteryService;
 import com.cj.lottery.service.PrizePoolService;
 import com.cj.lottery.util.ContextUtils;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Api(value = "抽奖",description = "抽奖接口")
 @Slf4j
 @RestController
 @RequestMapping("api/cj/draw")
