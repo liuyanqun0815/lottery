@@ -41,7 +41,7 @@ public class CjLotteryActivity implements Serializable {
     /**
      * 活动状态，0有效，1无效
      */
-    private Byte status;
+    private Integer status;
 
     /**
      * 扭扭币消耗数量
@@ -52,7 +52,17 @@ public class CjLotteryActivity implements Serializable {
     /**
      * 活动标识
      */
-    private Byte activityFlag;
+    private Integer activityFlag;
+
+    /**
+     * 活动折扣率
+     */
+    private Integer activityRate;
+
+    /**
+     * 消耗人民币（分）
+     */
+    private Integer consumerMoney;
 
 
 

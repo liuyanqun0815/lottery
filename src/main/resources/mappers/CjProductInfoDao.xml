@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
     id, product_code, product_name, category_id, price, sale_price, `status`, shelf_life, 
-    `desc`, callback_rate, product_img_url
+    `desc`, callback_rate, product_img_url,product_flag
   </sql>
     <sql id="tableName">
     cj_product_info
@@ -41,6 +41,9 @@
             <if test="callbackRate != null">
                 callback_rate,
             </if>
+            <if test="productFlag!= null">
+                product_flag,
+            </if>
 
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -71,7 +74,9 @@
             <if test="callbackRate != null">
                 #{callbackRate},
             </if>
-
+            <if test="productFlag!= null">
+                #{productFlag}
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjProductInfo">

@@ -1,7 +1,7 @@
 package com.cj.lottery.service.impl;
 
-import com.cj.lottery.dao.CjPayNiuniuRecordDao;
-import com.cj.lottery.domain.CjPayNiuniuRecord;
+import com.cj.lottery.dao.CjPayScoreRecordDao;
+import com.cj.lottery.domain.CjPayScoreRecord;
 import com.cj.lottery.service.PayNiuniuRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +14,11 @@ import java.util.List;
 public class PayNiuniuRecordServiceImpl implements PayNiuniuRecordService {
 
     @Autowired
-    private CjPayNiuniuRecordDao payNiuniuRecordDao;
+    private CjPayScoreRecordDao payNiuniuRecordDao;
 
 
     @Override
-    public List<CjPayNiuniuRecord> queryPayNiuniuRecordByConsumerId(int consumerId) {
+    public List<CjPayScoreRecord> queryPayNiuniuRecordByConsumerId(int consumerId) {
 
         return payNiuniuRecordDao.selectByConsumerId(consumerId);
     }

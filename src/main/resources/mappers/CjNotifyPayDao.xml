@@ -1,169 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cj.lottery.dao.CjNotifyPayDao">
-  <resultMap id="BaseResultMap" type="com.cj.lottery.domain.CjNotifyPay">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="customer_id" jdbcType="INTEGER" property="customerId" />
-    <result column="out_trade_no" jdbcType="VARCHAR" property="outTradeNo" />
-    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
-    <result column="total_fee" jdbcType="INTEGER" property="totalFee" />
-    <result column="appid" jdbcType="INTEGER" property="appid" />
-    <result column="mch_id" jdbcType="INTEGER" property="mchId" />
-    <result column="trade_type" jdbcType="INTEGER" property="tradeType" />
-    <result column="time_end" jdbcType="TIMESTAMP" property="timeEnd" />
-    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
+
+    <sql id="Base_Column_List">
     id, customer_id, out_trade_no, transaction_id, total_fee, appid, mch_id, trade_type, 
-    time_end, is_delete, create_time, update_time
+    time_end, status
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from cj_notify_pay
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from cj_notify_pay
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjNotifyPay" useGeneratedKeys="true">
-    insert into cj_notify_pay (customer_id, out_trade_no, transaction_id, 
-      total_fee, appid, mch_id, 
-      trade_type, time_end, is_delete, 
-      create_time, update_time)
-    values (#{customerId,jdbcType=INTEGER}, #{outTradeNo,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, 
-      #{totalFee,jdbcType=INTEGER}, #{appid,jdbcType=INTEGER}, #{mchId,jdbcType=INTEGER}, 
-      #{tradeType,jdbcType=INTEGER}, #{timeEnd,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=TINYINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjNotifyPay" useGeneratedKeys="true">
-    insert into cj_notify_pay
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="customerId != null">
-        customer_id,
-      </if>
-      <if test="outTradeNo != null">
-        out_trade_no,
-      </if>
-      <if test="transactionId != null">
-        transaction_id,
-      </if>
-      <if test="totalFee != null">
-        total_fee,
-      </if>
-      <if test="appid != null">
-        appid,
-      </if>
-      <if test="mchId != null">
-        mch_id,
-      </if>
-      <if test="tradeType != null">
-        trade_type,
-      </if>
-      <if test="timeEnd != null">
-        time_end,
-      </if>
-      <if test="isDelete != null">
-        is_delete,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="customerId != null">
-        #{customerId,jdbcType=INTEGER},
-      </if>
-      <if test="outTradeNo != null">
-        #{outTradeNo,jdbcType=VARCHAR},
-      </if>
-      <if test="transactionId != null">
-        #{transactionId,jdbcType=VARCHAR},
-      </if>
-      <if test="totalFee != null">
-        #{totalFee,jdbcType=INTEGER},
-      </if>
-      <if test="appid != null">
-        #{appid,jdbcType=INTEGER},
-      </if>
-      <if test="mchId != null">
-        #{mchId,jdbcType=INTEGER},
-      </if>
-      <if test="tradeType != null">
-        #{tradeType,jdbcType=INTEGER},
-      </if>
-      <if test="timeEnd != null">
-        #{timeEnd,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isDelete != null">
-        #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjNotifyPay">
-    update cj_notify_pay
-    <set>
-      <if test="customerId != null">
-        customer_id = #{customerId,jdbcType=INTEGER},
-      </if>
-      <if test="outTradeNo != null">
-        out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
-      </if>
-      <if test="transactionId != null">
-        transaction_id = #{transactionId,jdbcType=VARCHAR},
-      </if>
-      <if test="totalFee != null">
-        total_fee = #{totalFee,jdbcType=INTEGER},
-      </if>
-      <if test="appid != null">
-        appid = #{appid,jdbcType=INTEGER},
-      </if>
-      <if test="mchId != null">
-        mch_id = #{mchId,jdbcType=INTEGER},
-      </if>
-      <if test="tradeType != null">
-        trade_type = #{tradeType,jdbcType=INTEGER},
-      </if>
-      <if test="timeEnd != null">
-        time_end = #{timeEnd,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isDelete != null">
-        is_delete = #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.cj.lottery.domain.CjNotifyPay">
-    update cj_notify_pay
-    set customer_id = #{customerId,jdbcType=INTEGER},
-      out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
-      transaction_id = #{transactionId,jdbcType=VARCHAR},
-      total_fee = #{totalFee,jdbcType=INTEGER},
-      appid = #{appid,jdbcType=INTEGER},
-      mch_id = #{mchId,jdbcType=INTEGER},
-      trade_type = #{tradeType,jdbcType=INTEGER},
-      time_end = #{timeEnd,jdbcType=TIMESTAMP},
-      is_delete = #{isDelete,jdbcType=TINYINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
+    <sql id="tableName">
+    cj_notify_pay
+  </sql>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjNotifyPay"
+            useGeneratedKeys="true">
+        insert into
+        <include refid="tableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">
+                customer_id,
+            </if>
+            <if test="outTradeNo != null">
+                out_trade_no,
+            </if>
+            <if test="transactionId != null">
+                transaction_id,
+            </if>
+            <if test="totalFee != null">
+                total_fee,
+            </if>
+            <if test="appid != null">
+                appid,
+            </if>
+            <if test="mchId != null">
+                mch_id,
+            </if>
+            <if test="tradeType != null">
+                trade_type,
+            </if>
+            <if test="timeEnd != null">
+                time_end,
+            </if>
+            <if test="status!= null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">
+                #{customerId},
+            </if>
+            <if test="outTradeNo != null">
+                #{outTradeNo},
+            </if>
+            <if test="transactionId != null">
+                #{transactionId},
+            </if>
+            <if test="totalFee != null">
+                #{totalFee},
+            </if>
+            <if test="appid != null">
+                #{appid},
+            </if>
+            <if test="mchId != null">
+                #{mchId},
+            </if>
+            <if test="tradeType != null">
+                #{tradeType},
+            </if>
+            <if test="timeEnd != null">
+                #{timeEnd},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjNotifyPay">
+        update
+        <include refid="tableName"/>
+        <set>
+            <if test="customerId != null">
+                customer_id = #{customerId},
+            </if>
+            <if test="outTradeNo != null">
+                out_trade_no = #{outTradeNo},
+            </if>
+            <if test="transactionId != null">
+                transaction_id = #{transactionId},
+            </if>
+            <if test="totalFee != null">
+                total_fee = #{totalFee},
+            </if>
+            <if test="appid != null">
+                appid = #{appid},
+            </if>
+            <if test="mchId != null">
+                mch_id = #{mchId},
+            </if>
+            <if test="tradeType != null">
+                trade_type = #{tradeType},
+            </if>
+            <if test="timeEnd != null">
+                time_end = #{timeEnd},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
 </mapper>

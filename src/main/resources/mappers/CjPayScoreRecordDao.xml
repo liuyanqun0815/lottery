@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.CjPayScoreRecordDao">
+
+  <sql id="Base_Column_List">
+    id, customer_id, out_trade_no, score, `status`
+  </sql>
+  <sql id="tableName">
+    cj_pay_niuniu_record
+  </sql>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjPayScoreRecord" useGeneratedKeys="true">
+    insert into cj_pay_niuniu_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no,
+      </if>
+
+      <if test="score != null">
+        score,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="customerId != null">
+        #{customerId},
+      </if>
+      <if test="outTradeNo != null">
+        #{outTradeNo},
+      </if>
+
+      <if test="score != null">
+        #{score},
+      </if>
+
+      <if test="status != null">
+        #{status},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjPayScoreRecord">
+    update cj_pay_niuniu_record
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId},
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no = #{outTradeNo},
+      </if>
+
+      <if test="score != null">
+        score = #{score},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByConsumerId" resultType="com.cj.lottery.domain.CjPayScoreRecord">
+    select <include refid="Base_Column_List"/>
+    from <include refid="tableName"/>
+    where is_delete =0
+    and customer_id = #{consumerId}
+  </select>
+
+</mapper>

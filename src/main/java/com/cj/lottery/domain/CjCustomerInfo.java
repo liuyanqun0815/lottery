@@ -60,8 +60,8 @@ public class CjCustomerInfo implements Serializable {
      */
     private String headUrl;
     /**
-     * 扭扭币数量
+     * 欧气值
      */
-    private Integer niuniuNum;
+    private Integer score;
     private static final long serialVersionUID = 1L;
 }

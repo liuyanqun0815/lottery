@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
     id, customer_id, customer_name, identity_card_type, identity_card_no, mobile_phone, 
-    customer_email, sex, user_money,head_url,niuniu_num
+    customer_email, sex, user_money,head_url,score
   </sql>
 
     <sql id="tableName">
@@ -102,8 +102,8 @@
             <if test="userMoney != null">
                 user_money = #{userMoney},
             </if>
-            <if test="niuniuNum!= null">
-                niuniu_num = #{niuniuNum}
+            <if test="score!= null">
+                score = #{score}
             </if>
 
         </set>
@@ -124,7 +124,7 @@
         from
         <include refid="tableName"/>
         where is_delete =0
-        and  customer_id = #{customerId}
+        and customer_id = #{customerId}
 
     </select>
 

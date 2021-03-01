@@ -1,10 +1,7 @@
 package com.cj.lottery.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.cj.lottery.dao.CjCustomerLoginDao;
-import com.cj.lottery.domain.CjCustomerAddress;
-import com.cj.lottery.domain.CjCustomerLogin;
-import com.cj.lottery.domain.CjPayNiuniuRecord;
+import com.cj.lottery.domain.CjPayScoreRecord;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
 import com.cj.lottery.domain.view.PayNiuniuRecordVo;
@@ -12,8 +9,6 @@ import com.cj.lottery.domain.view.UserInfoVo;
 import com.cj.lottery.service.PayNiuniuRecordService;
 import com.cj.lottery.service.UserInfoService;
 import com.cj.lottery.util.ContextUtils;
-import com.cj.lottery.util.HttpClientResult;
-import com.cj.lottery.util.HttpClientUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,7 +43,7 @@ public class UserInfoController {
     public CjResult<List<PayNiuniuRecordVo>> listPayNiuniu() {
         int userId = ContextUtils.getUserId();
         List<PayNiuniuRecordVo> list = new ArrayList<>();
-        List<CjPayNiuniuRecord> cjPayNiuniuRecords = payNiuniuRecordService.queryPayNiuniuRecordByConsumerId(userId);
+        List<CjPayScoreRecord> cjPayNiuniuRecords = payNiuniuRecordService.queryPayNiuniuRecordByConsumerId(userId);
         if (CollectionUtils.isEmpty(cjPayNiuniuRecords)){
             return CjResult.success(list);
         }

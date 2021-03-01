@@ -19,17 +19,17 @@ public class UserInfoVo {
     @ApiModelProperty("头像地址")
     private String headUrl;
     /**
-     * 扭扭币数量
+     * 欧气值数量
      */
     @ApiModelProperty("扭扭币数量")
-    private Integer niuniuNum;
+    private Integer score;
 
 
     public static UserInfoVo doToVo(CjCustomerInfo info){
         UserInfoVo vo = new UserInfoVo();
         vo.setCustomerName(info.getCustomerName());
         vo.setHeadUrl(info.getHeadUrl());
-        vo.setNiuniuNum(info.getNiuniuNum());
+        vo.setScore(info.getScore());
         return vo;
     }
 

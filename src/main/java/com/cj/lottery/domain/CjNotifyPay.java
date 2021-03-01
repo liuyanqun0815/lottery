@@ -56,19 +56,9 @@ public class CjNotifyPay implements Serializable {
     private Date timeEnd;
 
     /**
-     * 删除状态，默认0，1删除
+     * 订单状态，0未支付，1已支付，2已退款
      */
-    private Byte isDelete;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private Integer status;
 
     private static final long serialVersionUID = 1L;
 }

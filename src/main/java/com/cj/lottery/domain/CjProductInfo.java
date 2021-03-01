@@ -61,6 +61,9 @@ public class CjProductInfo implements Serializable {
     private Integer callbackRate;
 
     private String productImgUrl;
-
+    /**
+     * 商品标识：0 普通商品 1 隐藏商品
+     */
+    private Integer productFlag;
     private static final long serialVersionUID = 1L;
 }

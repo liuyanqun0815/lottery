@@ -1,6 +1,6 @@
 package com.cj.lottery.domain.view;
 
-import com.cj.lottery.domain.CjPayNiuniuRecord;
+import com.cj.lottery.domain.CjPayScoreRecord;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,7 +30,7 @@ public class PayNiuniuRecordVo {
     @ApiModelProperty("创建时间")
     private Date createTime;
 
-    public static PayNiuniuRecordVo DoToVo(CjPayNiuniuRecord record){
+    public static PayNiuniuRecordVo DoToVo(CjPayScoreRecord record){
         PayNiuniuRecordVo vo = new PayNiuniuRecordVo();
         BeanUtils.copyProperties(record,vo);
         return vo;

@@ -56,19 +56,11 @@ public class CjPrizePool implements Serializable {
     private Date shelfLife;
 
     /**
-     * 删除状态，默认0，1删除
+     * 版本
      */
-    private Byte isDelete;
+    private String version;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 }

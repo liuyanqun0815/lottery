@@ -5,11 +5,11 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * cj_send_product
+ * cj_pay_niuniu_record
  * @author 
  */
 @Data
-public class CjSendProduct implements Serializable {
+public class CjPayScoreRecord implements Serializable {
     /**
      * 主键id
      */
@@ -21,22 +21,19 @@ public class CjSendProduct implements Serializable {
     private Integer customerId;
 
     /**
-     * 商品id
+     * 商户订单号
      */
-    private Integer productId;
+    private String outTradeNo;
+
 
     /**
-     * 收货地址id
+     * 欧气值
      */
-    private Integer addressId;
+    private Integer score;
+
 
     /**
-     * 交易类型
-     */
-    private Integer tradeType;
-
-    /**
-     * 0已发货，1已收货
+     * 订单状态，1已支付，2已退款
      */
     private Integer status;
 

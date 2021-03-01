@@ -2,105 +2,114 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cj.lottery.dao.CjPrizePoolDao">
 
-  <sql id="Base_Column_List">
+    <sql id="Base_Column_List">
     id, product_id, activity_id, product_num, product_latest_num, sort, obtain_probility, 
-    `status`, shelf_life
+    `status`, shelf_life,version
   </sql>
-  <sql id="tableName">
+    <sql id="tableName">
     cj_prize_pool
   </sql>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjPrizePool" useGeneratedKeys="true">
-    insert into cj_prize_pool
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="productId != null">
-        product_id,
-      </if>
-      <if test="activityId != null">
-        activity_id,
-      </if>
-      <if test="productNum != null">
-        product_num,
-      </if>
-      <if test="productLatestNum != null">
-        product_latest_num,
-      </if>
-      <if test="sort != null">
-        sort,
-      </if>
-      <if test="obtainProbility != null">
-        obtain_probility,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
-      <if test="shelfLife != null">
-        shelf_life,
-      </if>
-
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="productId != null">
-        #{productId,jdbcType=INTEGER},
-      </if>
-      <if test="activityId != null">
-        #{activityId,jdbcType=INTEGER},
-      </if>
-      <if test="productNum != null">
-        #{productNum,jdbcType=INTEGER},
-      </if>
-      <if test="productLatestNum != null">
-        #{productLatestNum,jdbcType=INTEGER},
-      </if>
-      <if test="sort != null">
-        #{sort,jdbcType=INTEGER},
-      </if>
-      <if test="obtainProbility != null">
-        #{obtainProbility,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=TINYINT},
-      </if>
-      <if test="shelfLife != null">
-        #{shelfLife,jdbcType=TIMESTAMP},
-      </if>
-
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjPrizePool">
-    update cj_prize_pool
-    <set>
-      <if test="productId != null">
-        product_id = #{productId,jdbcType=INTEGER},
-      </if>
-      <if test="activityId != null">
-        activity_id = #{activityId,jdbcType=INTEGER},
-      </if>
-      <if test="productNum != null">
-        product_num = #{productNum,jdbcType=INTEGER},
-      </if>
-      <if test="productLatestNum != null">
-        product_latest_num = #{productLatestNum,jdbcType=INTEGER},
-      </if>
-      <if test="sort != null">
-        sort = #{sort,jdbcType=INTEGER},
-      </if>
-      <if test="obtainProbility != null">
-        obtain_probility = #{obtainProbility,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        `status` = #{status,jdbcType=TINYINT},
-      </if>
-      <if test="shelfLife != null">
-        shelf_life = #{shelfLife,jdbcType=TIMESTAMP},
-      </if>
-
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <select id="selectProductByActivityCode" resultType="com.cj.lottery.domain.CjPrizePool">
-    select <include refid="Base_Column_List"/>
-    from <include refid="tableName"/>
-    where is_delete = 0
-    and activity_id = #{activityId}
-  </select>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjPrizePool"
+            useGeneratedKeys="true">
+        insert into cj_prize_pool
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="activityId != null">
+                activity_id,
+            </if>
+            <if test="productNum != null">
+                product_num,
+            </if>
+            <if test="productLatestNum != null">
+                product_latest_num,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="obtainProbility != null">
+                obtain_probility,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="shelfLife != null">
+                shelf_life,
+            </if>
+            <if test="version !=null">
+                version,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">
+                #{productId},
+            </if>
+            <if test="activityId != null">
+                #{activityId},
+            </if>
+            <if test="productNum != null">
+                #{productNum},
+            </if>
+            <if test="productLatestNum != null">
+                #{productLatestNum},
+            </if>
+            <if test="sort != null">
+                #{sort},
+            </if>
+            <if test="obtainProbility != null">
+                #{obtainProbility},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="shelfLife != null">
+                #{shelfLife},
+            </if>
+            <if test="version!=null">
+                #{version}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjPrizePool">
+        update cj_prize_pool
+        <set>
+            <if test="productId != null">
+                product_id = #{productId},
+            </if>
+            <if test="activityId != null">
+                activity_id = #{activityId},
+            </if>
+            <if test="productNum != null">
+                product_num = #{productNum},
+            </if>
+            <if test="productLatestNum != null">
+                product_latest_num = #{productLatestNum},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="obtainProbility != null">
+                obtain_probility = #{obtainProbility},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="shelfLife != null">
+                shelf_life = #{shelfLife},
+            </if>
+            <if test="version!=null">
+                version=#{version}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectProductByActivityCode" resultType="com.cj.lottery.domain.CjPrizePool">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="tableName"/>
+        where is_delete = 0
+        and activity_id = #{activityId}
+    </select>
 </mapper>
