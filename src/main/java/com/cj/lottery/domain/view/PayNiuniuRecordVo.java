@@ -8,7 +8,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
 
-@Api("扭扭币充值记录")
+@Api("充值记录")
 @Data
 public class PayNiuniuRecordVo {
 

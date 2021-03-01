@@ -21,7 +21,7 @@ public class UserInfoVo {
     /**
      * 欧气值数量
      */
-    @ApiModelProperty("扭扭币数量")
+    @ApiModelProperty("欧气值")
     private Integer score;
 
 
