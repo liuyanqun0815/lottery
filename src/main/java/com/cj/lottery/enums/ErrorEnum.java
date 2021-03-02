@@ -23,6 +23,12 @@ public enum  ErrorEnum {
     NOT_TOKEN(2002,"缺少必填参数token"),
 
 
+    NOT_ORDER(3001,"不存在订单信息"),
+    NO_PAY(3002,"未支付"),
+    REFUND(3003,"已退款"),
+    USED(3004,"已核销"),
+
+
 
 
             ;

@@ -61,7 +61,7 @@ public class CjOrderPay implements Serializable {
     private Date timeExpire;
 
     /**
-     * 订单状态，0未支付，1已支付，2已退款
+     * 订单状态，0未支付，1已支付，2已退款,3已核销
      */
     private Integer status;
 

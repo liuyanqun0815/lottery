@@ -19,10 +19,14 @@ import com.cj.lottery.util.HttpClientUtils;
 import com.cj.lottery.util.UuidUtils;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @Service
@@ -84,6 +88,41 @@ public class OrderPayServiceImpl implements OrderPayService {
         pay.setMchId(result.getMchId());
 //        pay.setCreateTime(result.gets());
         return null;
+    }
+
+    @Override
+    public CjResult<Boolean> queryLatestOrderStatus(int customerId) {
+        //查询用户最近一分钟一条订单
+        Date date = DateUtils.addMinutes(new Date(), -1);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+        String startTime = sdf.format(date);
+        CjOrderPay cjOrderPay = orderPayDao.selectLatestOrder(customerId,startTime);
+        return this.checkOrder(cjOrderPay);
+    }
+
+    @Override
+    public CjResult<Boolean> queryOrderByUserIdAndOutTradeNo(int customerId, String outTradeNo) {
+        CjOrderPay cjOrderPay = orderPayDao.selectByUserIdAndOutTradeNo(customerId, outTradeNo);
+        return this.checkOrder(cjOrderPay);
+    }
+
+    private CjResult<Boolean> checkOrder(CjOrderPay cjOrderPay ){
+        if (cjOrderPay == null){
+            return CjResult.fail(ErrorEnum.NOT_ORDER);
+        }
+        if (cjOrderPay.getStatus() == PayStatusEnum.NO_PAY.getCode()){
+            return CjResult.fail(ErrorEnum.NO_PAY);
+        }
+        if (cjOrderPay.getStatus() == PayStatusEnum.REFUND.getCode()){
+            return CjResult.fail(ErrorEnum.REFUND);
+        }
+        if (cjOrderPay.getStatus() == PayStatusEnum.USED.getCode()){
+            return CjResult.fail(ErrorEnum.USED);
+        }
+        if (cjOrderPay.getStatus() == PayStatusEnum.PAY.getCode()){
+            return CjResult.success(true);
+        }
+        return CjResult.fail(ErrorEnum.SYSTEM_ERROR);
     }
 
     /**

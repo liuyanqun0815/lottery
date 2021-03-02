@@ -9,8 +9,9 @@ public enum PayStatusEnum {
 
     PAY(1, "已支付"),
 
-    REFUND(2, "已退款")
+    REFUND(2, "已退款"),
 
+    USED(3,"已核销"),
 
 
     ;

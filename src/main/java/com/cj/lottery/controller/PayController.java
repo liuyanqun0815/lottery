@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 //import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +58,18 @@ public class PayController {
         }
 
         return orderPayService.wxOrderNotify();
+
+    }
+
+    @ApiOperation("查询订单是否支付成功")
+    @PostMapping("query-order-status")
+    public CjResult<Boolean> queryOrderStatus(HttpServletRequest request,
+                                     @RequestParam(required = false)String outTradeNo) {
+        int userId = ContextUtils.getUserId();
+        if (StringUtils.isEmpty(outTradeNo)){
+            return orderPayService.queryLatestOrderStatus(userId);
+        }
+        return orderPayService.queryOrderByUserIdAndOutTradeNo(userId,outTradeNo);
 
     }
 
