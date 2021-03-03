@@ -12,7 +12,7 @@ public interface UserInfoService {
 
     CjCustomerLogin queryLoginInfoByLoginPhone(String login);
 
-    int updateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo);
+    int saveOrupdateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo);
 
     int deleteUserAddress(Integer id);
 

@@ -52,8 +52,11 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public int updateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo) {
+    public int saveOrupdateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo) {
         CjCustomerAddress cjCustomerAddress = ConstumerAddressInfoMapper.INSTANCE.toDo(constumerAddressInfoVo);
+        if(cjCustomerAddress.getId() == null){
+            return cjCustomerAddressDao.insertSelective(cjCustomerAddress);
+        }
         return cjCustomerAddressDao.updateByPrimaryKeySelective(cjCustomerAddress);
     }
 

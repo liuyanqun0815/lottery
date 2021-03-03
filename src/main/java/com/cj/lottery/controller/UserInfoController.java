@@ -57,14 +57,23 @@ public class UserInfoController {
         return CjResult.success(userInfoService.queryAddressListByConstmerId(userId));
     }
 
-    @ApiOperation("地址修改")
-    @GetMapping("/update-address")
-    public CjResult<String> updateAddress(@RequestBody ConstumerAddressInfoVo constumerAddressInfoVo){
-        int result = userInfoService.updateUserAddress(constumerAddressInfoVo);
+    @ApiOperation("地址新增修改")
+    @GetMapping("/saveOrupdate-address")
+    public CjResult<String> updateAddress(@RequestParam(name = "id",required = false) String id,
+                                          @RequestParam("name") String name,
+                                          @RequestParam("phone") String phone,
+                                          @RequestParam("address") String address){
+
+        ConstumerAddressInfoVo constumerAddressInfoVo = new ConstumerAddressInfoVo();
+        constumerAddressInfoVo.setId(id);
+        constumerAddressInfoVo.setName(name);
+        constumerAddressInfoVo.setAddress(address);
+        constumerAddressInfoVo.setPhone(phone);
+        int result = userInfoService.saveOrupdateUserAddress(constumerAddressInfoVo);
         if(result>0){
-            return CjResult.success("保存成功");
+            return CjResult.success("操作成功");
         }
-        return CjResult.fail("保存失败");
+        return CjResult.fail("操作失败");
     }
 
     @ApiOperation("地址删除")
