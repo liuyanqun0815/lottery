@@ -11,4 +11,11 @@ public interface LuckDrawLotteryService {
      */
     boolean checkAuthority(Integer userId,String activityCode);
 
+    /**
+     * 判断当前用户是否新人
+     * @param userId
+     * @return
+     */
+    boolean newOrNot(Integer userId);
+
 }

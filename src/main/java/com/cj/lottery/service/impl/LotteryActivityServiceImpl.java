@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cj.lottery.dao.CjLotteryActivityDao;
 import com.cj.lottery.dao.CjLotteryActivityImgDao;
+import com.cj.lottery.domain.CjCustomerInfo;
 import com.cj.lottery.domain.CjLotteryActivity;
 import com.cj.lottery.domain.CjLotteryActivityImg;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.PageView;
 import com.cj.lottery.service.LotteryActivityService;
+import com.cj.lottery.service.UserInfoService;
+import com.cj.lottery.util.ContextUtils;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,9 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
 
     @Autowired
     private CjLotteryActivityImgDao cjLotteryActivityImgDao;
+
+    @Autowired
+    private UserInfoService  userInfoService;
 
     @Override
     public PageView queryActivityListByPage(int current,int size) {
@@ -69,6 +75,13 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
                 lotteryActivityInfoVo.setHeadUrlList(headUrls);
                 lotteryActivityInfoVo.setBodyUrlList(bodyUrls);
             }
+        }
+
+        //获取用户欧气值
+        int userId = ContextUtils.getUserId();
+        CjCustomerInfo cjCustomerInfo = userInfoService.queryUserInfoByCustomerId(userId);
+        if(null != cjCustomerInfo){
+            lotteryActivityInfoVo.setScore(cjCustomerInfo.getScore());
         }
         return lotteryActivityInfoVo;
     }

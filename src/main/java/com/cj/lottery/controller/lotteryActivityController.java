@@ -6,16 +6,14 @@ import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.LotteryResultVo;
 import com.cj.lottery.domain.view.PageView;
 import com.cj.lottery.service.LotteryActivityService;
+import com.cj.lottery.service.LuckDrawLotteryService;
 import com.cj.lottery.service.PrizePoolService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +31,8 @@ public class lotteryActivityController {
     LotteryActivityService lotteryActivityService;
     @Autowired
     PrizePoolService prizePoolService;
+    @Autowired
+    private LuckDrawLotteryService luckDrawLotteryService;
 
     @ApiOperation("获取活动列表")
     @PostMapping("list-activity")
@@ -60,6 +60,13 @@ public class lotteryActivityController {
         danmuList.add("恭喜大仙：抽到apple耳机");
 
         return CjResult.success(danmuList);
+    }
+
+    @ApiOperation("判断是否新人 true 是新人,false 不是新人")
+    @GetMapping("/is-newuser")
+    public CjResult<Boolean> newOrMot(@RequestParam("userId") Integer userId){
+        boolean result = luckDrawLotteryService.newOrNot(userId);
+        return CjResult.success(result);
     }
 
 }

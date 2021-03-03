@@ -37,12 +37,17 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
             if(!"1".equals(activity)){
                 return true;
             }
-            int count = cjLotteryRecordDao.countByConsumerId(userId);
-            if(count>0){
-                return false;
-            }
-            return true;
+           return newOrNot(userId);
         }
         return false;
+    }
+
+    @Override
+    public boolean newOrNot(Integer userId) {
+        int count = cjLotteryRecordDao.countByConsumerId(userId);
+        if(count>0){
+            return false;
+        }
+        return true;
     }
 }
