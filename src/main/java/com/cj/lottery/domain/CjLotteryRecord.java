@@ -26,9 +26,9 @@ public class CjLotteryRecord implements Serializable {
     private Integer productId;
 
     /**
-     * 消耗扭扭币个数
+     * 订单id
      */
-    private Integer consumerNum;
+    private Integer orderId;
 
     /**
      * 抽奖状态，1 待发货，2已回收，3已发货，默认1

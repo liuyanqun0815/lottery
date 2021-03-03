@@ -56,7 +56,7 @@ public class CjProductInfo implements Serializable {
     private String desc;
 
     /**
-     * 回收率，百分制，80
+     * 回收率，百分制，70
      */
     private Integer callbackRate;
 

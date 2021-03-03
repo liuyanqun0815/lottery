@@ -9,6 +9,7 @@ import com.cj.lottery.domain.CjLotteryActivity;
 import com.cj.lottery.domain.CjLotteryActivityImg;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.PageView;
+import com.cj.lottery.enums.ActivityFlagEnum;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.UserInfoService;
 import com.cj.lottery.util.ContextUtils;
@@ -53,7 +54,6 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
     public LotteryActivityInfoVo queryActivityDetailsByPage(String activityCode) {
 
         CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
-
         LotteryActivityInfoVo lotteryActivityInfoVo = new LotteryActivityInfoVo();
         lotteryActivityInfoVo.setActivityCode(activityCode);
         if(null != activity){
