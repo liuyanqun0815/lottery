@@ -43,11 +43,6 @@ public class CjLotteryActivity implements Serializable {
      */
     private Integer status;
 
-    /**
-     * 扭扭币消耗数量
-     */
-    private Integer consumerNum;
-
 
     /**
      * 活动标识

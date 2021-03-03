@@ -31,9 +31,9 @@ public class CjSendProduct implements Serializable {
     private Integer addressId;
 
     /**
-     * 交易类型
+     * 是否有邮费，0无1有
      */
-    private Integer tradeType;
+    private Integer postageFlag;
 
     /**
      * 0已发货，1已收货

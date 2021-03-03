@@ -51,6 +51,11 @@ public class CjOrderPay implements Serializable {
     private Integer tradeType;
 
     /**
+     * 订单类型，0 抽奖订单，1标识邮费订单
+     */
+    private Integer orderType;
+
+    /**
      * 交易起始时间
      */
     private Date timeStart;
@@ -65,6 +70,7 @@ public class CjOrderPay implements Serializable {
      */
     private Integer status;
 
+    private Date createTime;
 
 
     private static final long serialVersionUID = 1L;

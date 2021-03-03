@@ -2,120 +2,132 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cj.lottery.dao.CjOrderPayDao">
 
-  <sql id="Base_Column_List">
-    id, customer_id, body, out_trade_no, total_fee, appid, mch_id, trade_type, `status`
+    <sql id="Base_Column_List">
+    id, customer_id, body, out_trade_no, total_fee, appid, mch_id, trade_type, `status`,order_type
   </sql>
-  <sql id="tableName">
+    <sql id="allFiled">
+    id, customer_id, body, out_trade_no, total_fee, appid, mch_id, trade_type, `status`,order_type,create_time
+  </sql>
+    <sql id="tableName">
     cj_order_pay
   </sql>
 
-  <select id="selectByUserId" resultType="com.cj.lottery.domain.CjOrderPay">
-    select
-    <include refid="Base_Column_List" />
-    from cj_order_pay
-    where customer_id = #{userId}
-    and is_delete =0
-  </select>
+    <select id="selectByUserId" resultType="com.cj.lottery.domain.CjOrderPay">
+        select
+        <include refid="allFiled"/>
+        from cj_order_pay
+        where customer_id = #{userId}
+        and is_delete =0
+    </select>
 
-  <select id="countByUserId" resultType="java.lang.Integer">
+    <select id="countByUserId" resultType="java.lang.Integer">
     select count(*)
     from  cj_order_pay
     where
     customer_id = #{userId}
   </select>
-  <select id="selectLatestOrder" resultType="com.cj.lottery.domain.CjOrderPay">
-    select <include refid="Base_Column_List"/>
-    from <include refid="tableName"/>
-    where is_delete = 0
-    and create_time> #{startTime}
-    order by id desc limit 1
-  </select>
-  <select id="selectByUserIdAndOutTradeNo" resultType="com.cj.lottery.domain.CjOrderPay">
-    select <include refid="Base_Column_List"/>
-    from <include refid="tableName"/>
-    where is_delete = 0
-    and customer_id = #{customerId}
-    and out_trade_no = #{outTradeNo}
-    limit 1
+    <select id="selectLatestOrder" resultType="com.cj.lottery.domain.CjOrderPay">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="tableName"/>
+        where is_delete = 0
+        and create_time> #{startTime}
+        order by id desc limit 1
+    </select>
+    <select id="selectByUserIdAndOutTradeNo" resultType="com.cj.lottery.domain.CjOrderPay">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="tableName"/>
+        where is_delete = 0
+        and customer_id = #{customerId}
+        and out_trade_no = #{outTradeNo}
+        limit 1
 
-  </select>
+    </select>
 
 
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjOrderPay" useGeneratedKeys="true">
-    insert into cj_order_pay
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="customerId != null">
-        customer_id,
-      </if>
-      <if test="body != null">
-        body,
-      </if>
-      <if test="outTradeNo != null">
-        out_trade_no,
-      </if>
-      <if test="totalFee != null">
-        total_fee,
-      </if>
-      <if test="appid != null">
-        appid,
-      </if>
-      <if test="mchId != null">
-        mch_id,
-      </if>
-      <if test="tradeType != null">
-        trade_type,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjOrderPay"
+            useGeneratedKeys="true">
+        insert into cj_order_pay
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">
+                customer_id,
+            </if>
+            <if test="body != null">
+                body,
+            </if>
+            <if test="outTradeNo != null">
+                out_trade_no,
+            </if>
+            <if test="totalFee != null">
+                total_fee,
+            </if>
+            <if test="appid != null">
+                appid,
+            </if>
+            <if test="mchId != null">
+                mch_id,
+            </if>
+            <if test="tradeType != null">
+                trade_type,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="orderType!=null">
+                order_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">
+                #{customerId},
+            </if>
+            <if test="body != null">
+                #{body},
+            </if>
+            <if test="outTradeNo != null">
+                #{outTradeNo},
+            </if>
+            <if test="totalFee != null">
+                #{totalFee},
+            </if>
+            <if test="appid != null">
+                #{appid},
+            </if>
+            <if test="mchId != null">
+                #{mchId},
+            </if>
+            <if test="tradeType != null">
+                #{tradeType},
+            </if>
 
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="customerId != null">
-        #{customerId},
-      </if>
-      <if test="body != null">
-        #{body},
-      </if>
-      <if test="outTradeNo != null">
-        #{outTradeNo},
-      </if>
-      <if test="totalFee != null">
-        #{totalFee},
-      </if>
-      <if test="appid != null">
-        #{appid},
-      </if>
-      <if test="mchId != null">
-        #{mchId},
-      </if>
-      <if test="tradeType != null">
-        #{tradeType},
-      </if>
-
-      <if test="status != null">
-        #{status},
-      </if>
-
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjOrderPay">
-    update cj_order_pay
-    <set>
-      <if test="body != null">
-        body = #{body},
-      </if>
-      <if test="outTradeNo != null">
-        out_trade_no = #{outTradeNo},
-      </if>
-      <if test="totalFee != null">
-        total_fee = #{totalFee},
-      </if>
-      <if test="status != null">
-        `status` = #{status},
-      </if>
-    </set>
-    where id = #{id}
-  </update>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="orderType!=null">
+                #{orderType},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjOrderPay">
+        update cj_order_pay
+        <set>
+            <if test="body != null">
+                body = #{body},
+            </if>
+            <if test="outTradeNo != null">
+                out_trade_no = #{outTradeNo},
+            </if>
+            <if test="totalFee != null">
+                total_fee = #{totalFee},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
 </mapper>

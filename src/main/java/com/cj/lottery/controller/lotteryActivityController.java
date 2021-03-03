@@ -44,10 +44,8 @@ public class lotteryActivityController {
 
     @ApiOperation("获取活动详情")
     @PostMapping("activity-info")
-    public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam(value = "activityCode") String activityCode,
-                                                      @RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
-                                                      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
-        LotteryActivityInfoVo lotteryActivityInfoVo = lotteryActivityService.queryActivityDetailsByPage(activityCode, pageIndex, pageSize);
+    public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam(value = "activityCode") String activityCode){
+        LotteryActivityInfoVo lotteryActivityInfoVo = lotteryActivityService.queryActivityDetailsByPage(activityCode);
         return CjResult.success(lotteryActivityInfoVo);
     }
 

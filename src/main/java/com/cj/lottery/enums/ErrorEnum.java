@@ -20,7 +20,7 @@ public enum  ErrorEnum {
     PARAM_ERROR(2000,"参数错误"),
 
     USERINFO_NOT_EXIST(2001,"用户信息不存在"),
-    NOT_TOKEN(2002,"缺少必填参数token"),
+    NOT_TOKEN(2002,"未登录"),
 
 
     NOT_ORDER(3001,"不存在订单信息"),

@@ -3,7 +3,7 @@
 <mapper namespace="com.cj.lottery.dao.CjSendProductDao">
 
     <sql id="Base_Column_List">
-    id, customer_id, product_id, address_id, trade_type, `status`
+    id, customer_id, product_id, address_id,`status`,postage_flag
   </sql>
 
 
@@ -20,13 +20,13 @@
             <if test="addressId != null">
                 address_id,
             </if>
-            <if test="tradeType != null">
-                trade_type,
-            </if>
+
             <if test="status != null">
                 `status`,
             </if>
-
+            <if test="postageFlag!= null">
+                postage_flag,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="customerId != null">
@@ -38,11 +38,12 @@
             <if test="addressId != null">
                 #{addressId},
             </if>
-            <if test="tradeType != null">
-                #{tradeType},
-            </if>
+
             <if test="status != null">
                 #{status},
+            </if>
+            <if test="postageFlag!=null">
+                #{postageFlag},
             </if>
 
         </trim>
@@ -59,9 +60,7 @@
             <if test="addressId != null">
                 address_id = #{addressId},
             </if>
-            <if test="tradeType != null">
-                trade_type = #{tradeType},
-            </if>
+
             <if test="status != null">
                 `status` = #{status},
             </if>

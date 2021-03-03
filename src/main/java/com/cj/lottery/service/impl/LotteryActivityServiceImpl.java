@@ -50,7 +50,7 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
     }
 
     @Override
-    public LotteryActivityInfoVo queryActivityDetailsByPage(String activityCode, int current, int size) {
+    public LotteryActivityInfoVo queryActivityDetailsByPage(String activityCode) {
 
         CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
 
@@ -59,7 +59,7 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
         if(null != activity){
 
             lotteryActivityInfoVo.setActivityDeadline(activity.getActivityDeadline());
-            lotteryActivityInfoVo.setConsumerNum(activity.getConsumerNum());
+            lotteryActivityInfoVo.setConsumerMoney(activity.getConsumerMoney());
             lotteryActivityInfoVo.setLimitTime(activity.getActivityDeadline() == null? false:true);
             lotteryActivityInfoVo.setActivityFlag(activity.getActivityFlag());
 

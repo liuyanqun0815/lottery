@@ -12,9 +12,6 @@ public interface CjOrderPayDao {
 
     int updateByPrimaryKeySelective(CjOrderPay record);
 
-
-    int updateByPrimaryKey(CjOrderPay record);
-
     //todo 分页
     List<CjOrderPay> selectByUserId(Integer userId);
 

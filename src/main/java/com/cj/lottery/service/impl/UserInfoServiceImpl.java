@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public int saveOrupdateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo) {
         CjCustomerAddress cjCustomerAddress = ConstumerAddressInfoMapper.INSTANCE.toDo(constumerAddressInfoVo);
-        if(cjCustomerAddress.getId() == null){
+        if(ObjectUtils.isEmpty(cjCustomerAddress.getId())){
             return cjCustomerAddressDao.insertSelective(cjCustomerAddress);
         }
         return cjCustomerAddressDao.updateByPrimaryKeySelective(cjCustomerAddress);

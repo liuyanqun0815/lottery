@@ -6,11 +6,11 @@
     id, customer_id, out_trade_no, score, `status`
   </sql>
   <sql id="tableName">
-    cj_pay_niuniu_record
+    cj_pay_score_record
   </sql>
 
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjPayScoreRecord" useGeneratedKeys="true">
-    insert into cj_pay_niuniu_record
+    insert into <include refid="tableName"/>
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="customerId != null">
         customer_id,
@@ -45,7 +45,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjPayScoreRecord">
-    update cj_pay_niuniu_record
+    update <include refid="tableName"/>
     <set>
       <if test="customerId != null">
         customer_id = #{customerId},

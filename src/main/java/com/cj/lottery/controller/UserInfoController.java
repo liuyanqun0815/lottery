@@ -1,10 +1,12 @@
 package com.cj.lottery.controller;
 
 import com.cj.lottery.dao.CjCustomerLoginDao;
+import com.cj.lottery.dao.CjOrderPayDao;
+import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.CjPayScoreRecord;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
-import com.cj.lottery.domain.view.PayNiuniuRecordVo;
+import com.cj.lottery.domain.view.PayMoneyRecordVo;
 import com.cj.lottery.domain.view.UserInfoVo;
 import com.cj.lottery.service.PayNiuniuRecordService;
 import com.cj.lottery.service.UserInfoService;
@@ -37,17 +39,20 @@ public class UserInfoController {
     @Autowired
     private UserInfoService userInfoService;
 
+    @Autowired
+    private CjOrderPayDao orderPayDao;
 
-    @ApiOperation("充值扭扭币记录列表")
+
+    @ApiOperation("充值人民币列表")
     @PostMapping("list-pay-niuniu")
-    public CjResult<List<PayNiuniuRecordVo>> listPayNiuniu() {
+    public CjResult<List<PayMoneyRecordVo>> listPayNiuniu() {
         int userId = ContextUtils.getUserId();
-        List<PayNiuniuRecordVo> list = new ArrayList<>();
-        List<CjPayScoreRecord> cjPayNiuniuRecords = payNiuniuRecordService.queryPayNiuniuRecordByConsumerId(userId);
-        if (CollectionUtils.isEmpty(cjPayNiuniuRecords)){
+        List<PayMoneyRecordVo> list = new ArrayList<>();
+        List<CjOrderPay> orderPays = orderPayDao.selectByUserId(userId);
+        if (CollectionUtils.isEmpty(orderPays)){
             return CjResult.success(list);
         }
-        return CjResult.success(cjPayNiuniuRecords.stream().map(s->PayNiuniuRecordVo.DoToVo(s)).collect(Collectors.toList()));
+        return CjResult.success(orderPays.stream().map(s->PayMoneyRecordVo.DoToVo(s)).collect(Collectors.toList()));
     }
 
     @ApiOperation("地址列表")
