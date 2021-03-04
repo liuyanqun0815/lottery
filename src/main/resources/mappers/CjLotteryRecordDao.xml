@@ -79,6 +79,7 @@
     from <include refid="tableName"/>
     where is_delete = 0
     and customer_id = #{customerId}
+    group by status
   </select>
 
 </mapper>
