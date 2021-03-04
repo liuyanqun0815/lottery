@@ -124,4 +124,14 @@
         limit 1
     </select>
 
+    <select id="getNewPeopleActivities" resultType="com.cj.lottery.domain.CjLotteryActivity">
+        select
+        <include refid="Base_Column_List"></include>
+        from
+        <include refid="tableName"></include>
+        where is_delete = 0
+        and activity_flag = 1
+        limit 1
+    </select>
+
 </mapper>

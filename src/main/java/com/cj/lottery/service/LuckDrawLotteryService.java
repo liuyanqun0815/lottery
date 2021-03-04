@@ -1,6 +1,7 @@
 package com.cj.lottery.service;
 
 import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.LotteryData;
 
 import java.util.List;
@@ -16,10 +17,10 @@ public interface LuckDrawLotteryService {
     CjResult<LotteryData> clickLottery(Integer userId, String activityCode,boolean test);
 
     /**
-     * 判断当前用户是否新人
+     * 新人活动接口
      * @param userId
      * @return
      */
-    boolean newOrNot(Integer userId);
+    LotteryActivityInfoVo newPeopleActivities(Integer userId);
 
 }

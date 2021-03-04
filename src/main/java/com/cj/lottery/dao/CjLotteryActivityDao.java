@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cj.lottery.domain.CjLotteryActivity;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface CjLotteryActivityDao {
 
     int insertSelective(CjLotteryActivity record);
@@ -17,6 +19,6 @@ public interface CjLotteryActivityDao {
 
     CjLotteryActivity selectActivityByCode(@Param("code") String code);
 
-
+    List<CjLotteryActivity> getNewPeopleActivities();
 
 }
