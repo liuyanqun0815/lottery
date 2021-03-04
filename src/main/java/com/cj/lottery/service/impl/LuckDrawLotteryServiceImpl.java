@@ -1,13 +1,8 @@
 package com.cj.lottery.service.impl;
 
 import com.cj.lottery.controller.LuckDrawLotteryController;
-import com.cj.lottery.dao.CjLotteryActivityDao;
-import com.cj.lottery.dao.CjLotteryRecordDao;
-import com.cj.lottery.dao.CjOrderPayDao;
-import com.cj.lottery.dao.CjPrizePoolDao;
-import com.cj.lottery.domain.CjLotteryActivity;
-import com.cj.lottery.domain.CjOrderPay;
-import com.cj.lottery.domain.CjPrizePool;
+import com.cj.lottery.dao.*;
+import com.cj.lottery.domain.*;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.LotteryData;
@@ -15,12 +10,14 @@ import com.cj.lottery.enums.ActivityFlagEnum;
 import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.enums.PayStatusEnum;
 import com.cj.lottery.service.LotteryActivityService;
+import com.cj.lottery.enums.PrizeStatusEnum;
 import com.cj.lottery.service.LuckDrawLotteryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -46,23 +43,32 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     @Autowired
     private CjPrizePoolDao prizePoolDao;
     @Autowired
+    private CjPayScoreRecordDao payScoreRecordDao;
+    @Autowired
+    private CjProductInfoDao productInfoDao;
+    @Autowired
     private LotteryActivityService lotteryActivityService;
 
     @Override
     @Transactional
-    public CjResult<LotteryData> checkAuthority(Integer userId, String activityCode) {
+    public CjResult<LotteryData> clickLottery(Integer userId, String activityCode, boolean test) {
 
         CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
         if (null == activity) {
             return CjResult.fail(ErrorEnum.NOT_ACITVITY);
         }
+        int score = getScore(activity.getConsumerMoney());
+        //试玩--@todo 待优化
+        if (test) {
+            return CjResult.success(this.testLottery(score, activity));
+        }
         //查询该用户有没有充值
         List<CjOrderPay> orderPayList = cjOrderPayDao.selectPaySuccessByUserId(userId);
-        if (CollectionUtils.isEmpty(orderPayList)){
+        if (CollectionUtils.isEmpty(orderPayList)) {
             return CjResult.fail(ErrorEnum.USER_NOT_PAY);
         }
-        orderPayList = orderPayList.stream().filter(s -> s.getTotalFee().equals(activity.getConsumerMoney())).collect(Collectors.toList());
-        if (orderPayList == null){
+        CjOrderPay orderPay = orderPayList.stream().filter(s -> s.getTotalFee().equals(activity.getConsumerMoney())).findFirst().get();
+        if (orderPay == null) {
             return CjResult.fail(ErrorEnum.USER_PAY_NOT_ACITVITY);
         }
         //如果活动是新人活动，判断是否是新人
@@ -77,31 +83,41 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         }
         CjPrizePool pool = this.randomPrize(activity.getId());
         //去库存，根据 id+version进行更新
-        int i = prizePoolDao.subtractionProductNum(pool.getId(),pool.getVersion());
-        if (i<0){
+        int i = prizePoolDao.subtractionProductNum(pool.getId(), pool.getVersion());
+        if (i < 0) {
             //防止高并发，去库存失败重新抽取---兜底方案
-            while (true){
+            while (true) {
                 pool = this.randomPrize(activity.getId());
-                i = prizePoolDao.subtractionProductNum(pool.getId(),pool.getVersion());
-                if (i>0){
+                i = prizePoolDao.subtractionProductNum(pool.getId(), pool.getVersion());
+                if (i > 0) {
                     break;
                 }
             }
         }
+        //更新订单状态为已核销
+        this.cjOrderPayDao.updateStatusById(orderPay.getId(), PayStatusEnum.USED.getCode());
+
+        //记录抽奖记录
+        CjLotteryRecord record = new CjLotteryRecord();
+        record.setOrderId(orderPay.getId());
+        record.setProductId(pool.getProductId());
+        record.setCustomerId(userId);
+        record.setStatus(PrizeStatusEnum.dai_fa_huo.getCode());
+        cjLotteryRecordDao.insertSelective(record);
+
+        //记录欧气值生成记录
+        CjPayScoreRecord scoreRecord = new CjPayScoreRecord();
+        scoreRecord.setCustomerId(userId);
+        scoreRecord.setScore(score);
+        scoreRecord.setOrderId(orderPay.getId());
+        this.payScoreRecordDao.insertSelective(scoreRecord);
 
         LotteryData data = new LotteryData();
-        data.setOutTradeNo("abcdefghigklmn");
-        data.setCallbackRate(70);
-        data.setProductImgUrl("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fa2.att.hudong.com%2F86%2F10%2F01300000184180121920108394217.jpg&refer=http%3A%2F%2Fa2.att.hudong.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1617438456&t=f5044b9b5f155d873bfa47abb52ac1e6");
+        data.setOutTradeNo(orderPay.getOutTradeNo());
+        data.setCallbackRate(activity.getActivityRate());
+        data.setProductImgUrl(ObjectUtils.isEmpty(pool.getProductImgUrl()) ? "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fa2.att.hudong.com%2F86%2F10%2F01300000184180121920108394217.jpg&refer=http%3A%2F%2Fa2.att.hudong.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1617438456&t=f5044b9b5f155d873bfa47abb52ac1e6" : pool.getProductImgUrl());
+        data.setScore(score);
         return CjResult.success(data);
-//        if(null != activity){
-//            //如果活动不是新用户活动都可以参加
-//            if(!"1".equals(activity)){
-//                return true;
-//            }
-//           return newOrNot(userId);
-//        }
-//        return false;
     }
 
     @Override
@@ -139,10 +155,14 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         } else {
             pool = cjPrizePools.get(this.randomData(cjPrizePools.size()));
         }
+        CjProductInfo productInfo = productInfoDao.selectById(pool.getProductId());
+        if (productInfo != null) {
+            pool.setProductImgUrl(productInfo.getProductImgUrl());
+        }
         return pool;
     }
 
-    private int randomData(int size){
+    private int randomData(int size) {
         Random random = new Random();
         return random.nextInt(size);
     }
@@ -150,22 +170,35 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     /**
      * 订单金额通过一定的算法
      * 生成欧气值
+     * 金额（元）/10 * 0.5~1.3
+     * 保证返回的score 不为0
+     *
      * @param totalFee
      * @return
      */
-    public int getScore(int totalFee){
+    private int getScore(int totalFee) {
+        totalFee = totalFee / 100;
+        if (totalFee == 1) {
+            return 1;
+        }
         Random random = new Random();
-        int num = random.nextInt(9)+5;
-        int score = (totalFee/10)*(num/10);
-        score = totalFee * num /100;
+        int num = random.nextInt(9) + 5;
+        int score = totalFee * num / (10 * 10);
+        if (score == 0) {
+            score = 1;
+        }
         return score;
     }
 
-    public static void main(String[] args) {
-        LuckDrawLotteryServiceImpl controller = new LuckDrawLotteryServiceImpl();
-        for (int i = 0; i < 35; i++) {
-            System.out.println(controller.getScore(100));
-//            controller.getScore(100);
-        }
+    private LotteryData testLottery(int score, CjLotteryActivity activity) {
+
+        CjPrizePool pool = this.randomPrize(activity.getId());
+        LotteryData data = new LotteryData();
+        data.setOutTradeNo("");
+        data.setCallbackRate(activity.getActivityRate());
+        data.setProductImgUrl(ObjectUtils.isEmpty(pool.getProductImgUrl()) ? "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fa2.att.hudong.com%2F86%2F10%2F01300000184180121920108394217.jpg&refer=http%3A%2F%2Fa2.att.hudong.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1617438456&t=f5044b9b5f155d873bfa47abb52ac1e6" : pool.getProductImgUrl());
+        data.setScore(score);
+        return data;
     }
+
 }

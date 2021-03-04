@@ -15,27 +15,26 @@ public class CjPayScoreRecord implements Serializable {
      */
     private Integer id;
 
+
     /**
      * 用户唯一标识
      */
     private Integer customerId;
 
     /**
-     * 商户订单号
+     * 订单id
      */
-    private String outTradeNo;
-
+    private Integer orderId;
 
     /**
      * 欧气值
      */
     private Integer score;
 
-
     /**
-     * 订单状态，1已支付，2已退款
+     * 加减欧气值，0加，1减
      */
-    private Integer status;
+    private int type;
 
 
 
