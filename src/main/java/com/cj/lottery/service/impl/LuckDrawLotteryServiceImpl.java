@@ -9,10 +9,12 @@ import com.cj.lottery.domain.CjLotteryActivity;
 import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.CjPrizePool;
 import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.LotteryData;
 import com.cj.lottery.enums.ActivityFlagEnum;
 import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.enums.PayStatusEnum;
+import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.LuckDrawLotteryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     private CjLotteryRecordDao cjLotteryRecordDao;
     @Autowired
     private CjPrizePoolDao prizePoolDao;
+    @Autowired
+    private LotteryActivityService lotteryActivityService;
 
     @Override
     @Transactional
@@ -101,12 +105,29 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     }
 
     @Override
-    public boolean newOrNot(Integer userId) {
-        int count = cjLotteryRecordDao.countByConsumerId(userId);
-        if (count > 0) {
-            return false;
+    public LotteryActivityInfoVo newPeopleActivities(Integer userId) {
+
+        LotteryActivityInfoVo lotteryActivityInfoVo = new LotteryActivityInfoVo();
+        List<CjOrderPay> orderPays = cjOrderPayDao.selectByUserId(userId);
+        if (!CollectionUtils.isEmpty(orderPays)) {
+            orderPays = orderPays.stream().filter(s -> s.getStatus() != PayStatusEnum.NO_PAY.getCode()).collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(orderPays) && orderPays.size() > 1) {
+                lotteryActivityInfoVo.setNewPeople(false);
+                return lotteryActivityInfoVo;
+            }
         }
-        return true;
+
+        List<CjLotteryActivity> newPeopleActivities = cjLotteryActivityDao.getNewPeopleActivities();
+        if(CollectionUtils.isEmpty(newPeopleActivities)){
+            lotteryActivityInfoVo.setNewPeople(true);
+            return lotteryActivityInfoVo;
+        }
+
+        //获取新人活动详情
+        CjLotteryActivity activity = newPeopleActivities.get(0);
+        lotteryActivityInfoVo = lotteryActivityService.queryActivityDetailsByPage(activity.getActivityCode());
+        lotteryActivityInfoVo.setNewPeople(true);
+        return lotteryActivityInfoVo;
     }
 
     public CjPrizePool randomPrize(int activityId) {

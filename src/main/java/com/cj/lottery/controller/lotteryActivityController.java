@@ -60,11 +60,11 @@ public class lotteryActivityController {
         return CjResult.success(danmuList);
     }
 
-    @ApiOperation("判断是否新人 true 是新人,false 不是新人")
-    @GetMapping("/is-newuser")
-    public CjResult<Boolean> newOrMot(@RequestParam("userId") Integer userId){
-        boolean result = luckDrawLotteryService.newOrNot(userId);
-        return CjResult.success(result);
+    @ApiOperation("新人活动接口")
+    @GetMapping("/new-people-activities")
+    public CjResult<LotteryActivityInfoVo> newPeopleActivities(@RequestParam("userId") Integer userId){
+        LotteryActivityInfoVo lotteryActivityInfoVo = luckDrawLotteryService.newPeopleActivities(userId);
+        return CjResult.success(lotteryActivityInfoVo);
     }
 
 }
