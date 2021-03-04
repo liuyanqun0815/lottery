@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.cj.lottery.dao.CjLotteryRecordDao;
 import com.cj.lottery.dao.CjProductInfoDao;
 import com.cj.lottery.domain.CjLotteryRecord;
+import com.cj.lottery.domain.view.CjProductInfoVo;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.PrizeStatusVo;
 import com.cj.lottery.enums.PrizeStatusEnum;
@@ -45,5 +46,10 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         }
         PrizeStatusVo prizeStatusVo = JSON.parseObject(JSON.toJSONString(keyMap), PrizeStatusVo.class);
         return CjResult.success(prizeStatusVo);
+    }
+
+    @Override
+    public List<CjProductInfoVo> queryProductByStatusAndUserId(Integer status, Integer userId) {
+        return null;
     }
 }
