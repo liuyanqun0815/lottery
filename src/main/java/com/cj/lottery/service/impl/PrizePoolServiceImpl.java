@@ -23,7 +23,7 @@ public class PrizePoolServiceImpl implements PrizePoolService {
 
     @Override
     public List<CjPrizePool> getProductByActivityCode(int acitvityId) {
-        return prizePoolDao.selectProductByActivityCode(acitvityId);
+        return prizePoolDao.selectProductByActivityId(acitvityId);
     }
 
     @Override

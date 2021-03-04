@@ -3,6 +3,7 @@ package com.cj.lottery.controller;
 
 import com.cj.lottery.constant.ContextCons;
 import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.LotteryData;
 import com.cj.lottery.domain.view.LotteryResultVo;
 import com.cj.lottery.service.LuckDrawLotteryService;
 import com.cj.lottery.service.PrizePoolService;
@@ -30,19 +31,19 @@ public class LuckDrawLotteryController {
 
     @ApiOperation("点击抽奖结果")
     @PostMapping("click-prize")
-    public CjResult<Object> clickPrize(@RequestParam(value = "activityCode") String activityCode,
-                                                @ApiParam("是否试玩")@RequestParam(value = "test")boolean test) {
+    public CjResult<LotteryData> clickPrize(@RequestParam(value = "activityCode") String activityCode,
+                                            @ApiParam("是否试玩")@RequestParam(value = "test")boolean test) {
         if(test){
             return CjResult.success(null);
         }
         int userId = ContextUtils.getUserId();
-        boolean authority = luckDrawLotteryService.checkAuthority(userId, activityCode);
-        if(!authority){
-            return CjResult.fail("只有新用户可以参加此活动");
-        }
-
-        prizePoolService.queryRealProduct(activityCode);
-        return CjResult.success(null);
+       return luckDrawLotteryService.checkAuthority(userId, activityCode);
+//        if(!authority){
+//            return CjResult.fail("只有新用户可以参加此活动");
+//        }
+//
+//        prizePoolService.queryRealProduct(activityCode);
+//        return CjResult.success(null);
     }
 
 

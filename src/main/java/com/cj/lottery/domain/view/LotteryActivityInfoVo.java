@@ -35,6 +35,4 @@ public class LotteryActivityInfoVo {
     @ApiModelProperty("活动标识:0:普通活动 1:新人活动")
     private Integer activityFlag;
 
-    @ApiModelProperty("欧气值")
-    private Integer score;
 }

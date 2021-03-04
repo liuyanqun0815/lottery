@@ -1,5 +1,10 @@
 package com.cj.lottery.service;
 
+import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.LotteryData;
+
+import java.util.List;
+
 public interface LuckDrawLotteryService {
 
     /**
@@ -9,7 +14,7 @@ public interface LuckDrawLotteryService {
      * @param activityCode
      * @return
      */
-    boolean checkAuthority(Integer userId,String activityCode);
+    CjResult<LotteryData> checkAuthority(Integer userId, String activityCode);
 
     /**
      * 判断当前用户是否新人

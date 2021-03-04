@@ -46,6 +46,14 @@
         limit 1
 
     </select>
+    <select id="selectPaySuccessByUserId" resultType="com.cj.lottery.domain.CjOrderPay">
+        select
+        <include refid="allFiled"/>
+        from <include refid="tableName"/>
+        where customer_id = #{userId}
+        and is_delete =0
+        and status = 1
+    </select>
 
 
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjOrderPay"

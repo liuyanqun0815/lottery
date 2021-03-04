@@ -48,7 +48,7 @@ public class CjPrizePool implements Serializable {
     /**
      * 是否从奖池下架，0否，1是
      */
-    private Byte status;
+    private Integer status;
 
     /**
      * 商品有效期

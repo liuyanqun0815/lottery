@@ -15,6 +15,9 @@ public interface CjOrderPayDao {
     //todo 分页
     List<CjOrderPay> selectByUserId(Integer userId);
 
+    List<CjOrderPay> selectPaySuccessByUserId(Integer userId);
+
+
     int countByUserId(Integer userId);
 
     CjOrderPay selectLatestOrder(@Param("customerId") int customerId,
