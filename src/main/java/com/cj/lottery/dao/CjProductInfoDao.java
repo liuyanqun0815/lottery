@@ -12,4 +12,5 @@ public interface CjProductInfoDao {
 
     int updateByPrimaryKeySelective(CjProductInfo record);
 
+    CjProductInfo selectById(Integer id);
 }

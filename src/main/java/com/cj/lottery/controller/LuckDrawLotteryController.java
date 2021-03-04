@@ -37,13 +37,7 @@ public class LuckDrawLotteryController {
             return CjResult.success(null);
         }
         int userId = ContextUtils.getUserId();
-       return luckDrawLotteryService.checkAuthority(userId, activityCode);
-//        if(!authority){
-//            return CjResult.fail("只有新用户可以参加此活动");
-//        }
-//
-//        prizePoolService.queryRealProduct(activityCode);
-//        return CjResult.success(null);
+       return luckDrawLotteryService.clickLottery(userId, activityCode,test);
     }
 
 

@@ -60,6 +60,8 @@ public class CjPrizePool implements Serializable {
      */
     private String version;
 
+    private String productImgUrl;
+
 
 
     private static final long serialVersionUID = 1L;

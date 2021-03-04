@@ -26,4 +26,5 @@ public interface CjOrderPayDao {
     CjOrderPay selectByUserIdAndOutTradeNo(@Param("customerId") int customerId,
                                            @Param("outTradeNo")String outTradeNo);
 
+    int updateStatusById(@Param("id") Integer id, @Param("status") int status);
 }

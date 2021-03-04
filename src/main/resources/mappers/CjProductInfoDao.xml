@@ -113,6 +113,12 @@
         </set>
         where id = #{id}
     </update>
+    <select id="selectById" resultType="com.cj.lottery.domain.CjProductInfo">
+        select <include refid="Base_Column_List"/>
+        from <include refid="tableName"/>
+        where is_delete = 0
+        id = #{id}
+    </select>
 
 
 </mapper>

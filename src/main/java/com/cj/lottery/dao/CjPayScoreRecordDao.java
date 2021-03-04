@@ -8,7 +8,7 @@ public interface CjPayScoreRecordDao {
 
     int insertSelective(CjPayScoreRecord record);
 
-    int updateByPrimaryKeySelective(CjPayScoreRecord record);
+//    int updateByPrimaryKeySelective(CjPayScoreRecord record);
 
     List<CjPayScoreRecord> selectByConsumerId(int consumerId);
 

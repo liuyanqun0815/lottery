@@ -8,13 +8,12 @@ import java.util.List;
 public interface LuckDrawLotteryService {
 
     /**
-     * 抽奖权限校验：
-     * 比如老用户不能在新用户活动里抽奖
+     * 抽奖接口
      * @param userId
      * @param activityCode
      * @return
      */
-    CjResult<LotteryData> checkAuthority(Integer userId, String activityCode);
+    CjResult<LotteryData> clickLottery(Integer userId, String activityCode,boolean test);
 
     /**
      * 判断当前用户是否新人
