@@ -6,11 +6,9 @@ import com.cj.lottery.domain.*;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.LotteryData;
-import com.cj.lottery.enums.ActivityFlagEnum;
-import com.cj.lottery.enums.ErrorEnum;
-import com.cj.lottery.enums.PayStatusEnum;
+import com.cj.lottery.enums.*;
+import com.cj.lottery.event.EventPublishService;
 import com.cj.lottery.service.LotteryActivityService;
-import com.cj.lottery.enums.PrizeStatusEnum;
 import com.cj.lottery.service.LuckDrawLotteryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +46,8 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     private CjProductInfoDao productInfoDao;
     @Autowired
     private LotteryActivityService lotteryActivityService;
+    @Autowired
+    private EventPublishService eventPublishService;
 
     @Override
     @Transactional
@@ -117,6 +117,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         data.setCallbackRate(activity.getActivityRate());
         data.setProductImgUrl(ObjectUtils.isEmpty(pool.getProductImgUrl()) ? "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fa2.att.hudong.com%2F86%2F10%2F01300000184180121920108394217.jpg&refer=http%3A%2F%2Fa2.att.hudong.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1617438456&t=f5044b9b5f155d873bfa47abb52ac1e6" : pool.getProductImgUrl());
         data.setScore(score);
+        eventPublishService.addScore(this, userId, score, ScoreTypeEnum.ADD);
         return CjResult.success(data);
     }
 
@@ -134,7 +135,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         }
 
         List<CjLotteryActivity> newPeopleActivities = cjLotteryActivityDao.getNewPeopleActivities();
-        if(CollectionUtils.isEmpty(newPeopleActivities)){
+        if (CollectionUtils.isEmpty(newPeopleActivities)) {
             lotteryActivityInfoVo.setNewPeople(true);
             return lotteryActivityInfoVo;
         }

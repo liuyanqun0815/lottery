@@ -74,5 +74,11 @@
     from  <include refid="tableName"/>
     where customer_id = #{customerId}
   </select>
+  <select id="getPrizeStatuNum" resultType="java.util.HashMap">
+    select status as statusKey ,count(id) as statusNum
+    from <include refid="tableName"/>
+    where is_delete = 0
+    and customer_id = #{customerId}
+  </select>
 
 </mapper>

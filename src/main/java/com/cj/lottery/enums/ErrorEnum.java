@@ -28,7 +28,7 @@ public enum  ErrorEnum {
     REFUND(3003,"已退款"),
     USED(3004,"已核销"),
 
-    USER_NOT_PAY(4001,"用户未充值"),
+    USER_NOT_PAY(4001,"用户未支付"),
     USER_PAY_NOT_ACITVITY(4002,"用户充值和参与的活动不匹配"),
 
 

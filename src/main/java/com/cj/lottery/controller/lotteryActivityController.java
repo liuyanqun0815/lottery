@@ -56,7 +56,6 @@ public class lotteryActivityController {
         List<String> danmuList = new ArrayList();
         danmuList.add("恭喜凤凰：抽到小米蓝牙耳机");
         danmuList.add("恭喜大仙：抽到apple耳机");
-
         return CjResult.success(danmuList);
     }
 

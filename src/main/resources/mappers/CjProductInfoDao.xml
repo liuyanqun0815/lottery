@@ -117,7 +117,7 @@
         select <include refid="Base_Column_List"/>
         from <include refid="tableName"/>
         where is_delete = 0
-        id = #{id}
+        and id = #{id}
     </select>
 
 
