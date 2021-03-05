@@ -1,6 +1,7 @@
 package com.cj.lottery.service;
 
 import com.cj.lottery.domain.CjLotteryActivityImg;
+import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.PageView;
 
@@ -22,7 +23,7 @@ public interface LotteryActivityService {
      * 根据活动编号分页查询
      * @return
      */
-    LotteryActivityInfoVo queryActivityDetailsByPage(String activityCode);
+    CjResult<LotteryActivityInfoVo> queryActivityDetailsByPage(int userId,String activityCode);
 
 
 }

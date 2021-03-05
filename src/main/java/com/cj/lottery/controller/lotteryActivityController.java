@@ -1,13 +1,12 @@
 package com.cj.lottery.controller;
 
 import com.cj.lottery.domain.CjLotteryActivityImg;
-import com.cj.lottery.domain.view.CjResult;
-import com.cj.lottery.domain.view.LotteryActivityInfoVo;
-import com.cj.lottery.domain.view.LotteryResultVo;
-import com.cj.lottery.domain.view.PageView;
+import com.cj.lottery.domain.view.*;
+import com.cj.lottery.service.CustomerLoginService;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.LuckDrawLotteryService;
 import com.cj.lottery.service.PrizePoolService;
+import com.cj.lottery.util.ContextUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +33,9 @@ public class lotteryActivityController {
     PrizePoolService prizePoolService;
     @Autowired
     private LuckDrawLotteryService luckDrawLotteryService;
+    @Autowired
+    private CustomerLoginService customerLoginService;
+
 
     @ApiOperation("获取活动列表")
     @PostMapping("list-activity")
@@ -45,8 +48,8 @@ public class lotteryActivityController {
     @ApiOperation("获取活动详情")
     @PostMapping("activity-info")
     public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam(value = "activityCode") String activityCode){
-        LotteryActivityInfoVo lotteryActivityInfoVo = lotteryActivityService.queryActivityDetailsByPage(activityCode);
-        return CjResult.success(lotteryActivityInfoVo);
+        int userId = ContextUtils.getUserId();
+        return lotteryActivityService.queryActivityDetailsByPage( userId,activityCode);
     }
 
     @ApiOperation("获取弹幕列表")
@@ -60,10 +63,16 @@ public class lotteryActivityController {
     }
 
     @ApiOperation("新人活动接口")
-    @GetMapping("/new-people-activities")
-    public CjResult<LotteryActivityInfoVo> newPeopleActivities(@RequestParam("userId") Integer userId){
-        LotteryActivityInfoVo lotteryActivityInfoVo = luckDrawLotteryService.newPeopleActivities(userId);
-        return CjResult.success(lotteryActivityInfoVo);
+    @GetMapping("/new-people-activitie")
+    public CjResult<NewPepoleActivityVo> newPeopleActivitie(HttpServletRequest request){
+        //查询是否登录
+        boolean loginFlag = false;
+        String token  = request.getHeader("token");
+        Integer userId = customerLoginService.getUserIdByToken(token);
+        if (userId != null){
+            loginFlag = true;
+        }
+        return luckDrawLotteryService.newPeopleActivities(loginFlag,userId);
     }
 
 }

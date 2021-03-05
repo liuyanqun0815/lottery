@@ -20,5 +20,5 @@ public interface ProductInfoService {
      * @param userId
      * @return
      */
-    List<CjProductInfoVo> queryProductByStatusAndUserId(Integer status,Integer userId);
+    List<CjProductInfoVo> queryProductByStatusAndUserId(PrizeStatusEnum status,Integer userId);
 }

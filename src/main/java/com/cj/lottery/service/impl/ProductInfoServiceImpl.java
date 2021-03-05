@@ -56,9 +56,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public List<CjProductInfoVo> queryProductByStatusAndUserId(Integer status, Integer custmerId) {
+    public List<CjProductInfoVo> queryProductByStatusAndUserId(PrizeStatusEnum status, Integer custmerId) {
         List<CjProductInfoVo> infoVoList = Lists.newArrayList();
-        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectRecordByConsumerIdAndStatus(status, custmerId);
+        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectRecordByConsumerIdAndStatus(status.getCode(), custmerId);
         if(!CollectionUtils.isEmpty(cjLotteryRecords)){
             List<Integer> productIds = cjLotteryRecords.stream().map(record -> record.getProductId()).collect(Collectors.toList());
             List<CjProductInfo> cjProductInfos = productInfoDao.selectByIds(productIds);

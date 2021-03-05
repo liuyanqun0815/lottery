@@ -6,6 +6,7 @@ import com.cj.lottery.domain.*;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.LotteryData;
+import com.cj.lottery.domain.view.NewPepoleActivityVo;
 import com.cj.lottery.enums.*;
 import com.cj.lottery.event.EventPublishService;
 import com.cj.lottery.service.LotteryActivityService;
@@ -122,29 +123,32 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     }
 
     @Override
-    public LotteryActivityInfoVo newPeopleActivities(Integer userId) {
+    public CjResult<NewPepoleActivityVo> newPeopleActivities(boolean loginFlag, Integer userId) {
+        NewPepoleActivityVo vo= new NewPepoleActivityVo();
 
-        LotteryActivityInfoVo lotteryActivityInfoVo = new LotteryActivityInfoVo();
+        //未登录状态，必出新人标识
+        CjLotteryActivity activity = cjLotteryActivityDao.getNewPeopleActivities();
+        if (activity == null) {
+            vo.setNewPepoleFlag(false);
+            return CjResult.success(vo);
+        }
+        if (!loginFlag){
+            vo.setActivityCode(activity.getActivityCode());
+            vo.setNewPepoleFlag(true);
+            return CjResult.success(vo);
+        }
         List<CjOrderPay> orderPays = cjOrderPayDao.selectByUserId(userId);
         if (!CollectionUtils.isEmpty(orderPays)) {
             orderPays = orderPays.stream().filter(s -> s.getStatus() != PayStatusEnum.NO_PAY.getCode()).collect(Collectors.toList());
-            if (!CollectionUtils.isEmpty(orderPays) && orderPays.size() > 1) {
-                lotteryActivityInfoVo.setNewPeople(false);
-                return lotteryActivityInfoVo;
+            if (!CollectionUtils.isEmpty(orderPays)) {
+                vo.setNewPepoleFlag(false);
+                return CjResult.success(vo);
             }
         }
 
-        List<CjLotteryActivity> newPeopleActivities = cjLotteryActivityDao.getNewPeopleActivities();
-        if (CollectionUtils.isEmpty(newPeopleActivities)) {
-            lotteryActivityInfoVo.setNewPeople(true);
-            return lotteryActivityInfoVo;
-        }
-
-        //获取新人活动详情
-        CjLotteryActivity activity = newPeopleActivities.get(0);
-        lotteryActivityInfoVo = lotteryActivityService.queryActivityDetailsByPage(activity.getActivityCode());
-        lotteryActivityInfoVo.setNewPeople(true);
-        return lotteryActivityInfoVo;
+        vo.setNewPepoleFlag(true);
+        vo.setActivityCode(activity.getActivityCode());
+        return CjResult.success(vo);
     }
 
     public CjPrizePool randomPrize(int activityId) {

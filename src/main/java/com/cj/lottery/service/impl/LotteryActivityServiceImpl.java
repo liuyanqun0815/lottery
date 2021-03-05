@@ -7,9 +7,11 @@ import com.cj.lottery.dao.CjLotteryActivityImgDao;
 import com.cj.lottery.domain.CjCustomerInfo;
 import com.cj.lottery.domain.CjLotteryActivity;
 import com.cj.lottery.domain.CjLotteryActivityImg;
+import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.PageView;
 import com.cj.lottery.enums.ActivityFlagEnum;
+import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.UserInfoService;
 import com.cj.lottery.util.ContextUtils;
@@ -36,14 +38,14 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
     private CjLotteryActivityImgDao cjLotteryActivityImgDao;
 
     @Autowired
-    private UserInfoService  userInfoService;
+    private UserInfoService userInfoService;
 
     @Override
-    public PageView queryActivityListByPage(int current,int size) {
+    public PageView queryActivityListByPage(int current, int size) {
         PageView pageView = new PageView();
-        Page<CjLotteryActivity> page = new Page<>(current,size);
+        Page<CjLotteryActivity> page = new Page<>(current, size);
         IPage<CjLotteryActivity> pageVo = cjLotteryActivityDao.selectPageVo(page);
-        if (pageVo != null){
+        if (pageVo != null) {
             pageView.setSize(pageVo.getTotal());
             pageView.setModelList(pageVo.getRecords());
         }
@@ -51,38 +53,36 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
     }
 
     @Override
-    public LotteryActivityInfoVo queryActivityDetailsByPage(String activityCode) {
+    public CjResult<LotteryActivityInfoVo> queryActivityDetailsByPage(int userId,String activityCode) {
 
         CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
+        if (activity == null) {
+            return CjResult.fail(ErrorEnum.NOT_ACITVITY);
+        }
         LotteryActivityInfoVo lotteryActivityInfoVo = new LotteryActivityInfoVo();
         lotteryActivityInfoVo.setActivityCode(activityCode);
-        if(null != activity){
+        lotteryActivityInfoVo.setActivityDeadline(activity.getActivityDeadline());
+        lotteryActivityInfoVo.setConsumerMoney(activity.getConsumerMoney());
+        lotteryActivityInfoVo.setLimitTime(activity.getActivityDeadline() == null ? false : true);
+        lotteryActivityInfoVo.setActivityFlag(activity.getActivityFlag());
 
-            lotteryActivityInfoVo.setActivityDeadline(activity.getActivityDeadline());
-            lotteryActivityInfoVo.setConsumerMoney(activity.getConsumerMoney());
-            lotteryActivityInfoVo.setLimitTime(activity.getActivityDeadline() == null? false:true);
-            lotteryActivityInfoVo.setActivityFlag(activity.getActivityFlag());
+        Integer id = activity.getId();
+        List<CjLotteryActivityImg> cjLotteryActivityImgs = cjLotteryActivityImgDao.listCjLotteryActivityImg(id);
+        if (!CollectionUtils.isEmpty(cjLotteryActivityImgs)) {
+            List<String> headUrls = cjLotteryActivityImgs.stream().
+                    filter(s -> "1".equals(s.getType())).map(s -> s.getImgUrl()).collect(Collectors.toList());
+            List<String> bodyUrls = cjLotteryActivityImgs.stream().
+                    filter(s -> "0".equals(s.getType())).map(s -> s.getImgUrl()).collect(Collectors.toList());
 
-            Integer id = activity.getId();
-            //TODO 分页
-            List<CjLotteryActivityImg> cjLotteryActivityImgs = cjLotteryActivityImgDao.listCjLotteryActivityImg(id);
-            if(!CollectionUtils.isEmpty(cjLotteryActivityImgs)){
-                List<String> headUrls = cjLotteryActivityImgs.stream().
-                        filter(s -> "1".equals(s.getType())).map(s->s.getImgUrl()).collect(Collectors.toList());
-                List<String> bodyUrls = cjLotteryActivityImgs.stream().
-                        filter(s -> "0".equals(s.getType())).map(s->s.getImgUrl()).collect(Collectors.toList());
-
-                lotteryActivityInfoVo.setHeadUrlList(headUrls);
-                lotteryActivityInfoVo.setBodyUrlList(bodyUrls);
-            }
+            lotteryActivityInfoVo.setHeadUrlList(headUrls);
+            lotteryActivityInfoVo.setBodyUrlList(bodyUrls);
         }
 
-        //获取用户欧气值
-        int userId = ContextUtils.getUserId();
+
         CjCustomerInfo cjCustomerInfo = userInfoService.queryUserInfoByCustomerId(userId);
-        if(null != cjCustomerInfo){
+        if (null != cjCustomerInfo) {
             lotteryActivityInfoVo.setScore(cjCustomerInfo.getScore());
         }
-        return lotteryActivityInfoVo;
+        return CjResult.success(lotteryActivityInfoVo);
     }
 }

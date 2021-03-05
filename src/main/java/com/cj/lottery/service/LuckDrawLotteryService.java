@@ -3,6 +3,7 @@ package com.cj.lottery.service;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.LotteryData;
+import com.cj.lottery.domain.view.NewPepoleActivityVo;
 
 import java.util.List;
 
@@ -21,6 +22,6 @@ public interface LuckDrawLotteryService {
      * @param userId
      * @return
      */
-    LotteryActivityInfoVo newPeopleActivities(Integer userId);
+    CjResult<NewPepoleActivityVo> newPeopleActivities(boolean loginFlag, Integer userId);
 
 }

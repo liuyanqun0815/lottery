@@ -10,8 +10,8 @@ import java.util.Date;
 @Api("货物信息")
 public class CjProductInfoVo {
 
-    @ApiModelProperty("商品Id")
-    private Integer id;
+//    @ApiModelProperty("商品Id")
+//    private Integer id;
 
     @ApiModelProperty("商品编码")
     private String productCode;
@@ -22,8 +22,8 @@ public class CjProductInfoVo {
     @ApiModelProperty("销售价格（分）")
     private Integer salePrice;
 
-    @ApiModelProperty("商品有效期")
-    private Date shelfLife;
+//    @ApiModelProperty("商品有效期")
+//    private Date shelfLife;
 
     @ApiModelProperty("商品描述")
     private String desc;

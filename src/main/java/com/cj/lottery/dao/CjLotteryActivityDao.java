@@ -19,6 +19,6 @@ public interface CjLotteryActivityDao {
 
     CjLotteryActivity selectActivityByCode(@Param("code") String code);
 
-    List<CjLotteryActivity> getNewPeopleActivities();
+    CjLotteryActivity getNewPeopleActivities();
 
 }
