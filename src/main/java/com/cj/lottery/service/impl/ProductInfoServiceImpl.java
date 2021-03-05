@@ -5,19 +5,24 @@ import com.alibaba.fastjson.JSONObject;
 import com.cj.lottery.dao.CjLotteryRecordDao;
 import com.cj.lottery.dao.CjProductInfoDao;
 import com.cj.lottery.domain.CjLotteryRecord;
+import com.cj.lottery.domain.CjProductInfo;
 import com.cj.lottery.domain.view.CjProductInfoVo;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.PrizeStatusVo;
 import com.cj.lottery.enums.PrizeStatusEnum;
+import com.cj.lottery.mapper.CjProductInfoMapper;
 import com.cj.lottery.service.ProductInfoService;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -51,7 +56,14 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public List<CjProductInfoVo> queryProductByStatusAndUserId(Integer status, Integer userId) {
-        return null;
+    public List<CjProductInfoVo> queryProductByStatusAndUserId(Integer status, Integer custmerId) {
+        List<CjProductInfoVo> infoVoList = Lists.newArrayList();
+        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectRecordByConsumerIdAndStatus(status, custmerId);
+        if(!CollectionUtils.isEmpty(cjLotteryRecords)){
+            List<Integer> productIds = cjLotteryRecords.stream().map(record -> record.getProductId()).collect(Collectors.toList());
+            List<CjProductInfo> cjProductInfos = productInfoDao.selectByIds(productIds);
+            infoVoList = CjProductInfoMapper.INSTANCE.toVos(cjProductInfos);
+        }
+        return infoVoList;
     }
 }

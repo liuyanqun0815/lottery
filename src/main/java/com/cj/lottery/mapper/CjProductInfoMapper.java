@@ -1,6 +1,6 @@
 package com.cj.lottery.mapper;
 
-import com.cj.lottery.domain.CjSendProduct;
+import com.cj.lottery.domain.CjProductInfo;
 import com.cj.lottery.domain.view.CjProductInfoVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -12,11 +12,11 @@ public interface CjProductInfoMapper {
 
     CjProductInfoMapper INSTANCE = Mappers.getMapper(CjProductInfoMapper.class);
 
-    CjProductInfoVo toVo(CjSendProduct cjSendProduct);
+    CjProductInfoVo toVo(CjProductInfo cjProductInfo);
 
-    CjSendProduct toDo(CjProductInfoVo cjProductInfoVo);
+    CjProductInfo toDo(CjProductInfoVo cjProductInfoVo);
 
-    List<CjProductInfoVo> toVos(List<CjSendProduct> cjSendProducts);
+    List<CjProductInfoVo> toVos(List<CjProductInfo> cjProductInfos);
 
-    List<CjSendProduct> toDos(List<CjProductInfoVo> cjProductInfoVos);
+    List<CjProductInfo> toDos(List<CjProductInfo> cjProductInfoVos);
 }

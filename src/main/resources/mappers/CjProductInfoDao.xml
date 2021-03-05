@@ -120,5 +120,19 @@
         and id = #{id}
     </select>
 
+    <select id="selectByIds" resultType="com.cj.lottery.domain.CjProductInfo">
+        select <include refid="Base_Column_List"/>
+        from <include refid="tableName"/>
+        where is_delete = 0
+        <if test="productIds != null and productIds.size()>0">
+            and id in
+           (
+            <foreach collection="productIds" item="id" separator=",">
+              #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+
 
 </mapper>
