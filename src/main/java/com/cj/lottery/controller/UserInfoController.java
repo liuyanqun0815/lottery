@@ -63,7 +63,7 @@ public class UserInfoController {
     }
 
     @ApiOperation("地址新增修改")
-    @GetMapping("/saveOrupdate-address")
+    @PostMapping("/saveOrupdate-address")
     public CjResult<String> updateAddress(@RequestParam(name = "id",required = false) String id,
                                           @RequestParam("name") String name,
                                           @RequestParam("phone") String phone,
@@ -82,7 +82,7 @@ public class UserInfoController {
     }
 
     @ApiOperation("地址删除")
-    @DeleteMapping("/delete-address")
+    @PostMapping("/delete-address")
     public CjResult<String> deleteAddress(@RequestParam("addressId")Integer addressId){
         int result = userInfoService.deleteUserAddress(addressId);
         if(result>0){

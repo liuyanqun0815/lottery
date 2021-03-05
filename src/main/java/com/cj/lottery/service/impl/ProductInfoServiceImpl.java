@@ -51,7 +51,6 @@ public class ProductInfoServiceImpl implements ProductInfoService {
             return CjResult.success(new PrizeStatusVo());
         }
         PrizeStatusVo prizeStatusVo = JSON.parseObject(JSONObject.toJSONString(keyMap), PrizeStatusVo.class);
-        System.out.println(JSONObject.toJSON(prizeStatusVo));
         return CjResult.success(prizeStatusVo);
     }
 

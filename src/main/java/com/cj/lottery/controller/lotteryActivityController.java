@@ -63,7 +63,7 @@ public class lotteryActivityController {
     }
 
     @ApiOperation("新人活动接口")
-    @GetMapping("/new-people-activitie")
+    @PostMapping("/new-people-activitie")
     public CjResult<NewPepoleActivityVo> newPeopleActivitie(HttpServletRequest request){
         //查询是否登录
         boolean loginFlag = false;
