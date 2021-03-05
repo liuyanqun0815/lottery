@@ -1,7 +1,9 @@
 package com.cj.lottery.domain.view;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
+@Data
 public class PrizeStatusVo {
 
     @ApiModelProperty("待发货数量")

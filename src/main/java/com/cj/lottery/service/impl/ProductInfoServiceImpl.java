@@ -1,6 +1,7 @@
 package com.cj.lottery.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cj.lottery.dao.CjLotteryRecordDao;
 import com.cj.lottery.dao.CjProductInfoDao;
 import com.cj.lottery.domain.CjLotteryRecord;
@@ -44,7 +45,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         if (keyMap.size() == 0) {
             return CjResult.success(new PrizeStatusVo());
         }
-        PrizeStatusVo prizeStatusVo = JSON.parseObject(JSON.toJSONString(keyMap), PrizeStatusVo.class);
+        PrizeStatusVo prizeStatusVo = JSON.parseObject(JSONObject.toJSONString(keyMap), PrizeStatusVo.class);
+        System.out.println(JSONObject.toJSON(prizeStatusVo));
         return CjResult.success(prizeStatusVo);
     }
 
