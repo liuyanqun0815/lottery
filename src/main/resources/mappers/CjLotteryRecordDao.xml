@@ -64,7 +64,7 @@
     select <include refid="Base_Column_List"></include>
     from <include refid="tableName"></include>
     where is_delete = 0
-    and customer_id = #{customerId}
+    and customer_id = #{consumerId}
     and status = #{status}
   </select>
 

@@ -5,6 +5,7 @@ import com.cj.lottery.aop.TraceIdInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -22,8 +23,10 @@ public class CjMvcConfigurerAdapter implements WebMvcConfigurer {
         //登录验证
         registry.addInterceptor(loginInterceptor())
                 .addPathPatterns(PREFIX_PATH_SEPARATOR)
-                .excludePathPatterns("/api/cj/test")
-                .excludePathPatterns("/api/cj/login/**");
+//                .excludePathPatterns("/api/cj/test")
+//                .excludePathPatterns("/api/cj/login/**")
+                .addPathPatterns("api/cj/draw/**")
+                .addPathPatterns("api/pay/**");
 
 
     }
@@ -36,6 +39,15 @@ public class CjMvcConfigurerAdapter implements WebMvcConfigurer {
 
     public TraceIdInterceptor traceIdInterceptor(){
         return new TraceIdInterceptor();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").
+                allowedOriginPatterns("*").
+                allowCredentials(true).
+                allowedMethods("*").
+                maxAge(3600);
     }
 
 }
