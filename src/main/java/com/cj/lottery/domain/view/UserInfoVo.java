@@ -26,6 +26,9 @@ public class UserInfoVo {
     @ApiModelProperty("欧气值")
     private Integer score;
 
+    @ApiModelProperty("用户所获奖品(多个取最新一个)")
+    private CjProductInfoVo cjProductInfoVo;
+
     public static UserInfoVo doToVo(CjCustomerInfo info){
         UserInfoVo vo = new UserInfoVo();
         vo.setCustomerName(info.getCustomerName());

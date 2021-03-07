@@ -59,6 +59,10 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         //TODO--分页
         List<CjProductInfoVo> infoVoList = Lists.newArrayList();
         List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectRecordByConsumerIdAndStatus(status.getCode(), custmerId);
+        return toCjProductInfoVos(cjLotteryRecords, infoVoList);
+    }
+
+    private List<CjProductInfoVo> toCjProductInfoVos(List<CjLotteryRecord> cjLotteryRecords, List<CjProductInfoVo> infoVoList) {
         if(!CollectionUtils.isEmpty(cjLotteryRecords)){
             List<Integer> productIds = cjLotteryRecords.stream().map(record -> record.getProductId()).collect(Collectors.toList());
             List<CjProductInfo> cjProductInfos = productInfoDao.selectByIds(productIds);

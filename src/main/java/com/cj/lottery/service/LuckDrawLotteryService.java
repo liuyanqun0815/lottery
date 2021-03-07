@@ -1,9 +1,6 @@
 package com.cj.lottery.service;
 
-import com.cj.lottery.domain.view.CjResult;
-import com.cj.lottery.domain.view.LotteryActivityInfoVo;
-import com.cj.lottery.domain.view.LotteryData;
-import com.cj.lottery.domain.view.NewPepoleActivityVo;
+import com.cj.lottery.domain.view.*;
 
 import java.util.List;
 
@@ -23,5 +20,12 @@ public interface LuckDrawLotteryService {
      * @return
      */
     CjResult<NewPepoleActivityVo> newPeopleActivities(boolean loginFlag, Integer userId);
+
+    /**
+     * 根据活动列表随机获取中奖人信息(弹幕)
+     * @param activityCode
+     * @return
+     */
+    CjResult<List<UserInfoVo>> getAwardwinningUserInfo(String activityCode);
 
 }

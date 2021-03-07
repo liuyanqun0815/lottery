@@ -3,7 +3,7 @@
 <mapper namespace="com.cj.lottery.dao.CjLotteryRecordDao">
 
   <sql id="Base_Column_List">
-    id, customer_id, product_id, order_id, status
+    id, customer_id, product_id, order_id, status,create_time
   </sql>
 <sql id="tableName">
   cj_lottery_record
@@ -80,6 +80,12 @@
     where is_delete = 0
     and customer_id = #{customerId}
     group by status
+  </select>
+
+  <select id="selectNewestRecord" resultType="com.cj.lottery.domain.CjLotteryRecord">
+    select <include refid="Base_Column_List"></include>
+    from <include refid="tableName"></include>
+    where is_delete = 0 order by create_time desc limit 10;
   </select>
 
 </mapper>

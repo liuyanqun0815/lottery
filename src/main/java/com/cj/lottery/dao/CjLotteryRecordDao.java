@@ -20,4 +20,7 @@ public interface CjLotteryRecordDao {
 
     @MapKey("statusKey")
     HashMap<Integer, HashMap<Integer,Long>> getPrizeStatuNum(int custmerId);
+
+    List<CjLotteryRecord> selectNewestRecord();
+
 }

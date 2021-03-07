@@ -54,12 +54,12 @@ public class lotteryActivityController {
 
     @ApiOperation("获取弹幕列表")
     @PostMapping("list-danmu")
-    public CjResult<List<String>> listDanmu(@RequestParam(value = "activityCode") String activityCode){
+    public CjResult<List<UserInfoVo>> listDanmu(@RequestParam(value = "activityCode") String activityCode){
         //通过固定配置信息返回弹幕
         List<String> danmuList = new ArrayList();
         danmuList.add("恭喜凤凰：抽到小米蓝牙耳机");
         danmuList.add("恭喜大仙：抽到apple耳机");
-        return CjResult.success(danmuList);
+        return luckDrawLotteryService.getAwardwinningUserInfo(activityCode);
     }
 
     @ApiOperation("新人活动接口")

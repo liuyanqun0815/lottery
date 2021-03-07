@@ -3,14 +3,14 @@ package com.cj.lottery.service.impl;
 import com.cj.lottery.controller.LuckDrawLotteryController;
 import com.cj.lottery.dao.*;
 import com.cj.lottery.domain.*;
-import com.cj.lottery.domain.view.CjResult;
-import com.cj.lottery.domain.view.LotteryActivityInfoVo;
-import com.cj.lottery.domain.view.LotteryData;
-import com.cj.lottery.domain.view.NewPepoleActivityVo;
+import com.cj.lottery.domain.view.*;
 import com.cj.lottery.enums.*;
 import com.cj.lottery.event.EventPublishService;
+import com.cj.lottery.mapper.CjProductInfoMapper;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.LuckDrawLotteryService;
+import com.cj.lottery.service.UserInfoService;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,10 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     private LotteryActivityService lotteryActivityService;
     @Autowired
     private EventPublishService eventPublishService;
+    @Autowired
+    private CjLotteryRecordDao lotteryRecordDao;
+    @Autowired
+    private UserInfoService userInfoService;
 
     @Override
     @Transactional
@@ -149,6 +154,38 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         vo.setNewPepoleFlag(true);
         vo.setActivityCode(activity.getActivityCode());
         return CjResult.success(vo);
+    }
+
+    @Override
+    public CjResult<List<UserInfoVo>> getAwardwinningUserInfo(String activityCode) {
+        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectNewestRecord();
+        List<UserInfoVo> userInfoVos = Lists.newArrayList();
+        if(CollectionUtils.isEmpty(cjLotteryRecords)){
+          return CjResult.success(userInfoVos);
+        }
+
+        cjLotteryRecords.forEach(cjLotteryRecord -> {
+            UserInfoVo infoVo = new UserInfoVo();
+            Integer productId = cjLotteryRecord.getProductId();
+            //商品信息
+            if(productId != null){
+                CjProductInfo cjProductInfo = productInfoDao.selectById(productId);
+                CjProductInfoVo cjProductInfoVo = CjProductInfoMapper.INSTANCE.toVo(cjProductInfo);
+                infoVo.setCjProductInfoVo(cjProductInfoVo);
+            }
+            //用户信息
+            Integer customerId = cjLotteryRecord.getCustomerId();
+            if(customerId != null){
+                CjCustomerInfo cjCustomerInfo = userInfoService.queryUserInfoByCustomerId(customerId);
+                if(cjCustomerInfo != null){
+                    infoVo.setCustomerName(cjCustomerInfo.getCustomerName());
+                    infoVo.setHeadUrl(cjCustomerInfo.getHeadUrl());
+                    infoVo.setScore(cjCustomerInfo.getScore());
+                }
+            }
+            userInfoVos.add(infoVo);
+        });
+        return CjResult.success(userInfoVos);
     }
 
     public CjPrizePool randomPrize(int activityId) {
