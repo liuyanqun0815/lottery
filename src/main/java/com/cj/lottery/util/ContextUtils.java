@@ -39,7 +39,11 @@ public class ContextUtils {
      * @return
      */
     public static int getUserId() {
-        return (int)envStore.get().get(ContextCons.USER_ID);
+        HashMap<String, Object> map = envStore.get();
+        if(map.containsKey(ContextCons.USER_ID)){
+            return (int)envStore.get().get(ContextCons.USER_ID);
+        }
+        return 0;
     }
 
     public static void setTraceId(String traceId) {

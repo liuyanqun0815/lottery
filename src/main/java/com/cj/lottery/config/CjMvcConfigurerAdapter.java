@@ -19,10 +19,11 @@ public class CjMvcConfigurerAdapter implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(traceIdInterceptor());
+        registry.addInterceptor(traceIdInterceptor()).addPathPatterns(PREFIX_PATH_SEPARATOR);
+
         //登录验证
         registry.addInterceptor(loginInterceptor())
-                .addPathPatterns(PREFIX_PATH_SEPARATOR)
+//                .addPathPatterns(PREFIX_PATH_SEPARATOR)
 //                .excludePathPatterns("/api/cj/test")
 //                .excludePathPatterns("/api/cj/login/**")
                 .addPathPatterns("api/cj/draw/**")
@@ -36,7 +37,7 @@ public class CjMvcConfigurerAdapter implements WebMvcConfigurer {
         return new LoginInterceptor();
     }
 
-
+    @Bean
     public TraceIdInterceptor traceIdInterceptor(){
         return new TraceIdInterceptor();
     }

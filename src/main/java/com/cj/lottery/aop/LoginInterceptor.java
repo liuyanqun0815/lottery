@@ -56,7 +56,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private String getToken(HttpServletRequest request) {
+    public String getToken(HttpServletRequest request) {
         String token  = request.getHeader(TOKEN);
         if (ObjectUtils.isEmpty(token)){
             token = request.getParameter(TOKEN);

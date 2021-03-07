@@ -1,9 +1,6 @@
 package com.cj.lottery.aop;
 
-import com.alibaba.fastjson.JSON;
 import com.cj.lottery.constant.ContextCons;
-import com.cj.lottery.domain.view.CjResult;
-import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.service.CustomerLoginService;
 import com.cj.lottery.util.ContextUtils;
 import com.cj.lottery.util.UuidUtils;
@@ -16,11 +13,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
 /**
  * 日志拦截器
@@ -31,12 +25,27 @@ import java.util.UUID;
 @Slf4j
 public class TraceIdInterceptor implements HandlerInterceptor {
 
+    @Autowired
+    private CustomerLoginService customerLoginService;
+    @Autowired
+    private LoginInterceptor loginInterceptor;
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String traceId = UuidUtils.getTraceUUid();
         MDC.put(ContextCons.TRACE_ID, traceId);
         log.info("request url:{} ,traceId:{}",request.getRequestURI(),traceId);
         ContextUtils.setTraceId(traceId);
+        String token = loginInterceptor.getToken(request);
+        if (ObjectUtils.isEmpty(token)){
+            return true;
+        }
+        Integer userIdByToken = customerLoginService.getUserIdByToken(token);
+        if (ObjectUtils.isEmpty(userIdByToken)){
+            return true;
+        }
+        ContextUtils.setUserId(userIdByToken);
         return true;
     }
 
