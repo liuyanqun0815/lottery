@@ -39,6 +39,12 @@
       <if test="isDelete != null">
         is_delete,
       </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="customerId != null">
@@ -67,6 +73,12 @@
       </if>
       <if test="isDelete != null">
         #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="name != null">
+        #{name},
+      </if>
+      <if test="phone != null">
+        #{phone},
       </if>
     </trim>
   </insert>
@@ -99,6 +111,12 @@
       </if>
       <if test="isDelete != null">
         is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="name != null">
+        name = #{name},
+      </if>
+      <if test="phone != null">
+        phone = #{phone},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

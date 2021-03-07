@@ -15,6 +15,7 @@ import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.UserInfoService;
 import com.cj.lottery.util.ContextUtils;
+import com.cj.lottery.util.DateUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,8 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
         }
         LotteryActivityInfoVo lotteryActivityInfoVo = new LotteryActivityInfoVo();
         lotteryActivityInfoVo.setActivityCode(activityCode);
-        lotteryActivityInfoVo.setActivityDeadline(activity.getActivityDeadline());
+        String format = DateUtil.stringFormat(activity.getActivityDeadline(), DateUtil.YYYY_MM_DD_HH_MM_SS);
+        lotteryActivityInfoVo.setActivityDeadline(format);
         lotteryActivityInfoVo.setConsumerMoney(activity.getConsumerMoney());
         lotteryActivityInfoVo.setLimitTime(activity.getActivityDeadline() == null ? false : true);
         lotteryActivityInfoVo.setActivityFlag(activity.getActivityFlag());

@@ -56,6 +56,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     public List<CjProductInfoVo> queryProductByStatusAndUserId(PrizeStatusEnum status, Integer custmerId) {
+        //TODO--分页
         List<CjProductInfoVo> infoVoList = Lists.newArrayList();
         List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectRecordByConsumerIdAndStatus(status.getCode(), custmerId);
         if(!CollectionUtils.isEmpty(cjLotteryRecords)){

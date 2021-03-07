@@ -12,6 +12,7 @@ import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
 import com.cj.lottery.enums.SexEnum;
 import com.cj.lottery.mapper.ConstumerAddressInfoMapper;
 import com.cj.lottery.service.UserInfoService;
+import com.cj.lottery.util.ContextUtils;
 import com.cj.lottery.util.RandomValueUtils;
 import com.cj.lottery.util.UuidUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +56,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public int saveOrupdateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo) {
         CjCustomerAddress cjCustomerAddress = ConstumerAddressInfoMapper.INSTANCE.toDo(constumerAddressInfoVo);
+        int userId = ContextUtils.getUserId();
+        cjCustomerAddress.setCustomerId(userId);
         if(ObjectUtils.isEmpty(cjCustomerAddress.getId())){
             return cjCustomerAddressDao.insertSelective(cjCustomerAddress);
         }

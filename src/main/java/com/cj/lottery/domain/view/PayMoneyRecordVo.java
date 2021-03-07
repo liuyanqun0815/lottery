@@ -2,6 +2,7 @@ package com.cj.lottery.domain.view;
 
 import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.CjPayScoreRecord;
+import com.cj.lottery.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -29,13 +30,13 @@ public class PayMoneyRecordVo {
      * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Date createTime;
+    private String createTime;
 
     public static PayMoneyRecordVo DoToVo(CjOrderPay record){
         PayMoneyRecordVo vo = new PayMoneyRecordVo();
         vo.setTotalFee(record.getTotalFee());
         vo.setStatus(record.getStatus());
-        vo.setCreateTime(record.getCreateTime());
+        vo.setCreateTime(DateUtil.stringFormat(record.getCreateTime(),DateUtil.YYYY_MM_DD_HH_MM_SS));
         return vo;
     }
 }

@@ -5,6 +5,8 @@ import com.cj.lottery.domain.CjCustomerInfo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class UserInfoVo {
 
@@ -23,7 +25,6 @@ public class UserInfoVo {
      */
     @ApiModelProperty("欧气值")
     private Integer score;
-
 
     public static UserInfoVo doToVo(CjCustomerInfo info){
         UserInfoVo vo = new UserInfoVo();
