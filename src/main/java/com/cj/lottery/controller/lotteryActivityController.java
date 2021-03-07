@@ -47,7 +47,7 @@ public class lotteryActivityController {
 
     @ApiOperation("获取活动详情")
     @PostMapping("activity-info")
-    public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam(value = "activityCode") String activityCode){
+    public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam(value = "activityCode",required = false) String activityCode){
         int userId = ContextUtils.getUserId();
         return lotteryActivityService.queryActivityDetailsByPage( userId,activityCode);
     }
