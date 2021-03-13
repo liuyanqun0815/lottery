@@ -1,5 +1,6 @@
 package com.cj.lottery.aop;
 
+import com.alibaba.fastjson.JSON;
 import com.cj.lottery.constant.ContextCons;
 import com.cj.lottery.service.CustomerLoginService;
 import com.cj.lottery.util.ContextUtils;
@@ -13,8 +14,11 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * 日志拦截器
@@ -37,13 +41,13 @@ public class TraceIdInterceptor implements HandlerInterceptor {
         MDC.put(ContextCons.TRACE_ID, traceId);
         ContextUtils.setTraceId(traceId);
         String token = loginInterceptor.getToken(request);
-        if (ObjectUtils.isEmpty(token)){
-            log.info("request url:{} ,traceId:{}",request.getRequestURI(),traceId);
+        if (ObjectUtils.isEmpty(token)) {
+            log.info("request start url:{} ,param:{}", request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
             return true;
         }
         Integer userIdByToken = customerLoginService.getUserIdByToken(token);
-        log.info("request,userId:{}, url:{} ,traceId:{}",userIdByToken,request.getRequestURI(),traceId);
-        if (ObjectUtils.isEmpty(userIdByToken)){
+        log.info("request start userId:{}, url:{},param:{}", userIdByToken, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
+        if (ObjectUtils.isEmpty(userIdByToken)) {
             return true;
         }
         ContextUtils.setUserId(userIdByToken);
@@ -53,6 +57,8 @@ public class TraceIdInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
+        String content = null;
+        log.info("request end ,url:{},request code:{}---{}", request.getRequestURI(), response.getStatus(), content);
 
     }
 
@@ -63,4 +69,19 @@ public class TraceIdInterceptor implements HandlerInterceptor {
         MDC.remove(ContextCons.TRACE_ID);
     }
 
+    private void returnJson(HttpServletResponse response, String json) throws Exception {
+        ServletOutputStream writer = null;
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=utf-8");
+        try {
+            writer = response.getOutputStream();
+            writer.print(json);
+
+        } catch (IOException e) {
+            log.error("response error", e);
+        } finally {
+            if (writer != null)
+                writer.close();
+        }
+    }
 }

@@ -13,8 +13,8 @@ spring:
     allow-bean-definition-overriding: true
     profiles:
       active: wechat
-  profiles:
-    active: pro
+#  profiles:
+#    active: pro
 
 
 
