@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8086
 
 #########数据源配置
 spring:

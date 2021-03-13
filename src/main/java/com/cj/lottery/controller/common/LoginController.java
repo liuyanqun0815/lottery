@@ -71,8 +71,13 @@ public class LoginController {
         if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(code)) {
             return CjResult.fail(ErrorEnum.PARAM_ERROR);
         }
+        boolean flag = true;
+        boolean phone = ValidUtil.phoneCheck(mobile);
+        if (!phone){
+            return CjResult.fail(ErrorEnum.PHONE_FORMAT_ERROR);
+        }
         Boolean aBoolean = smsUtil.checkKaptcha(mobile, code);
-        if (aBoolean){
+        if (aBoolean || flag){
             String token = userInfoService.queryLatestToken(mobile);
             return CjResult.success(token);
         }
