@@ -35,13 +35,14 @@ public class TraceIdInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String traceId = UuidUtils.getTraceUUid();
         MDC.put(ContextCons.TRACE_ID, traceId);
-        log.info("request url:{} ,traceId:{}",request.getRequestURI(),traceId);
         ContextUtils.setTraceId(traceId);
         String token = loginInterceptor.getToken(request);
         if (ObjectUtils.isEmpty(token)){
+            log.info("request url:{} ,traceId:{}",request.getRequestURI(),traceId);
             return true;
         }
         Integer userIdByToken = customerLoginService.getUserIdByToken(token);
+        log.info("request,userId:{}, url:{} ,traceId:{}",userIdByToken,request.getRequestURI(),traceId);
         if (ObjectUtils.isEmpty(userIdByToken)){
             return true;
         }

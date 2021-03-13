@@ -13,6 +13,9 @@ spring:
     allow-bean-definition-overriding: true
     profiles:
       active: wechat
+  profiles:
+    active: pro
+
 
 
 #######mybatis-plus配置
@@ -25,6 +28,8 @@ mybatis-plus:
 ########log4j日志配置
 logging:
   config: classpath:logback-spring.xml
+#  file:
+#    path:
 
 #######微信公众号配置信息
 app:
@@ -39,7 +44,7 @@ app:
     refund:
       notifyUrl: ''
   domain:
-      url: 'http://www.baidu.com'
+    url: 'http://www.baidu.com'
 
 ###### 阿里云短信
 aliyun:
@@ -68,3 +73,4 @@ wechat:
         domain: https://felord.cn
         # 商户 api 证书路径 必填  填写classpath路径 位于 maven项目的resources文件下
         cert-path: wechat/apiclient_cert.p12
+
