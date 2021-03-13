@@ -63,7 +63,7 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
         LotteryActivityInfoVo lotteryActivityInfoVo = new LotteryActivityInfoVo();
         lotteryActivityInfoVo.setActivityCode(activityCode);
         String format = DateUtil.stringFormat(activity.getActivityDeadline(), DateUtil.YYYY_MM_DD_HH_MM_SS);
-        lotteryActivityInfoVo.setActivityDeadline(format);
+        lotteryActivityInfoVo.setActivityDeadline(activity.getActivityDeadline().getTime());
         lotteryActivityInfoVo.setConsumerMoney(activity.getConsumerMoney());
         lotteryActivityInfoVo.setLimitTime(activity.getActivityDeadline() == null ? false : true);
         lotteryActivityInfoVo.setActivityFlag(activity.getActivityFlag());
@@ -72,9 +72,9 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
         List<CjLotteryActivityImg> cjLotteryActivityImgs = cjLotteryActivityImgDao.listCjLotteryActivityImg(id);
         if (!CollectionUtils.isEmpty(cjLotteryActivityImgs)) {
             List<String> headUrls = cjLotteryActivityImgs.stream().
-                    filter(s -> "1".equals(s.getType())).map(s -> s.getImgUrl()).collect(Collectors.toList());
+                    filter(s -> 1==s.getType()).map(s -> s.getImgUrl()).collect(Collectors.toList());
             List<String> bodyUrls = cjLotteryActivityImgs.stream().
-                    filter(s -> "0".equals(s.getType())).map(s -> s.getImgUrl()).collect(Collectors.toList());
+                    filter(s -> 2==s.getType()).map(s -> s.getImgUrl()).collect(Collectors.toList());
 
             lotteryActivityInfoVo.setHeadUrlList(headUrls);
             lotteryActivityInfoVo.setBodyUrlList(bodyUrls);

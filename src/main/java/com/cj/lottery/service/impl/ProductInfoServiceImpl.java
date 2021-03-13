@@ -67,6 +67,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
             List<Integer> productIds = cjLotteryRecords.stream().map(record -> record.getProductId()).collect(Collectors.toList());
             List<CjProductInfo> cjProductInfos = productInfoDao.selectByIds(productIds);
             infoVoList = CjProductInfoMapper.INSTANCE.toVos(cjProductInfos);
+            Map<Integer, Integer> productidMap = cjLotteryRecords.stream().collect(Collectors.toMap(CjLotteryRecord::getProductId, CjLotteryRecord::getId));
+            infoVoList.stream().forEach(s->s.setId(productidMap.get(s.getId())));
         }
         return infoVoList;
     }

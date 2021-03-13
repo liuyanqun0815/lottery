@@ -30,6 +30,11 @@ public class CjOrderPay implements Serializable {
      */
     private String outTradeNo;
 
+//    /**
+//     * 微信交易单号
+//     */
+//    private String transactionId;
+
     /**
      * 订单总金额，单位为分
      */

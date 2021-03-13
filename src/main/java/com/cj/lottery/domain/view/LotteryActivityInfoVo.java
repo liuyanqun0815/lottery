@@ -27,7 +27,7 @@ public class LotteryActivityInfoVo {
     private int score;
 
     @ApiModelProperty("限时倒计时")
-    private String activityDeadline;
+    private Long activityDeadline;
 
     @ApiModelProperty("消耗扭人民币")
     private int consumerMoney;

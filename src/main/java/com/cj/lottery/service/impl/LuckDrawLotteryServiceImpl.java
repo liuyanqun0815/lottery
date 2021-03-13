@@ -160,6 +160,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     public CjResult<List<UserInfoVo>> getAwardwinningUserInfo(String activityCode) {
         List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectNewestRecord();
         List<UserInfoVo> userInfoVos = Lists.newArrayList();
+        //TODO 增加兜底方案，固定的弹幕数据
         if(CollectionUtils.isEmpty(cjLotteryRecords)){
           return CjResult.success(userInfoVos);
         }

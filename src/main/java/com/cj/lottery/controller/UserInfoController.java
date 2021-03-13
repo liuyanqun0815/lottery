@@ -64,7 +64,7 @@ public class UserInfoController {
 
     @ApiOperation("地址新增修改")
     @PostMapping("/saveOrupdate-address")
-    public CjResult<String> updateAddress(@RequestParam(name = "id",required = false) String id,
+    public CjResult<String> updateAddress(@RequestParam(name = "id",required = false) int id,
                                           @RequestParam("name") String name,
                                           @RequestParam("phone") String phone,
                                           @RequestParam("address") String address){

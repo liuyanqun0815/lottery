@@ -13,7 +13,7 @@ public class ConstumerAddressInfoVo {
 
 
     @ApiModelProperty("主键ID")
-    private String id;
+    private int id;
     @ApiModelProperty("收货姓名")
     private String name;
     @ApiModelProperty("收货手机")

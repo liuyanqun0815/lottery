@@ -1,7 +1,7 @@
 package com.cj.lottery.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,7 +32,7 @@ public class DateUtil {
      * 将日期字符串转换成Date类型
      */
     public static Date format(String dateString, String format) {
-        if (StringUtils.isEmpty(dateString)) {
+        if (ObjectUtils.isEmpty(dateString)) {
             return null;
         }
         Date date = null;
@@ -81,7 +81,24 @@ public class DateUtil {
         }
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
-        calendar.add(calendar.DATE, day);
+        calendar.add(Calendar.DATE, day);
+        return calendar.getTime();
+    }
+
+    /**
+     * 日期加减
+     *
+     * @param date 日期
+     * @param minute  加的分总若为负则减
+     * @return Date
+     */
+    public static Date addMinute(Date date, int minute) {
+        if (date == null) {
+            return null;
+        }
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE, minute);
         return calendar.getTime();
     }
 

@@ -7,14 +7,14 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@Api("货物信息")
+@Api("奖品信息")
 public class CjProductInfoVo {
 
-//    @ApiModelProperty("商品Id")
-//    private Integer id;
+    @ApiModelProperty("奖品id")
+    private Integer id;
 
-    @ApiModelProperty("商品编码")
-    private String productCode;
+//    @ApiModelProperty("商品编码")
+//    private String productCode;
 
     @ApiModelProperty("商品名称")
     private String productName;

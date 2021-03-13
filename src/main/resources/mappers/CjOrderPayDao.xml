@@ -54,6 +54,18 @@
         and is_delete =0
         and status = 1
     </select>
+    <select id="selectById" resultType="com.cj.lottery.domain.CjOrderPay">
+        select <include refid="Base_Column_List"/>
+        from <include refid="tableName"/>
+        where is_delete = 0
+        and id = #{id}
+    </select>
+    <select id="selectByOutTradeNo" resultType="com.cj.lottery.domain.CjOrderPay">
+        select <include refid="Base_Column_List"/>
+        from <include refid="tableName"/>
+        where is_delete = 0
+        and out_trade_no = #{outTradeNo}
+    </select>
 
 
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjOrderPay"

@@ -1,5 +1,6 @@
 package com.cj.lottery.dao;
 
+import com.cj.lottery.domain.CjLotteryRecord;
 import com.cj.lottery.domain.CjOrderPay;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,4 +28,9 @@ public interface CjOrderPayDao {
                                            @Param("outTradeNo")String outTradeNo);
 
     int updateStatusById(@Param("id") Integer id, @Param("status") int status);
+
+    CjOrderPay selectById(int id);
+
+    CjOrderPay selectByOutTradeNo(String outTradeNo);
+
 }

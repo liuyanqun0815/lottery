@@ -60,6 +60,12 @@
     </set>
     where id = #{id}
   </update>
+  <update id="updateStatusById">
+    update <include refid="tableName"/>
+    set status = #{status}
+    where is_delete = 0
+    and id = #{id}
+  </update>
   <select id="selectRecordByConsumerIdAndStatus" resultType="com.cj.lottery.domain.CjLotteryRecord">
     select <include refid="Base_Column_List"></include>
     from <include refid="tableName"></include>
@@ -86,6 +92,24 @@
     select <include refid="Base_Column_List"></include>
     from <include refid="tableName"></include>
     where is_delete = 0 order by create_time desc limit 10;
+  </select>
+  <select id="selectByIdList" resultType="com.cj.lottery.domain.CjLotteryRecord">
+    select <include refid="Base_Column_List"/>
+    from <include refid="tableName"/>
+    where is_delete = 0
+    and id in
+    (
+    <foreach collection="idList" index="index" item="item" separator=",">
+      #{item}
+    </foreach>
+    )
+  </select>
+  <select id="selectByOrderId" resultType="com.cj.lottery.domain.CjLotteryRecord">
+    select <include refid="Base_Column_List"/>
+    from <include refid="tableName"/>
+    where is_delete =0
+    and order_id = #{orderId}
+    limit 1
   </select>
 
 </mapper>

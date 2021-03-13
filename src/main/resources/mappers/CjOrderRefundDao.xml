@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.CjOrderRefundDao">
+
+  <sql id="Base_Column_List">
+    id, order_id, customer_id,appid, mch_id, out_refund_no, out_trade_no, refund_id, transaction_id,
+    total_fee, refund, channel, success_time, `status`, is_delete, create_time, update_time,
+  </sql>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjOrderRefund" useGeneratedKeys="true">
+    insert into cj_order_refund
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="appid != null">
+        appid,
+      </if>
+      <if test="mchId != null">
+        mch_id,
+      </if>
+      <if test="outRefundNo != null">
+        out_refund_no,
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no,
+      </if>
+      <if test="refundId != null">
+        refund_id,
+      </if>
+      <if test="transactionId != null">
+        transaction_id,
+      </if>
+      <if test="totalFee != null">
+        total_fee,
+      </if>
+      <if test="refund != null">
+        refund,
+      </if>
+      <if test="channel != null">
+        channel,
+      </if>
+      <if test="successTime != null">
+        success_time,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        #{orderId},
+      </if>
+      <if test="customerId != null">
+        #{customerId},
+      </if>
+      <if test="appid != null">
+        #{appid},
+      </if>
+      <if test="mchId != null">
+        #{mchId},
+      </if>
+      <if test="outRefundNo != null">
+        #{outRefundNo},
+      </if>
+      <if test="outTradeNo != null">
+        #{outTradeNo},
+      </if>
+      <if test="refundId != null">
+        #{refundId},
+      </if>
+      <if test="transactionId != null">
+        #{transactionId},
+      </if>
+      <if test="totalFee != null">
+        #{totalFee},
+      </if>
+      <if test="refund != null">
+        #{refund},
+      </if>
+      <if test="channel != null">
+        #{channel},
+      </if>
+      <if test="successTime != null">
+        #{successTime},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjOrderRefund">
+    update cj_order_refund
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId},
+      </if>
+      <if test="customerId != null">
+        customer_id = #{customerId},
+      </if>
+      <if test="outRefundNo != null">
+        out_refund_no = #{outRefundNo},
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no = #{outTradeNo},
+      </if>
+      <if test="refundId != null">
+        refund_id = #{refundId},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId},
+      </if>
+      <if test="totalFee != null">
+        total_fee = #{totalFee},
+      </if>
+      <if test="refund != null">
+        refund = #{refund},
+      </if>
+      <if test="channel != null">
+        channel = #{channel},
+      </if>
+      <if test="successTime != null">
+        success_time = #{successTime},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+
+    </set>
+    where id = #{id}
+  </update>
+
+</mapper>

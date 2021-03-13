@@ -11,6 +11,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   main:
     allow-bean-definition-overriding: true
+    profiles:
+      active: wechat
+
 
 #######mybatis-plus配置
 mybatis-plus:
@@ -33,7 +36,8 @@ app:
       appid: '22'
       mchid: '11'
       notifyUrl: ''
-      url: 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi'
+    refund:
+      notifyUrl: ''
   domain:
       url: 'http://www.baidu.com'
 
@@ -45,3 +49,22 @@ aliyun:
   templateCode: ''
   paramName: ''
 
+
+  ### 微信支付
+wechat:
+  pay:
+    v3:
+      # 租户id
+      lottery:
+        # 应用appId 必填
+        app-id: wx554b6b******54312
+        # v2 api 密钥  1.0.5版本以后如果用到V2的接口时必填，单纯V3不需要
+        app-secret: felordcn
+        # api v3 密钥 必填
+        app-v3-secret: 0e4efac*************5303ec
+        # 微信支付商户号 必填
+        mch-id: 1123****9
+        # 商户服务器域名 用于回调  回调路径为 domain + notifyUrl  需要放开回调接口的安全策略 必填
+        domain: https://felord.cn
+        # 商户 api 证书路径 必填  填写classpath路径 位于 maven项目的resources文件下
+        cert-path: wechat/apiclient_cert.p12

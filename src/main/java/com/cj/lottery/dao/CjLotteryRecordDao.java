@@ -23,4 +23,9 @@ public interface CjLotteryRecordDao {
 
     List<CjLotteryRecord> selectNewestRecord();
 
+    List<CjLotteryRecord> selectByIdList(@Param("idList") List<Integer> idList);
+
+    int updateStatusById(@Param("status") int status,@Param("id") Integer id);
+
+    CjLotteryRecord selectByOrderId(Integer orderId);
 }

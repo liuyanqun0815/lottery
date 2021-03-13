@@ -109,5 +109,10 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
+    <update id="updateStatusByOutTradeNo">
+        update <include refid="tableName"/>
+        set status = #{status}
+        where out_trade_no = #{outTradeNo}
+    </update>
 
 </mapper>

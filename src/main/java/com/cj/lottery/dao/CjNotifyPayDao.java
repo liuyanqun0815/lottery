@@ -1,17 +1,15 @@
 package com.cj.lottery.dao;
 
 import com.cj.lottery.domain.CjNotifyPay;
+import org.apache.ibatis.annotations.Param;
 
 public interface CjNotifyPayDao {
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(CjNotifyPay record);
 
     int insertSelective(CjNotifyPay record);
 
-    CjNotifyPay selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(CjNotifyPay record);
 
-    int updateByPrimaryKey(CjNotifyPay record);
+    int updateStatusByOutTradeNo(@Param("outTradeNo") String outTradeNo, @Param("status") int status);
+
 }
