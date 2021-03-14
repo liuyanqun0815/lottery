@@ -48,11 +48,11 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
         IPage<CjLotteryActivity> pageVo = cjLotteryActivityDao.selectPageVo(page);
         if (pageVo != null) {
             pageView.setSize(pageVo.getTotal());
-            if (!CollectionUtils.isEmpty(pageVo.getRecords())){
-                pageVo.getRecords().forEach(s->{
-                    if (s.getActivityDeadline() == null){
+            if (!CollectionUtils.isEmpty(pageVo.getRecords())) {
+                pageVo.getRecords().forEach(s -> {
+                    if (s.getActivityDeadline() == null) {
                         s.setActivityDeadlineFlag(false);
-                    }else {
+                    } else {
                         s.setActivityDeadlineFlag(true);
                     }
 
@@ -65,37 +65,37 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
     }
 
     @Override
-    public CjResult<LotteryActivityInfoVo> queryActivityDetailsByPage(int userId,String activityCode) {
+    public CjResult<LotteryActivityInfoVo> queryActivityDetailsByPage(int userId, String activityCode) {
 
         CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
         if (activity == null) {
             return CjResult.fail(ErrorEnum.NOT_ACITVITY);
         }
-        LotteryActivityInfoVo lotteryActivityInfoVo = new LotteryActivityInfoVo();
-        lotteryActivityInfoVo.setActivityCode(activityCode);
-        String format = DateUtil.stringFormat(activity.getActivityDeadline(), DateUtil.YYYY_MM_DD_HH_MM_SS);
-        lotteryActivityInfoVo.setActivityDeadline(activity.getActivityDeadline().getTime());
-        lotteryActivityInfoVo.setConsumerMoney(activity.getConsumerMoney());
-        lotteryActivityInfoVo.setLimitTime(activity.getActivityDeadline() == null ? false : true);
-        lotteryActivityInfoVo.setActivityFlag(activity.getActivityFlag());
+        LotteryActivityInfoVo infoVo = new LotteryActivityInfoVo();
+        infoVo.setActivityCode(activityCode);
+        infoVo.setConsumerMoney(activity.getConsumerMoney());
+        infoVo.setLimitTime(activity.getActivityDeadline() == null ? false : true);
+        infoVo.setActivityDeadline(activity.getActivityDeadline() == null ? 0 : activity.getActivityDeadline().getTime());
+
+        infoVo.setActivityFlag(activity.getActivityFlag());
 
         Integer id = activity.getId();
         List<CjLotteryActivityImg> cjLotteryActivityImgs = cjLotteryActivityImgDao.listCjLotteryActivityImg(id);
         if (!CollectionUtils.isEmpty(cjLotteryActivityImgs)) {
             List<String> headUrls = cjLotteryActivityImgs.stream().
-                    filter(s -> 1==s.getType()).map(s -> s.getImgUrl()).collect(Collectors.toList());
+                    filter(s -> 1 == s.getType()).map(s -> s.getImgUrl()).collect(Collectors.toList());
             List<String> bodyUrls = cjLotteryActivityImgs.stream().
-                    filter(s -> 2==s.getType()).map(s -> s.getImgUrl()).collect(Collectors.toList());
+                    filter(s -> 2 == s.getType()).map(s -> s.getImgUrl()).collect(Collectors.toList());
 
-            lotteryActivityInfoVo.setHeadUrlList(headUrls);
-            lotteryActivityInfoVo.setBodyUrlList(bodyUrls);
+            infoVo.setHeadUrlList(headUrls);
+            infoVo.setBodyUrlList(bodyUrls);
         }
 
 
         CjCustomerInfo cjCustomerInfo = userInfoService.queryUserInfoByCustomerId(userId);
         if (null != cjCustomerInfo) {
-            lotteryActivityInfoVo.setScore(cjCustomerInfo.getScore());
+            infoVo.setScore(cjCustomerInfo.getScore());
         }
-        return CjResult.success(lotteryActivityInfoVo);
+        return CjResult.success(infoVo);
     }
 }

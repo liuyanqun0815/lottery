@@ -9,6 +9,7 @@ import com.cj.lottery.domain.CjProductInfo;
 import com.cj.lottery.domain.view.CjProductInfoVo;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.PrizeStatusVo;
+import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.enums.PrizeStatusEnum;
 import com.cj.lottery.mapper.CjProductInfoMapper;
 import com.cj.lottery.service.ProductInfoService;
@@ -60,6 +61,19 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         List<CjProductInfoVo> infoVoList = Lists.newArrayList();
         List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectRecordByConsumerIdAndStatus(status.getCode(), custmerId);
         return toCjProductInfoVos(cjLotteryRecords, infoVoList);
+    }
+
+    @Override
+    public CjResult<Void> sendGoods(List<Integer> idList, int userId) {
+        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectByIdList(idList);
+        boolean present = cjLotteryRecords.stream().filter(s -> s.getCustomerId() != userId).findFirst().isPresent();
+        if (present){
+            return CjResult.fail(ErrorEnum.PRIZE_BELONG);
+        }
+        for(CjLotteryRecord record : cjLotteryRecords) {
+            lotteryRecordDao.updateStatusById(PrizeStatusEnum.yi_fa_huo.getCode(),record.getId());
+        }
+        return CjResult.success();
     }
 
     private List<CjProductInfoVo> toCjProductInfoVos(List<CjLotteryRecord> cjLotteryRecords, List<CjProductInfoVo> infoVoList) {

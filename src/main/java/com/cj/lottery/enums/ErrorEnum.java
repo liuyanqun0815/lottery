@@ -24,6 +24,8 @@ public enum  ErrorEnum {
     NOT_NEW_PEPOLE(2003,"不是新用户！"),
     NOT_ACITVITY(2004,"活动不存在！"),
     NOT_PRIZE(2005,"不存在奖品"),
+    PRIZE_PAY(2006,"奖品不满5件，请先支付运费"),
+    PRIZE_BELONG(2007,"奖品参数有误"),
 
     NOT_ORDER(3001,"不存在订单信息"),
     NO_PAY(3002,"未支付"),

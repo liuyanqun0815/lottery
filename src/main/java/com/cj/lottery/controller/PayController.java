@@ -4,10 +4,13 @@ package com.cj.lottery.controller;
 import cn.felord.payment.wechat.v3.WechatApiProvider;
 import cn.felord.payment.wechat.v3.model.ResponseSignVerifyParams;
 import com.cj.lottery.constant.WxCons;
+import com.cj.lottery.dao.CjOrderPayDao;
 import com.cj.lottery.domain.CjNotifyPay;
+import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.service.OrderPayService;
+import com.cj.lottery.service.ProductInfoService;
 import com.cj.lottery.util.ContextUtils;
 import com.cj.lottery.util.IpUtil;
 import com.google.common.cache.Cache;
@@ -15,11 +18,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,7 +46,10 @@ public class PayController {
 //    public WechatApiProvider wechatApiProvider;
     @Autowired
     public Cache<String, String> cache;
-
+    @Autowired
+    private ProductInfoService productInfoService;
+    @Autowired
+    private CjOrderPayDao orderPayDao;
 
 
 
@@ -66,6 +74,20 @@ public class PayController {
             return CjResult.fail(ErrorEnum.IP_ERROR);
         }
         return orderPayService.createWxH5OrderPay(userId, totalFee,ipAddr,activityCode);
+
+    }
+
+    @ApiOperation("奖品运费支付")
+    @PostMapping("prize-transport-fare")
+    public CjResult prizeTransportFare(HttpServletRequest request,
+                                       @ApiParam("充值金额(分)") @RequestParam int totalFee,
+                                       @ApiParam("奖品记录唯一标识") @RequestParam List<Integer> idList) {
+        int userId = ContextUtils.getUserId();
+        String ipAddr = IpUtil.getIpAddr(request);
+        if (ObjectUtils.isEmpty(ipAddr)){
+            return CjResult.fail(ErrorEnum.IP_ERROR);
+        }
+        return orderPayService.transportPay(userId, totalFee,ipAddr,idList);
 
     }
 
@@ -105,7 +127,12 @@ public class PayController {
 //                }
 //                cache.put(transactionId,transactionId);
 //                orderPayService.saveCallbackData(data);
-//
+//                if (!ObjectUtils.isEmpty(data.getAttach())){
+//                    //todo 进行发货
+//                    List<Integer> idList = Lists.newArrayList(data.getAttach().split(",")).stream().map(s->Integer.valueOf(s)).collect(Collectors.toList());
+//                    CjOrderPay orderPay = orderPayDao.selectByOutTradeNo(data.getOutTradeNo());
+//                    productInfoService.sendGoods(idList,orderPay.getCustomerId());
+//                }
 //            });
         }catch (Exception ex){
             log.info("wxCallbacks exception:",ex);

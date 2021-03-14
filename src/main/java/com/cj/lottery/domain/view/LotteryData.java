@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class LotteryData {
 
+    private Integer id;
+
     @ApiModelProperty("订单号")
     private String outTradeNo;
 

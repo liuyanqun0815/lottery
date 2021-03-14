@@ -13,6 +13,7 @@ import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.enums.*;
 import com.cj.lottery.event.EventPublishService;
 import com.cj.lottery.service.OrderPayService;
+import com.cj.lottery.service.ProductInfoService;
 import com.cj.lottery.util.DateUtil;
 import com.cj.lottery.util.UuidUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -74,6 +75,8 @@ public class OrderPayServiceImpl implements OrderPayService {
     private CjOrderRefundDao orderRefundDao;
     @Autowired
     private CjNotifyPayDao notifyPayDao;
+    @Autowired
+    private ProductInfoService productInfoService;
 
     @Override
     public CjResult<String> createWxOrderPay(int customerId, int totalFee, String activityCode) {
@@ -145,15 +148,26 @@ public class OrderPayServiceImpl implements OrderPayService {
             return CjResult.fail(ErrorEnum.NOT_ACITVITY);
         }
         String out_trade_no = UuidUtils.getOrderNo();
-        this.h5Pay(activity.getActivityName(), totalFee, out_trade_no, ipAddr);
+        this.h5Pay(activity.getActivityName(), totalFee, out_trade_no, ipAddr,null);
         //保存订单
         CjOrderPay cjOrderPay = this.buildOrderPayDO(userId, totalFee, out_trade_no, activity.getActivityName(), PayTypeEnum.WX_H5);
-        return null;
+        return CjResult.success();
     }
 
-    private void h5Pay(String payDesc, int totalFee, String out_trade_no, String ipAddr) {
-        PayParams payParams = new PayParams();
+    @Override
+    public CjResult<Object> transportPay(int userId, int totalFee, String ipAddr, List<Integer> idList){
+        String out_trade_no = UuidUtils.getOrderNo();
+        this.h5Pay("奖品运费", totalFee, out_trade_no, ipAddr,idList);
+        //保存订单
+        CjOrderPay cjOrderPay = this.buildOrderPayDO(userId, totalFee, out_trade_no, "奖品运费", PayTypeEnum.WX_H5);
+        return CjResult.success();
+    }
 
+    private void h5Pay(String payDesc, int totalFee, String out_trade_no, String ipAddr,List<Integer> idList) {
+        PayParams payParams = new PayParams();
+        if (!CollectionUtils.isEmpty(idList)) {
+            payParams.setAttach(JSONObject.toJSONString(idList));
+        }
         payParams.setDescription(payDesc);
         payParams.setOutTradeNo(out_trade_no);
         // 需要定义回调通知
@@ -281,6 +295,12 @@ public class OrderPayServiceImpl implements OrderPayService {
         orderPayDao.updateStatusById(orderPay.getId(), PayStatusEnum.REFUND.getCode());
         notifyPayDao.updateStatusByOutTradeNo(orderPay.getOutTradeNo(), PayStatusEnum.REFUND.getCode());
 
+    }
+
+    @Override
+    public CjResult transportFare(int userId, int totalFee, String ipAddr, List<Integer> idList) {
+
+        return null;
     }
 
     /**

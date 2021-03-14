@@ -123,6 +123,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         data.setCallbackRate(activity.getActivityRate());
         data.setProductImgUrl(ObjectUtils.isEmpty(pool.getProductImgUrl()) ? "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fa2.att.hudong.com%2F86%2F10%2F01300000184180121920108394217.jpg&refer=http%3A%2F%2Fa2.att.hudong.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1617438456&t=f5044b9b5f155d873bfa47abb52ac1e6" : pool.getProductImgUrl());
         data.setScore(score);
+        data.setId(record.getId());
         eventPublishService.addScore(this, userId, score, ScoreTypeEnum.ADD);
         return CjResult.success(data);
     }

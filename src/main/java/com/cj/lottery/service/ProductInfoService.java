@@ -21,4 +21,6 @@ public interface ProductInfoService {
      * @return
      */
     List<CjProductInfoVo> queryProductByStatusAndUserId(PrizeStatusEnum status,Integer userId);
+
+    CjResult<Void> sendGoods(List<Integer> idList, int userId);
 }

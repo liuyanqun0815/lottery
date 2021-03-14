@@ -5,11 +5,13 @@ import com.cj.lottery.domain.view.CjProductInfoVo;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.PayMoneyRecordVo;
 import com.cj.lottery.domain.view.PrizeStatusVo;
+import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.enums.PrizeStatusEnum;
 import com.cj.lottery.service.ProductInfoService;
 import com.cj.lottery.util.ContextUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -41,6 +43,15 @@ public class ProductController {
     @PostMapping("list-prize")
     public CjResult<List<CjProductInfoVo>> listPrize(@RequestParam PrizeStatusEnum status) {
         return CjResult.success(productInfoService.queryProductByStatusAndUserId(status, ContextUtils.getUserId()));
+    }
+
+    @ApiOperation("我要发货")
+    @PostMapping("send-prize")
+    public CjResult<Void> sendPrize(@ApiParam("奖品记录唯一标识") @RequestParam List<Integer> idList) {
+        if (!CollectionUtils.isEmpty(idList) && idList.size()>4){
+            return CjResult.fail(ErrorEnum.PRIZE_PAY);
+        }
+        return productInfoService.sendGoods(idList, ContextUtils.getUserId());
     }
 
 }

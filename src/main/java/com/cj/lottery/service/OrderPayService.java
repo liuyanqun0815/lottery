@@ -37,4 +37,8 @@ public interface OrderPayService {
     void saveCallbackData(TransactionConsumeData data);
 
     void wxRefundBack(RefundConsumeData data);
+
+    CjResult transportFare(int userId, int totalFee, String ipAddr, List<Integer> idList);
+
+    CjResult transportPay(int userId, int totalFee, String ipAddr, List<Integer> idList);
 }
