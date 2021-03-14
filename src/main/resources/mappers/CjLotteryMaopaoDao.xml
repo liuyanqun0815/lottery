@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.CjLotteryMaopaoDao">
+
+  <sql id="Base_Column_List">
+    id, activity_id, customer_content, prize_img, `status`, is_delete, create_time, update_time
+  </sql>
+<sql id="tableName">
+  cj_lottery_maopao
+</sql>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjLotteryMaopao" useGeneratedKeys="true">
+    insert into <include refid="tableName"/>
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="activityId != null">
+        activity_id,
+      </if>
+      <if test="customerContent != null">
+        customer_content,
+      </if>
+      <if test="prizeImg != null">
+        prize_img,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="activityId != null">
+        #{activityId},
+      </if>
+      <if test="customerContent != null">
+        #{customerContent},
+      </if>
+      <if test="prizeImg != null">
+        #{prizeImg},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjLotteryMaopao">
+    update <include refid="tableName"/>
+    <set>
+      <if test="activityId != null">
+        activity_id = #{activityId},
+      </if>
+      <if test="customerContent != null">
+        customer_content = #{customerContent},
+      </if>
+      <if test="prizeImg != null">
+        prize_img = #{prizeImg},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByActivityCode" resultType="com.cj.lottery.domain.CjLotteryMaopao">
+    select <include refid="Base_Column_List"/>
+    from <include refid="tableName"/>
+    where is_delete =0
+    and  activity_id = #{activityId}
+  </select>
+
+</mapper>

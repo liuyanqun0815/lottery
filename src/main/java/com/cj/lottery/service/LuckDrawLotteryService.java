@@ -26,6 +26,6 @@ public interface LuckDrawLotteryService {
      * @param activityCode
      * @return
      */
-    CjResult<List<UserInfoVo>> getAwardwinningUserInfo(String activityCode);
+    CjResult<List<CjLotteryMaopaoVo>> getAwardwinningUserInfo(String activityCode);
 
 }

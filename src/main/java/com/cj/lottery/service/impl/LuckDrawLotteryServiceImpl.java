@@ -54,6 +54,8 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     private CjLotteryRecordDao lotteryRecordDao;
     @Autowired
     private UserInfoService userInfoService;
+    @Autowired
+    private CjLotteryMaopaoDao lotteryMaopaoDao;
 
     @Override
     @Transactional
@@ -159,36 +161,46 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     }
 
     @Override
-    public CjResult<List<UserInfoVo>> getAwardwinningUserInfo(String activityCode) {
-        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectNewestRecord();
-        List<UserInfoVo> userInfoVos = Lists.newArrayList();
-        //TODO 增加兜底方案，固定的弹幕数据
-        if(CollectionUtils.isEmpty(cjLotteryRecords)){
-          return CjResult.success(userInfoVos);
+    public CjResult<List<CjLotteryMaopaoVo>> getAwardwinningUserInfo(String activityCode) {
+        CjLotteryActivity cjLotteryActivity = cjLotteryActivityDao.selectActivityByCode(activityCode);
+        if (cjLotteryActivity == null){
+            return CjResult.fail(ErrorEnum.NOT_ACITVITY);
         }
-
-        cjLotteryRecords.forEach(cjLotteryRecord -> {
-            UserInfoVo infoVo = new UserInfoVo();
-            Integer productId = cjLotteryRecord.getProductId();
-            //商品信息
-            if(productId != null){
-                CjProductInfo cjProductInfo = productInfoDao.selectById(productId);
-                CjProductInfoVo cjProductInfoVo = CjProductInfoMapper.INSTANCE.toVo(cjProductInfo);
-                infoVo.setCjProductInfoVo(cjProductInfoVo);
-            }
-            //用户信息
-            Integer customerId = cjLotteryRecord.getCustomerId();
-            if(customerId != null){
-                CjCustomerInfo cjCustomerInfo = userInfoService.queryUserInfoByCustomerId(customerId);
-                if(cjCustomerInfo != null){
-                    infoVo.setCustomerName(cjCustomerInfo.getCustomerName());
-                    infoVo.setHeadUrl(cjCustomerInfo.getHeadUrl());
-                    infoVo.setScore(cjCustomerInfo.getScore());
-                }
-            }
-            userInfoVos.add(infoVo);
-        });
-        return CjResult.success(userInfoVos);
+        List<CjLotteryMaopao> maopaoList = lotteryMaopaoDao.selectByActivityCode(cjLotteryActivity.getId());
+        if (CollectionUtils.isEmpty(maopaoList)){
+            return CjResult.success(Lists.newArrayList());
+        }
+        List<CjLotteryMaopaoVo> maopaoVoList = maopaoList.stream().map(s->CjLotteryMaopaoVo.DoToVo(s)).collect(Collectors.toList());
+//
+//        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectNewestRecord();
+//        List<UserInfoVo> userInfoVos = Lists.newArrayList();
+//        //TODO 增加兜底方案，固定的弹幕数据
+//        if(CollectionUtils.isEmpty(cjLotteryRecords)){
+//          return CjResult.success(userInfoVos);
+//        }
+//
+//        cjLotteryRecords.forEach(cjLotteryRecord -> {
+//            UserInfoVo infoVo = new UserInfoVo();
+//            Integer productId = cjLotteryRecord.getProductId();
+//            //商品信息
+//            if(productId != null){
+//                CjProductInfo cjProductInfo = productInfoDao.selectById(productId);
+//                CjProductInfoVo cjProductInfoVo = CjProductInfoMapper.INSTANCE.toVo(cjProductInfo);
+//                infoVo.setCjProductInfoVo(cjProductInfoVo);
+//            }
+//            //用户信息
+//            Integer customerId = cjLotteryRecord.getCustomerId();
+//            if(customerId != null){
+//                CjCustomerInfo cjCustomerInfo = userInfoService.queryUserInfoByCustomerId(customerId);
+//                if(cjCustomerInfo != null){
+//                    infoVo.setCustomerName(cjCustomerInfo.getCustomerName());
+//                    infoVo.setHeadUrl(cjCustomerInfo.getHeadUrl());
+//                    infoVo.setScore(cjCustomerInfo.getScore());
+//                }
+//            }
+//            userInfoVos.add(infoVo);
+//        });
+        return CjResult.success(maopaoVoList);
     }
 
     public CjPrizePool randomPrize(int activityId) {
