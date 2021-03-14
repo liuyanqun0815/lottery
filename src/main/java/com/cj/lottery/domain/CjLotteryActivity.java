@@ -9,6 +9,7 @@ import lombok.Data;
  * @author 
  */
 @Data
+
 public class CjLotteryActivity implements Serializable {
     /**
      * 主键id
@@ -32,6 +33,14 @@ public class CjLotteryActivity implements Serializable {
      * 活动限时
      */
     private Date activityDeadline;
+    /**
+     * 限时标识 true
+     */
+    private boolean activityDeadlineFlag;
+    /**
+     * 限时前金额
+     */
+    private Integer totalMoney;
 
     /**
      * 活动头图

@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
     id,activity_name ,activity_code,  activity_desc, activity_deadline, activity_img, `status`, shelf_life,
-    activity_flag,activity_rate,consumer_money
+    activity_flag,activity_rate,consumer_money,total_money
   </sql>
 
     <sql id="tableName">

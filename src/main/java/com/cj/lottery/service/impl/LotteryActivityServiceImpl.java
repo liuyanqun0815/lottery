@@ -48,7 +48,18 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
         IPage<CjLotteryActivity> pageVo = cjLotteryActivityDao.selectPageVo(page);
         if (pageVo != null) {
             pageView.setSize(pageVo.getTotal());
-            pageView.setModelList(pageVo.getRecords());
+            if (!CollectionUtils.isEmpty(pageVo.getRecords())){
+                pageVo.getRecords().forEach(s->{
+                    if (s.getActivityDeadline() == null){
+                        s.setActivityDeadlineFlag(false);
+                    }else {
+                        s.setActivityDeadlineFlag(true);
+                    }
+
+                });
+                pageView.setModelList(pageVo.getRecords());
+
+            }
         }
         return pageView;
     }
