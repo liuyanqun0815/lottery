@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,14 +59,17 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     @Override
     public List<CjProductInfoVo> queryProductByStatusAndUserId(PrizeStatusEnum status, Integer custmerId) {
         //TODO--分页
-        List<CjProductInfoVo> infoVoList = Lists.newArrayList();
         List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectRecordByConsumerIdAndStatus(status.getCode(), custmerId);
-        return toCjProductInfoVos(cjLotteryRecords, infoVoList);
+        return toCjProductInfoVos(cjLotteryRecords);
     }
 
     @Override
     public CjResult<Void> sendGoods(List<Integer> idList, int userId) {
         List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectByIdList(idList);
+        List<CjLotteryRecord> errList = cjLotteryRecords.stream().filter(s -> s.getStatus() != PrizeStatusEnum.dai_fa_huo.getCode()).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(errList)){
+            return CjResult.fail(ErrorEnum.PRIZE_STATUS_ERROR);
+        }
         boolean present = cjLotteryRecords.stream().filter(s -> s.getCustomerId() != userId).findFirst().isPresent();
         if (present){
             return CjResult.fail(ErrorEnum.PRIZE_BELONG);
@@ -76,13 +80,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         return CjResult.success();
     }
 
-    private List<CjProductInfoVo> toCjProductInfoVos(List<CjLotteryRecord> cjLotteryRecords, List<CjProductInfoVo> infoVoList) {
+    private List<CjProductInfoVo> toCjProductInfoVos(List<CjLotteryRecord> cjLotteryRecords) {
+        List<CjProductInfoVo> infoVoList = Lists.newArrayList();
         if(!CollectionUtils.isEmpty(cjLotteryRecords)){
             List<Integer> productIds = cjLotteryRecords.stream().map(record -> record.getProductId()).collect(Collectors.toList());
             List<CjProductInfo> cjProductInfos = productInfoDao.selectByIds(productIds);
-            infoVoList = CjProductInfoMapper.INSTANCE.toVos(cjProductInfos);
-            Map<Integer, Integer> productidMap = cjLotteryRecords.stream().collect(Collectors.toMap(CjLotteryRecord::getProductId, CjLotteryRecord::getId));
-            infoVoList.stream().forEach(s->s.setId(productidMap.get(s.getId())));
+            Map<Integer, CjProductInfo> productidMap = cjProductInfos.stream().collect(Collectors.toMap(CjProductInfo::getId, Function.identity()));
+            infoVoList = cjLotteryRecords.stream().map(s->CjProductInfoVo.DoToVo(s,productidMap)).collect(Collectors.toList());
         }
         return infoVoList;
     }

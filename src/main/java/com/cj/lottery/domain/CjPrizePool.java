@@ -60,6 +60,8 @@ public class CjPrizePool implements Serializable {
      */
     private String version;
 
+    private String productName;
+
     private String productImgUrl;
 
 

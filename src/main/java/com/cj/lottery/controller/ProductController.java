@@ -1,5 +1,7 @@
 package com.cj.lottery.controller;
 
+import com.cj.lottery.dao.CjLotteryRecordDao;
+import com.cj.lottery.domain.CjLotteryRecord;
 import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.view.CjProductInfoVo;
 import com.cj.lottery.domain.view.CjResult;
@@ -32,6 +34,9 @@ public class ProductController {
 
     @Autowired
     private ProductInfoService productInfoService;
+    @Autowired
+    private CjLotteryRecordDao lotteryRecordDao;
+
 
     @ApiOperation("奖品每个状态个数")
     @PostMapping("prize-status-num")
@@ -48,8 +53,17 @@ public class ProductController {
     @ApiOperation("我要发货")
     @PostMapping("send-prize")
     public CjResult<Void> sendPrize(@ApiParam("奖品记录唯一标识") @RequestParam List<Integer> idList) {
-        if (!CollectionUtils.isEmpty(idList) && idList.size()>4){
+        idList = idList.stream().distinct().collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(idList) && idList.size()<5){
             return CjResult.fail(ErrorEnum.PRIZE_PAY);
+        }
+        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectByIdList(idList);
+        if (CollectionUtils.isEmpty(cjLotteryRecords)){
+            return CjResult.fail(ErrorEnum.PRIZE_IVALID);
+        }
+        cjLotteryRecords = cjLotteryRecords.stream().filter(s->s.getStatus()!=PrizeStatusEnum.dai_fa_huo.getCode()).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(cjLotteryRecords) || cjLotteryRecords.size()<5){
+            return CjResult.fail(ErrorEnum.PRIZE_IVALID);
         }
         return productInfoService.sendGoods(idList, ContextUtils.getUserId());
     }

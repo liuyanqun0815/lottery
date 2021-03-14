@@ -16,6 +16,7 @@ import com.cj.lottery.util.ContextUtils;
 import com.cj.lottery.util.RandomValueUtils;
 import com.cj.lottery.util.UuidUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -43,7 +44,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     public List<ConstumerAddressInfoVo> queryAddressListByConstmerId(int constmerId) {
         List<CjCustomerAddress> cjCustomerAddresses = cjCustomerAddressDao.selectByCustmerId(constmerId);
         if(CollectionUtils.isEmpty(cjCustomerAddresses)){
-            return null;
+            return Lists.emptyList();
         }
         return cjCustomerAddresses.stream().map(s->ConstumerAddressInfoVo.DoToVo(s)).collect(Collectors.toList());
     }

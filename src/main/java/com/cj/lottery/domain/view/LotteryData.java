@@ -8,6 +8,9 @@ public class LotteryData {
 
     private Integer id;
 
+    @ApiModelProperty("奖品名称")
+    private String productName;
+
     @ApiModelProperty("订单号")
     private String outTradeNo;
 
