@@ -8,6 +8,7 @@ import com.cj.lottery.dao.CjOrderPayDao;
 import com.cj.lottery.domain.CjNotifyPay;
 import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.PaySuccessVo;
 import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.service.OrderPayService;
 import com.cj.lottery.service.ProductInfoService;
@@ -65,9 +66,9 @@ public class PayController {
 
     @ApiOperation("微信H5充值接口")
     @PostMapping("wxH5Pay")
-    public CjResult wxH5Pay(HttpServletRequest request,
-                            @ApiParam("充值金额(分)") @RequestParam int totalFee,
-                            @ApiParam("活动编码")@RequestParam String activityCode) {
+    public CjResult<PaySuccessVo> wxH5Pay(HttpServletRequest request,
+                                          @ApiParam("充值金额(分)") @RequestParam int totalFee,
+                                          @ApiParam("活动编码")@RequestParam String activityCode) {
         int userId = ContextUtils.getUserId();
         String ipAddr = IpUtil.getIpAddr(request);
         if (ObjectUtils.isEmpty(ipAddr)){
@@ -181,7 +182,7 @@ public class PayController {
     @ApiOperation("查询订单是否支付成功")
     @PostMapping("query-order-status")
     public CjResult<Boolean> queryOrderStatus(HttpServletRequest request,
-                                     @RequestParam(required = false)String outTradeNo) {
+                                     @RequestParam String outTradeNo) {
         int userId = ContextUtils.getUserId();
         if (ObjectUtils.isEmpty(outTradeNo)){
             return orderPayService.queryLatestOrderStatus(userId);

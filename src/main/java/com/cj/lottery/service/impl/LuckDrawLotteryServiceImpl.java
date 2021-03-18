@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -75,7 +76,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         if (CollectionUtils.isEmpty(orderPayList)) {
             return CjResult.fail(ErrorEnum.USER_NOT_PAY);
         }
-        CjOrderPay orderPay = orderPayList.stream().filter(s -> s.getTotalFee().equals(activity.getConsumerMoney())).findFirst().get();
+        CjOrderPay orderPay = orderPayList.stream().filter(s -> s.getTotalFee().equals(activity.getConsumerMoney())).findFirst().orElseGet(()->{return null;});
         if (orderPay == null) {
             return CjResult.fail(ErrorEnum.USER_PAY_NOT_ACITVITY);
         }
@@ -207,7 +208,14 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         List<CjPrizePool> cjPrizePools = prizePoolDao.selectProductByActivityId(activityId);
         CjPrizePool pool = new CjPrizePool();
         if (CollectionUtils.isEmpty(cjPrizePools)) {
-            //没有可以抽取的商品，兜底方案，固定返回一个商品
+            //没有可以抽取的商品，兜底方案，固定返回一个商品,价格最低的
+            List<CjPrizePool> prizePools =  productInfoDao.selectPoolPrice();
+            CjPrizePool minPrice = prizePools.stream().min(Comparator.comparing(CjPrizePool::getPrice)).orElseGet(() -> {
+                return null;
+            });
+            pool.setProductImgUrl(minPrice.getProductImgUrl());
+            pool.setProductName(minPrice.getProductName());
+            return pool;
 
         } else {
             pool = cjPrizePools.get(this.randomData(cjPrizePools.size()));

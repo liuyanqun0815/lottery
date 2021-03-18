@@ -1,5 +1,6 @@
 package com.cj.lottery.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.cj.lottery.dao.CjCustomerAddressDao;
 import com.cj.lottery.dao.CjCustomerInfoDao;
 import com.cj.lottery.dao.CjCustomerLoginDao;
@@ -55,8 +56,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public int saveOrupdateUserAddress(ConstumerAddressInfoVo constumerAddressInfoVo) {
-        CjCustomerAddress cjCustomerAddress = ConstumerAddressInfoMapper.INSTANCE.toDo(constumerAddressInfoVo);
+    public int saveOrupdateUserAddress(ConstumerAddressInfoVo addressInfoVo) {
+        CjCustomerAddress cjCustomerAddress = ConstumerAddressInfoVo.VoToDo(addressInfoVo);
         int userId = ContextUtils.getUserId();
         cjCustomerAddress.setCustomerId(userId);
         if(ObjectUtils.isEmpty(cjCustomerAddress.getId())){

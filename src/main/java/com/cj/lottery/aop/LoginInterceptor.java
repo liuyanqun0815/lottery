@@ -28,7 +28,6 @@ import java.util.UUID;
 @Slf4j
 public class LoginInterceptor implements HandlerInterceptor {
 
-    private static final String TOKEN = "token";
 
     @Autowired
     private CustomerLoginService customerLoginService;
@@ -57,9 +56,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     public String getToken(HttpServletRequest request) {
-        String token  = request.getHeader(TOKEN);
+        String token  = request.getHeader(ContextCons.TOKEN);
         if (ObjectUtils.isEmpty(token)){
-            token = request.getParameter(TOKEN);
+            token = request.getParameter(ContextCons.TOKEN);
         }
         return token;
     }

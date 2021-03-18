@@ -4,6 +4,7 @@ import cn.felord.payment.wechat.v3.model.RefundConsumeData;
 import cn.felord.payment.wechat.v3.model.TransactionConsumeData;
 import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.PaySuccessVo;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface OrderPayService {
     CjResult<Boolean> queryOrderByUserIdAndOutTradeNo(int customerId,String outTradeNo);
 
 
-    CjResult createWxH5OrderPay(int userId, int totalFee, String ipAddr,String activityCode);
+    CjResult<PaySuccessVo> createWxH5OrderPay(int userId, int totalFee, String ipAddr, String activityCode);
 
     CjResult<Void> lotteryRecover(int userId, List<Integer> idList);
 

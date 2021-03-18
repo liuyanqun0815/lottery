@@ -64,6 +64,7 @@ public class CjPrizePool implements Serializable {
 
     private String productImgUrl;
 
+    private int price;
 
 
     private static final long serialVersionUID = 1L;

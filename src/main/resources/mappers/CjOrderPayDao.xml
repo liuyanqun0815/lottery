@@ -33,6 +33,7 @@
         <include refid="tableName"/>
         where is_delete = 0
         and create_time> #{startTime}
+        and customer_id = #{customerId}
         order by id desc limit 1
     </select>
     <select id="selectByUserIdAndOutTradeNo" resultType="com.cj.lottery.domain.CjOrderPay">

@@ -10,6 +10,7 @@ import com.cj.lottery.constant.WxCons;
 import com.cj.lottery.dao.*;
 import com.cj.lottery.domain.*;
 import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.PaySuccessVo;
 import com.cj.lottery.enums.*;
 import com.cj.lottery.event.EventPublishService;
 import com.cj.lottery.service.OrderPayService;
@@ -128,7 +129,7 @@ public class OrderPayServiceImpl implements OrderPayService {
     @Override
     public CjResult<Boolean> queryLatestOrderStatus(int customerId) {
         //查询用户最近一分钟一条订单
-        Date date = DateUtil.addMinute(new Date(), -1);
+        Date date = DateUtil.addMinute(new Date(), -2);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
         String startTime = sdf.format(date);
         CjOrderPay cjOrderPay = orderPayDao.selectLatestOrder(customerId, startTime);
@@ -142,16 +143,21 @@ public class OrderPayServiceImpl implements OrderPayService {
     }
 
     @Override
-    public CjResult createWxH5OrderPay(int userId, int totalFee, String ipAddr, String activityCode) {
+    public CjResult<PaySuccessVo> createWxH5OrderPay(int userId, int totalFee, String ipAddr, String activityCode) {
+        PaySuccessVo vo = new PaySuccessVo();
         CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
         if (null == activity) {
             return CjResult.fail(ErrorEnum.NOT_ACITVITY);
         }
+        if (activity.getConsumerMoney() != totalFee){
+            return CjResult.fail(ErrorEnum.PAY_MONEY_ERROR);
+        }
         String out_trade_no = UuidUtils.getOrderNo();
+        vo.setOutTradeNo(out_trade_no);
         this.h5Pay(activity.getActivityName(), totalFee, out_trade_no, ipAddr,null);
         //保存订单
         CjOrderPay cjOrderPay = this.buildOrderPayDO(userId, totalFee, out_trade_no, activity.getActivityName(), PayTypeEnum.WX_H5);
-        return CjResult.success();
+        return CjResult.success(vo);
     }
 
     @Override
@@ -196,11 +202,14 @@ public class OrderPayServiceImpl implements OrderPayService {
     public CjResult<Void> lotteryRecover(int userId, List<Integer> idList) {
         List<CjLotteryRecord> recordList = cjLotteryRecordDao.selectByIdList(idList);
         if (CollectionUtils.isEmpty(recordList)) {
-            return CjResult.fail(ErrorEnum.NOT_PRIZE);
+            return CjResult.fail(ErrorEnum.PRIZE_BELONG_ERROR);
         }
         List<CjOrderPay> payList = Lists.newArrayList();
         //校验奖品状态是否正常
         for (CjLotteryRecord record : recordList) {
+            if (record.getCustomerId() != userId){
+                return CjResult.fail(ErrorEnum.SYSTEM_ERROR);
+            }
             //查询奖品状态
             if (record.getStatus() != PrizeStatusEnum.dai_fa_huo.getCode()) {
                 return CjResult.fail(ErrorEnum.LOTTER_USERD);
@@ -382,7 +391,8 @@ public class OrderPayServiceImpl implements OrderPayService {
         orderPay.setCustomerId(customerId);
         orderPay.setMchId(mchid);
         orderPay.setOutTradeNo(out_trade_no);
-        orderPay.setStatus(PayStatusEnum.NO_PAY.getCode());
+        //todo 晚些改回未支付状态
+        orderPay.setStatus(PayStatusEnum.PAY.getCode());
         orderPay.setTradeType(payType.getCode());
         orderPay.setTotalFee(totalFee);
         orderPayDao.insertSelective(orderPay);

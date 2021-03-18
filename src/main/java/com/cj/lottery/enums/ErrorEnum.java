@@ -28,16 +28,17 @@ public enum  ErrorEnum {
     PRIZE_BELONG(2007,"奖品内容有误，请确认"),
     PRIZE_STATUS_ERROR(2008,"奖品状态有误"),
     PRIZE_IVALID(2009,"奖品中存在无效奖品"),
+    PRIZE_BELONG_ERROR(2010,"奖品归属异常"),
 
     NOT_ORDER(3001,"不存在订单信息"),
     NO_PAY(3002,"未支付"),
     REFUND(3003,"已退款"),
     USED(3004,"已核销"),
     LOTTER_STATUS(3005,"奖品存在中转状态，请联系客服处理"),
-    LOTTER_USERD(3006,"奖品已使用或已使用"),
+    LOTTER_USERD(3006,"奖品已使用或已回收"),
     RECOVER(3007,"已经回收"),
     ORDER_EXCEPTION(3008,"订单状态异常"),
-
+    PAY_MONEY_ERROR(3009,"支付金额和活动不一致"),
 
 
     USER_NOT_PAY(4001,"用户未支付"),
