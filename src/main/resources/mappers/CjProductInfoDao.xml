@@ -134,7 +134,8 @@
         </if>
     </select>
     <select id="selectPoolPrice" resultType="com.cj.lottery.domain.CjPrizePool">
-        SELECT pool.*,info.price,info.product_name,info.product_img_url from cj_prize_pool pool
+        SELECT pool.*,info.price,info.product_name,info.product_img_url ,info.id as productId
+        from cj_prize_pool pool
         LEFT JOIN cj_product_info info
         on pool.product_id = info.id
         and pool.is_delete = info.is_delete

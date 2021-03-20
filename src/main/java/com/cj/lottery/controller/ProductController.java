@@ -61,7 +61,7 @@ public class ProductController {
         if (CollectionUtils.isEmpty(cjLotteryRecords)){
             return CjResult.fail(ErrorEnum.PRIZE_IVALID);
         }
-        cjLotteryRecords = cjLotteryRecords.stream().filter(s->s.getStatus()!=PrizeStatusEnum.dai_fa_huo.getCode()).collect(Collectors.toList());
+        cjLotteryRecords = cjLotteryRecords.stream().filter(s->s.getStatus()==PrizeStatusEnum.dai_fa_huo.getCode()).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(cjLotteryRecords) || cjLotteryRecords.size()<5){
             return CjResult.fail(ErrorEnum.PRIZE_IVALID);
         }

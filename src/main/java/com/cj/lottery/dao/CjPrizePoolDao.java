@@ -16,4 +16,10 @@ public interface CjPrizePoolDao {
     List<CjPrizePool> selectProductByActivityId(int activityId );
 
     int subtractionProductNum(@Param("id") Integer id, @Param("version") String version);
+
+    /**
+     * 获取可用的
+     * @return
+     */
+    List<CjPrizePool> selectAllProduct();
 }

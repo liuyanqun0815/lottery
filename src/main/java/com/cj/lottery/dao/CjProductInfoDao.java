@@ -19,4 +19,5 @@ public interface CjProductInfoDao {
     List<CjProductInfo> selectByIds(@Param("productIds")List<Integer> productIds);
 
     List<CjPrizePool> selectPoolPrice();
+
 }

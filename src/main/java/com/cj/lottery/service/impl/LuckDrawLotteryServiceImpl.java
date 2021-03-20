@@ -93,7 +93,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         CjPrizePool pool = this.randomPrize(activity.getId());
         //去库存，根据 id+version进行更新
         int i = prizePoolDao.subtractionProductNum(pool.getId(), pool.getVersion());
-        if (i < 0) {
+        if (i == 0) {
             //防止高并发，去库存失败重新抽取---兜底方案
             while (true) {
                 pool = this.randomPrize(activity.getId());
@@ -209,14 +209,10 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         CjPrizePool pool = new CjPrizePool();
         if (CollectionUtils.isEmpty(cjPrizePools)) {
             //没有可以抽取的商品，兜底方案，固定返回一个商品,价格最低的
-            List<CjPrizePool> prizePools =  productInfoDao.selectPoolPrice();
-            CjPrizePool minPrice = prizePools.stream().min(Comparator.comparing(CjPrizePool::getPrice)).orElseGet(() -> {
+            List<CjPrizePool> prizePools =  prizePoolDao.selectAllProduct();
+            pool = prizePools.stream().max(Comparator.comparing(CjPrizePool::getProductLatestNum)).orElseGet(() -> {
                 return null;
             });
-            pool.setProductImgUrl(minPrice.getProductImgUrl());
-            pool.setProductName(minPrice.getProductName());
-            return pool;
-
         } else {
             pool = cjPrizePools.get(this.randomData(cjPrizePools.size()));
         }
