@@ -37,8 +37,8 @@ logging:
 app:
   weixin:
     gzh:
-      appid: wx4f43a6c5c3b7fe13
-      secret: cb5d31f7c17c06e99b28bd39b5b289c1
+      appid: zzzzzzzzzzz
+      secret: xxxxxxxxxxxxxxx
     pay:
       appid: '22'
       mchid: '11'
