@@ -3,7 +3,7 @@
 <mapper namespace="com.cj.lottery.dao.CjProductInfoDao">
 
     <sql id="Base_Column_List">
-    id, product_code, product_name, category_id, price, sale_price, `status`, shelf_life, 
+    id, product_code, product_name,activity_id, category_id, price, sale_price, `status`, shelf_life,
     `desc`, callback_rate, product_img_url,product_flag
   </sql>
     <sql id="tableName">

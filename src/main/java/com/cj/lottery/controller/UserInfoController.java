@@ -1,7 +1,9 @@
 package com.cj.lottery.controller;
 
 import com.cj.lottery.dao.CjCustomerLoginDao;
+import com.cj.lottery.dao.CjNotifyPayDao;
 import com.cj.lottery.dao.CjOrderPayDao;
+import com.cj.lottery.domain.CjNotifyPay;
 import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.CjPayScoreRecord;
 import com.cj.lottery.domain.view.CjResult;
@@ -42,13 +44,16 @@ public class UserInfoController {
     @Autowired
     private CjOrderPayDao orderPayDao;
 
+    @Autowired
+    private CjNotifyPayDao notifyPayDao;
+
 
     @ApiOperation("充值人民币列表")
     @PostMapping("list-pay-niuniu")
     public CjResult<List<PayMoneyRecordVo>> listPayNiuniu() {
         int userId = ContextUtils.getUserId();
         List<PayMoneyRecordVo> list = new ArrayList<>();
-        List<CjOrderPay> orderPays = orderPayDao.selectByUserId(userId);
+        List<CjNotifyPay> orderPays = notifyPayDao.selectSuccessByUserId(userId);
         if (CollectionUtils.isEmpty(orderPays)){
             return CjResult.success(list);
         }

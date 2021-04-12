@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
     id, customer_id, out_trade_no, transaction_id, total_fee, appid, mch_id, trade_type, 
-    time_end, status
+    time_end, status,create_time
   </sql>
 
     <sql id="tableName">
@@ -114,5 +114,13 @@
         set status = #{status}
         where out_trade_no = #{outTradeNo}
     </update>
+    <select id="selectSuccessByUserId" resultType="com.cj.lottery.domain.CjNotifyPay">
+        select <include refid="Base_Column_List"/>
+        from <include refid="tableName"/>
+        where is_delete = 0
+        and status != 0
+        and customer_id = #{userId}
+        order by id desc
+    </select>
 
 </mapper>

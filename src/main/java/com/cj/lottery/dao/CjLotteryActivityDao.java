@@ -14,11 +14,13 @@ public interface CjLotteryActivityDao {
 
     int updateByPrimaryKeySelective(CjLotteryActivity record);
 
-    IPage<CjLotteryActivity> selectPageVo(Page<?> page);
+    IPage<CjLotteryActivity> selectPageVo(Page<?> page,@Param("activity_flag") String activity_flag);
 
 
     CjLotteryActivity selectActivityByCode(@Param("code") String code);
 
     CjLotteryActivity getNewPeopleActivities();
+
+    List<CjLotteryActivity> selectByIdList(@Param("activityidList") List<Integer> activityidList);
 
 }

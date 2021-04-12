@@ -22,4 +22,8 @@ public interface CjPrizePoolDao {
      * @return
      */
     List<CjPrizePool> selectAllProduct();
+
+    List<CjPrizePool> selectAllProductByActivityId(int activityId );
+
+
 }

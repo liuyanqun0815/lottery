@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,13 +60,12 @@ public class WxAuthConntroller {
                     "&response_type=code" +
                     "&scope=SCOPE" +
                     "&state=123#wechat_redirect";
-            url.replace("APPID", appidgzh).replace("REDIRECT_URI", redirect_uri).replace("SCOPE", "snsapi_userinfo");
+            url = url.replace("APPID", appidgzh).replace("REDIRECT_URI", redirect_uri).replace("SCOPE", "snsapi_userinfo");
             log.info("weixinLogin forward重定向地址：{}", url);
             response.sendRedirect(url);
         } catch (Exception e) {
             log.error("weixinLogin exception:", e);
         }
-
     }
 
     @GetMapping("/weixin/callBack")
@@ -111,6 +111,19 @@ public class WxAuthConntroller {
         }
     }
 
+    @GetMapping("/weixin/check")
+    @ResponseBody
+    public void check(String signature, String timestamp, String nonce, String echostr, HttpServletRequest request, HttpServletResponse response) {
+        log.info("服务器验证");
+        log.info("参数:signature:{} timestamp:{} nonce:{} echostr:{}", signature, timestamp, nonce, echostr);
+        log.info("校验成功:{}", echostr);
+        try {
+            // 直接使用response
+            response.getWriter().print(echostr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @GetMapping("/register")
     public String register(String openid, ModelMap map) {

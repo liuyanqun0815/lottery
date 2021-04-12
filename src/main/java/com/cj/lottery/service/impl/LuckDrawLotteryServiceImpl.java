@@ -1,5 +1,6 @@
 package com.cj.lottery.service.impl;
 
+import com.cj.lottery.constant.ImgDomain;
 import com.cj.lottery.controller.LuckDrawLotteryController;
 import com.cj.lottery.dao.*;
 import com.cj.lottery.domain.*;
@@ -76,7 +77,9 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         if (CollectionUtils.isEmpty(orderPayList)) {
             return CjResult.fail(ErrorEnum.USER_NOT_PAY);
         }
-        CjOrderPay orderPay = orderPayList.stream().filter(s -> s.getTotalFee().equals(activity.getConsumerMoney())).findFirst().orElseGet(()->{return null;});
+        CjOrderPay orderPay = orderPayList.stream().filter(s -> s.getTotalFee().equals(activity.getConsumerMoney())).findFirst().orElseGet(() -> {
+            return null;
+        });
         if (orderPay == null) {
             return CjResult.fail(ErrorEnum.USER_PAY_NOT_ACITVITY);
         }
@@ -112,6 +115,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         record.setProductId(pool.getProductId());
         record.setCustomerId(userId);
         record.setStatus(PrizeStatusEnum.dai_fa_huo.getCode());
+        record.setActivityId(activity.getId());
         cjLotteryRecordDao.insertSelective(record);
 
         //记录欧气值生成记录
@@ -127,14 +131,14 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         data.setScore(score);
         data.setId(record.getId());
         data.setProductName(pool.getProductName());
-        data.setProductImgUrl(pool.getProductImgUrl());
+        data.setProductImgUrl(ImgDomain.imgUrlDomain+pool.getProductImgUrl());
         eventPublishService.addScore(this, userId, score, ScoreTypeEnum.ADD);
         return CjResult.success(data);
     }
 
     @Override
     public CjResult<NewPepoleActivityVo> newPeopleActivities(boolean loginFlag, Integer userId) {
-        NewPepoleActivityVo vo= new NewPepoleActivityVo();
+        NewPepoleActivityVo vo = new NewPepoleActivityVo();
 
         //未登录状态，必出新人标识
         CjLotteryActivity activity = cjLotteryActivityDao.getNewPeopleActivities();
@@ -142,7 +146,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
             vo.setNewPepoleFlag(false);
             return CjResult.success(vo);
         }
-        if (!loginFlag){
+        if (!loginFlag) {
             vo.setActivityCode(activity.getActivityCode());
             vo.setNewPepoleFlag(true);
             return CjResult.success(vo);
@@ -164,14 +168,14 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     @Override
     public CjResult<List<CjLotteryMaopaoVo>> getAwardwinningUserInfo(String activityCode) {
         CjLotteryActivity cjLotteryActivity = cjLotteryActivityDao.selectActivityByCode(activityCode);
-        if (cjLotteryActivity == null){
+        if (cjLotteryActivity == null) {
             return CjResult.fail(ErrorEnum.NOT_ACITVITY);
         }
         List<CjLotteryMaopao> maopaoList = lotteryMaopaoDao.selectByActivityCode(cjLotteryActivity.getId());
-        if (CollectionUtils.isEmpty(maopaoList)){
+        if (CollectionUtils.isEmpty(maopaoList)) {
             return CjResult.success(Lists.newArrayList());
         }
-        List<CjLotteryMaopaoVo> maopaoVoList = maopaoList.stream().map(s->CjLotteryMaopaoVo.DoToVo(s)).collect(Collectors.toList());
+        List<CjLotteryMaopaoVo> maopaoVoList = maopaoList.stream().map(s -> CjLotteryMaopaoVo.DoToVo(s)).collect(Collectors.toList());
 //
 //        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectNewestRecord();
 //        List<UserInfoVo> userInfoVos = Lists.newArrayList();
@@ -209,7 +213,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         CjPrizePool pool = new CjPrizePool();
         if (CollectionUtils.isEmpty(cjPrizePools)) {
             //没有可以抽取的商品，兜底方案，固定返回一个商品,价格最低的
-            List<CjPrizePool> prizePools =  prizePoolDao.selectAllProduct();
+            List<CjPrizePool> prizePools = prizePoolDao.selectAllProduct();
             pool = prizePools.stream().max(Comparator.comparing(CjPrizePool::getProductLatestNum)).orElseGet(() -> {
                 return null;
             });
@@ -224,11 +228,27 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         return pool;
     }
 
+    public CjPrizePool testRandomPrize(int activityId) {
+        //没有可以抽取的商品，兜底方案，固定返回一个商品,价格最低的
+        List<CjPrizePool> prizePools = prizePoolDao.selectAllProductByActivityId(activityId);
+        CjPrizePool pool = prizePools.get(this.randomData(prizePools.size()));
+        CjProductInfo productInfo = productInfoDao.selectById(pool.getProductId());
+        pool.setProductImgUrl(productInfo.getProductImgUrl());
+        pool.setProductName(productInfo.getProductName());
+        return pool;
+    }
+
     private int randomData(int size) {
         Random random = new Random();
         return random.nextInt(size);
     }
 
+    public static void main(String[] args) {
+        for (int i = 0; i < 20; i++) {
+            Random random = new Random();
+            System.out.println(random.nextInt(5));
+        }
+    }
     /**
      * 订单金额通过一定的算法
      * 生成欧气值
@@ -254,11 +274,12 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
 
     private LotteryData testLottery(int score, CjLotteryActivity activity) {
 
-        CjPrizePool pool = this.randomPrize(activity.getId());
+        CjPrizePool pool = this.testRandomPrize(activity.getId());
         LotteryData data = new LotteryData();
         data.setOutTradeNo("");
         data.setCallbackRate(activity.getActivityRate());
-        data.setProductImgUrl(ObjectUtils.isEmpty(pool.getProductImgUrl()) ? "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fa2.att.hudong.com%2F86%2F10%2F01300000184180121920108394217.jpg&refer=http%3A%2F%2Fa2.att.hudong.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1617438456&t=f5044b9b5f155d873bfa47abb52ac1e6" : pool.getProductImgUrl());
+        data.setProductImgUrl(ImgDomain.imgUrlDomain+pool.getProductImgUrl());
+        data.setProductName(pool.getProductName());
         data.setScore(score);
         return data;
     }

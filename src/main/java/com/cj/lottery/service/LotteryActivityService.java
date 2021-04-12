@@ -15,7 +15,7 @@ public interface LotteryActivityService {
      * @param size 页数
      * @return
      */
-    PageView queryActivityListByPage(int current,int size);
+    PageView queryActivityListByPage(int current,int size,Integer userId);
 
 //    LotteryActivityInfoVo queryActivityInfo();
 

@@ -1,5 +1,6 @@
 package com.cj.lottery.domain.view;
 
+import com.cj.lottery.domain.ImgNameVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.models.auth.In;
@@ -18,7 +19,7 @@ public class LotteryActivityInfoVo {
     List<String> headUrlList;
 
     @ApiModelProperty("正文url集合")
-    List<String> bodyUrlList;
+    List<ImgNameVo> bodyUrlList;
 
     @ApiModelProperty("是否限时标识")
     private boolean limitTime;

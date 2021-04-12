@@ -9,7 +9,6 @@ import lombok.Data;
  * @author 
  */
 @Data
-
 public class CjLotteryActivity implements Serializable {
     /**
      * 主键id
@@ -40,7 +39,7 @@ public class CjLotteryActivity implements Serializable {
     /**
      * 限时前金额
      */
-    private Integer totalMoney;
+//    private Integer totalMoney;
 
     /**
      * 活动头图
@@ -67,6 +66,8 @@ public class CjLotteryActivity implements Serializable {
      * 消耗人民币（分）
      */
     private Integer consumerMoney;
+    //排序
+    private Integer sort;
 
 
 

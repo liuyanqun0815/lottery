@@ -1,5 +1,6 @@
 package com.cj.lottery.domain.view;
 
+import com.cj.lottery.constant.ImgDomain;
 import com.cj.lottery.domain.CjLotteryRecord;
 import com.cj.lottery.domain.CjProductInfo;
 import io.swagger.annotations.Api;
@@ -41,17 +42,20 @@ public class CjProductInfoVo {
     private Integer productFlag;
 
 
+
     public static CjProductInfoVo DoToVo(CjLotteryRecord records, Map<Integer, CjProductInfo> productidMap){
         CjProductInfoVo vo = new CjProductInfoVo();
         vo.setId(records.getId());
+        vo.setCallbackRate(records.getCallbackRate());
+        vo.setSalePrice(records.getTotalFee());
         if (productidMap != null) {
             CjProductInfo productInfo = productidMap.get(records.getProductId());
-            vo.setCallbackRate(productInfo.getCallbackRate());
+//            vo.setCallbackRate(productInfo.getCallbackRate());
             vo.setDesc(productInfo.getDesc());
             vo.setProductFlag(productInfo.getProductFlag());
-            vo.setProductImgUrl(productInfo.getProductImgUrl());
+            vo.setProductImgUrl(ImgDomain.imgUrlDomain+productInfo.getProductImgUrl());
             vo.setProductName(productInfo.getProductName());
-            vo.setSalePrice(productInfo.getSalePrice());
+//            vo.setSalePrice(productInfo.getSalePrice());
         }
         return vo;
     }

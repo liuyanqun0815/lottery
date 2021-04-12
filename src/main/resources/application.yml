@@ -1,13 +1,15 @@
 server:
   port: 8086
+  servlet:
+    context-path: /lottery
 
 #########数据源配置
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://82.156.128.134:3306/lottery?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: 123456
+    url: jdbc:mysql://xxxxxxx:3306/lottery?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: xxxxxxx
+    password: xxxxxxxx
     type: com.alibaba.druid.pool.DruidDataSource
   main:
     allow-bean-definition-overriding: true
@@ -35,24 +37,24 @@ logging:
 app:
   weixin:
     gzh:
-      appid: '123'
-      secret: '222'
+      appid: wx4f43a6c5c3b7fe13
+      secret: cb5d31f7c17c06e99b28bd39b5b289c1
     pay:
       appid: '22'
       mchid: '11'
       notifyUrl: ''
     refund:
-      notifyUrl: ''
+      notifyUrl: '/lottery/api/pay/callbacks/refund'
   domain:
-    url: 'http://www.baidu.com'
+    url: https://bbox.92pr.cn/lottery
 
 ###### 阿里云短信
-aliyun:
-  accessKeyId: ''
-  secret: ''
-  signName: ''
-  templateCode: ''
-  paramName: ''
+msg:
+  account: xxxx
+  password: xxxx
+  sendMsgUrl: http://211.149.255.237:81/smsJson.aspx
+#  templateCode: ''
+#  paramName: ''
 
 
   ### 微信支付
@@ -62,15 +64,16 @@ wechat:
       # 租户id
       lottery:
         # 应用appId 必填
-        app-id: wx554b6b******54312
+        app-id: xxxxxxxxxx
         # v2 api 密钥  1.0.5版本以后如果用到V2的接口时必填，单纯V3不需要
         app-secret: felordcn
         # api v3 密钥 必填
-        app-v3-secret: 0e4efac*************5303ec
+        app-v3-secret: xxxxxxxx
         # 微信支付商户号 必填
-        mch-id: 1123****9
+        mch-id: xxxxxxxx
         # 商户服务器域名 用于回调  回调路径为 domain + notifyUrl  需要放开回调接口的安全策略 必填
-        domain: https://felord.cn
+        domain: https://m.keyundz.cn
         # 商户 api 证书路径 必填  填写classpath路径 位于 maven项目的resources文件下
         cert-path: wechat/apiclient_cert.p12
+#        notify-url: https://m.keyundz.cn/lottery/api/pay/callbacks/transaction
 

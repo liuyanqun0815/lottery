@@ -66,6 +66,5 @@ public class CjPrizePool implements Serializable {
 
     private int price;
 
-
     private static final long serialVersionUID = 1L;
 }

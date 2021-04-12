@@ -60,5 +60,7 @@ public class CjNotifyPay implements Serializable {
      */
     private Integer status;
 
+    private Date createTime;
+
     private static final long serialVersionUID = 1L;
 }

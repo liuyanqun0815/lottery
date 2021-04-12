@@ -3,7 +3,7 @@
 <mapper namespace="com.cj.lottery.dao.CjLotteryActivityImgDao">
 
   <sql id="Base_Column_List">
-    id, activity_id, `type`, sore, img_url, `status`, is_delete, create_time, update_time
+    id, activity_id,product_id, `type`, sort, img_url, `status`, is_delete, create_time, update_time
   </sql>
 
 
@@ -21,11 +21,14 @@
       <if test="activityId != null">
         activity_id,
       </if>
+      <if test="productId!= null">
+        product_id,
+      </if>
       <if test="type != null">
         `type`,
       </if>
-      <if test="sore != null">
-        sore,
+      <if test="sort != null">
+        sort,
       </if>
       <if test="imgUrl != null">
         img_url,
@@ -47,11 +50,14 @@
       <if test="activityId != null">
         #{activityId,jdbcType=INTEGER},
       </if>
+      <if test="productd!= null">
+        #{productId}
+      </if>
       <if test="type != null">
         #{type,jdbcType=TINYINT},
       </if>
-      <if test="sore != null">
-        #{sore,jdbcType=INTEGER},
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
       </if>
       <if test="imgUrl != null">
         #{imgUrl,jdbcType=VARCHAR},
@@ -79,8 +85,8 @@
       <if test="type != null">
         `type` = #{type,jdbcType=TINYINT},
       </if>
-      <if test="sore != null">
-        sore = #{sore,jdbcType=INTEGER},
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
       </if>
       <if test="imgUrl != null">
         img_url = #{imgUrl,jdbcType=VARCHAR},

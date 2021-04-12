@@ -43,7 +43,10 @@ public enum  ErrorEnum {
 
     USER_NOT_PAY(4001,"用户未支付"),
     USER_PAY_NOT_ACITVITY(4002,"用户充值和参与的活动不匹配"),
+    USER_ADDRESS_NOT(4003,"用户地址信息有误"),
+    PAY_TYPE_ERROR(4004,"支付类型错误"),
 
+    NEW_NOT_RECORVER(4005,"含有新人活动奖品不允许回收"),
 
 
 

@@ -3,7 +3,7 @@
 <mapper namespace="com.cj.lottery.dao.CjLotteryRecordDao">
 
   <sql id="Base_Column_List">
-    id, customer_id, product_id, order_id, status,create_time
+    id, customer_id,activity_id, product_id, order_id, status,create_time
   </sql>
 <sql id="tableName">
   cj_lottery_record
@@ -24,6 +24,9 @@
       <if test="status != null">
         status,
       </if>
+      <if test="activityId!= null">
+        activity_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="customerId != null">
@@ -38,7 +41,9 @@
       <if test="status != null">
         #{status},
       </if>
-
+      <if test="activityId!= null">
+        #{activityId}
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjLotteryRecord">

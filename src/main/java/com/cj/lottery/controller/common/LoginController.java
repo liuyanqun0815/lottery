@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/cj/login")
 public class LoginController {
+
+
 
     @Autowired
     private SmsUtil smsUtil;
@@ -71,13 +74,12 @@ public class LoginController {
         if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(code)) {
             return CjResult.fail(ErrorEnum.PARAM_ERROR);
         }
-        boolean flag = true;
         boolean phone = ValidUtil.phoneCheck(mobile);
         if (!phone){
             return CjResult.fail(ErrorEnum.PHONE_FORMAT_ERROR);
         }
         Boolean aBoolean = smsUtil.checkKaptcha(mobile, code);
-        if (aBoolean || flag){
+        if (aBoolean){
             String token = userInfoService.queryLatestToken(mobile);
             return CjResult.success(token);
         }

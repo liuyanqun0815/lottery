@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-//@EnableMobilePay
+@EnableMobilePay
 @Configuration
 @Slf4j
 public class PayConfig {

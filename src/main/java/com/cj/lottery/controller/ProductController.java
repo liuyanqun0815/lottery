@@ -65,7 +65,7 @@ public class ProductController {
         if (CollectionUtils.isEmpty(cjLotteryRecords) || cjLotteryRecords.size()<5){
             return CjResult.fail(ErrorEnum.PRIZE_IVALID);
         }
-        return productInfoService.sendGoods(idList, ContextUtils.getUserId());
+        return productInfoService.sendGoods(idList, ContextUtils.getUserId(),false);
     }
 
 }

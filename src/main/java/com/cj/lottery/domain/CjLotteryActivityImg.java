@@ -19,6 +19,8 @@ public class CjLotteryActivityImg implements Serializable {
      * 活动id
      */
     private Integer activityId;
+    //产品名称
+    private int productId;
 
     /**
      * 图片类型，1活动详情轮播图，2活动详情图
@@ -28,7 +30,7 @@ public class CjLotteryActivityImg implements Serializable {
     /**
      * 图片排序
      */
-    private Integer sore;
+    private Integer sort;
 
     /**
      * 图片地址

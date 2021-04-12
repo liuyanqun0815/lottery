@@ -41,5 +41,11 @@ public interface OrderPayService {
 
     CjResult transportFare(int userId, int totalFee, String ipAddr, List<Integer> idList);
 
-    CjResult transportPay(int userId, int totalFee, String ipAddr, List<Integer> idList);
+    CjResult wxTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList);
+
+    CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr, String activityCode);
+
+    CjResult<Void> lotteryAliH5Recorver(int userId, List<Integer> idList);
+
+    CjResult aliTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList);
 }

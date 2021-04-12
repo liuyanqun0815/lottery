@@ -25,6 +25,8 @@ public class CjLotteryRecord implements Serializable {
      */
     private Integer productId;
 
+    private int activityId;
+
     /**
      * 订单id
      */
@@ -49,6 +51,10 @@ public class CjLotteryRecord implements Serializable {
      * 更新时间
      */
     private Date updateTime;
+
+    private int callbackRate;
+
+    private int totalFee;
 
     private static final long serialVersionUID = 1L;
 }

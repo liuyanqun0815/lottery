@@ -1,7 +1,8 @@
 package com.cj.lottery.controller;
 
-import com.cj.lottery.domain.CjLotteryActivityImg;
+import com.cj.lottery.constant.ContextCons;
 import com.cj.lottery.domain.view.*;
+import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.service.CustomerLoginService;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.LuckDrawLotteryService;
@@ -9,13 +10,14 @@ import com.cj.lottery.service.PrizePoolService;
 import com.cj.lottery.util.ContextUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -39,15 +41,22 @@ public class lotteryActivityController {
 
     @ApiOperation("获取活动列表")
     @PostMapping("list-activity")
-    public CjResult<PageView> listActity(@RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
+    public CjResult<PageView> listActity(HttpServletRequest request,
+                                         @RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-        PageView pageView = lotteryActivityService.queryActivityListByPage(pageIndex, pageSize);
+        String token = request.getHeader(ContextCons.TOKEN);
+        Integer userId = null;
+        if (com.baomidou.mybatisplus.core.toolkit.ObjectUtils.isNotEmpty(token)) {
+            userId = customerLoginService.getUserIdByToken(token);
+        }
+
+        PageView pageView = lotteryActivityService.queryActivityListByPage(pageIndex, pageSize,userId);
         return CjResult.success(pageView);
     }
 
     @ApiOperation("获取活动详情")
     @PostMapping("activity-info")
-    public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam(value = "activityCode",required = false) String activityCode){
+    public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam String activityCode){
         int userId = ContextUtils.getUserId();
         return lotteryActivityService.queryActivityDetailsByPage( userId,activityCode);
     }
@@ -63,13 +72,19 @@ public class lotteryActivityController {
     @PostMapping("/new-people-activitie")
     public CjResult<NewPepoleActivityVo> newPeopleActivitie(HttpServletRequest request){
         //查询是否登录
+        Integer userId = null;
         boolean loginFlag = false;
-        String token  = request.getHeader("token");
-        Integer userId = customerLoginService.getUserIdByToken(token);
-        if (userId != null){
-            loginFlag = true;
+        String token = request.getHeader(ContextCons.TOKEN);
+        if (!ObjectUtils.isEmpty(token)) {
+             userId = customerLoginService.getUserIdByToken(token);
+            if (userId != null) {
+                loginFlag = true;
+            }
         }
         return luckDrawLotteryService.newPeopleActivities(loginFlag,userId);
     }
 
+
 }
+
+

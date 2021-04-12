@@ -1,5 +1,6 @@
 package com.cj.lottery.domain.view;
 
+import com.cj.lottery.domain.CjNotifyPay;
 import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.CjPayScoreRecord;
 import com.cj.lottery.util.DateUtil;
@@ -32,7 +33,7 @@ public class PayMoneyRecordVo {
     @ApiModelProperty("创建时间")
     private String createTime;
 
-    public static PayMoneyRecordVo DoToVo(CjOrderPay record){
+    public static PayMoneyRecordVo DoToVo(CjNotifyPay record){
         PayMoneyRecordVo vo = new PayMoneyRecordVo();
         vo.setTotalFee(record.getTotalFee());
         vo.setStatus(record.getStatus());

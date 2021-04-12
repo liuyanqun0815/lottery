@@ -6,6 +6,10 @@ import cn.felord.payment.wechat.v3.WechatApiProvider;
 import cn.felord.payment.wechat.v3.WechatResponseEntity;
 import cn.felord.payment.wechat.v3.model.*;
 import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.request.AlipayTradeQueryRequest;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.cj.lottery.constant.WxCons;
 import com.cj.lottery.dao.*;
 import com.cj.lottery.domain.*;
@@ -17,6 +21,7 @@ import com.cj.lottery.service.OrderPayService;
 import com.cj.lottery.service.ProductInfoService;
 import com.cj.lottery.util.DateUtil;
 import com.cj.lottery.util.UuidUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -27,9 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,14 +41,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrderPayServiceImpl implements OrderPayService {
 
-    @Value("${app.weixin.pay.appid}")
+    @Value("${wechat.pay.v3.lottery.app-id}")
     private String appid;
 
-    @Value("${app.weixin.pay.mchid}")
+    @Value("${wechat.pay.v3.lottery.mch-id}")
     private String mchid;
 
-    @Value("${app.weixin.pay.notifyUrl}")
-    private String notifyUrl;
+    private String notifyUrl = "/lottery/api/pay/callbacks/transaction";
 
     @Value("${app.weixin.refund.notifyUrl}")
     private String refundNotifyUrl;
@@ -53,7 +55,7 @@ public class OrderPayServiceImpl implements OrderPayService {
     @Autowired
     private EventPublishService eventPublishService;
 
-    private Integer zhekouRate = 70;
+    private Integer zhekouRate = 80;
 
     @Autowired
     private CjOrderPayDao orderPayDao;
@@ -61,8 +63,8 @@ public class OrderPayServiceImpl implements OrderPayService {
     @Autowired
     private CjCustomerLoginDao cjCustomerLoginDao;
 
-//    @Autowired
-//    public WechatApiProvider wechatApiProvider;
+    @Autowired
+    public WechatApiProvider wechatApiProvider;
 
     @Autowired
     private CjLotteryActivityDao cjLotteryActivityDao;
@@ -78,6 +80,9 @@ public class OrderPayServiceImpl implements OrderPayService {
     private CjNotifyPayDao notifyPayDao;
     @Autowired
     private ProductInfoService productInfoService;
+
+//    @Autowired
+//    AlipayClient alipayClient;
 
     @Override
     public CjResult<String> createWxOrderPay(int customerId, int totalFee, String activityCode) {
@@ -154,22 +159,78 @@ public class OrderPayServiceImpl implements OrderPayService {
         }
         String out_trade_no = UuidUtils.getOrderNo();
         vo.setOutTradeNo(out_trade_no);
-        this.h5Pay(activity.getActivityName(), totalFee, out_trade_no, ipAddr,null);
+        String h5Url= this.h5Pay(activity.getActivityName(), totalFee, out_trade_no, ipAddr, null);
+        vo.setH5_url(h5Url);
         //保存订单
         CjOrderPay cjOrderPay = this.buildOrderPayDO(userId, totalFee, out_trade_no, activity.getActivityName(), PayTypeEnum.WX_H5);
         return CjResult.success(vo);
     }
 
     @Override
-    public CjResult<Object> transportPay(int userId, int totalFee, String ipAddr, List<Integer> idList){
+    public CjResult<PaySuccessVo> wxTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList){
+        PaySuccessVo vo = new PaySuccessVo();
+        String out_trade_no = UuidUtils.getOrderNo();
+        String h5Url = this.h5Pay("奖品运费", totalFee, out_trade_no, ipAddr, idList);
+        //保存订单
+        vo.setH5_url(h5Url);
+        vo.setOutTradeNo(out_trade_no);
+        CjOrderPay cjOrderPay = this.buildOrderPayDO(userId, totalFee, out_trade_no, "奖品运费", PayTypeEnum.WX_H5);
+        return CjResult.success(vo);
+    }
+
+    @Override
+    public CjResult aliTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList) {
+        PaySuccessVo vo = new PaySuccessVo();
+
         String out_trade_no = UuidUtils.getOrderNo();
         this.h5Pay("奖品运费", totalFee, out_trade_no, ipAddr,idList);
-        //保存订单
-        CjOrderPay cjOrderPay = this.buildOrderPayDO(userId, totalFee, out_trade_no, "奖品运费", PayTypeEnum.WX_H5);
+        vo.setOutTradeNo(out_trade_no);
+//        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+//        request.setBizContent("{\"out_trade_no\":"+out_trade_no+"}");
+//        try {
+//            AlipayTradeQueryResponse execute = alipayClient.execute(request);
+//            log.info("execute = " + execute.getBody());
+//        } catch (AlipayApiException e) {
+//            log.info("createAliH5OrderPay exception:",e);
+//        }
+        CjOrderPay cjOrderPay = this.buildOrderPayDO(userId, totalFee, out_trade_no, "奖品运费", PayTypeEnum.ALI_H5);
         return CjResult.success();
     }
 
-    private void h5Pay(String payDesc, int totalFee, String out_trade_no, String ipAddr,List<Integer> idList) {
+
+    @Override
+    public CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr, String activityCode) {
+        PaySuccessVo vo = new PaySuccessVo();
+        CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
+        if (null == activity) {
+            return CjResult.fail(ErrorEnum.NOT_ACITVITY);
+        }
+        if (activity.getConsumerMoney() != totalFee){
+            return CjResult.fail(ErrorEnum.PAY_MONEY_ERROR);
+        }
+        String out_trade_no = UuidUtils.getOrderNo();
+        vo.setOutTradeNo(out_trade_no);
+//        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+//        request.setBizContent("{\"out_trade_no\":"+out_trade_no+"}");
+//        try {
+//            AlipayTradeQueryResponse execute = alipayClient.execute(request);
+//            log.info("execute = " + execute.getBody());
+//        } catch (AlipayApiException e) {
+//            log.info("createAliH5OrderPay exception:",e);
+//        }
+        CjOrderPay cjOrderPay = this.buildOrderPayDO(userId, totalFee, out_trade_no, activity.getActivityName(), PayTypeEnum.ALI_H5);
+        return CjResult.success();
+    }
+
+    @Override
+    public CjResult<Void> lotteryAliH5Recorver(int userId, List<Integer> idList) {
+
+
+        return null;
+    }
+
+
+    private String h5Pay(String payDesc, int totalFee, String out_trade_no, String ipAddr,List<Integer> idList) {
         PayParams payParams = new PayParams();
         if (!CollectionUtils.isEmpty(idList)) {
             payParams.setAttach(JSONObject.toJSONString(idList));
@@ -192,10 +253,13 @@ public class OrderPayServiceImpl implements OrderPayService {
         sceneInfo.setH5Info(h5Info);
         payParams.setSceneInfo(sceneInfo);
 
-//        WechatResponseEntity<ObjectNode> responseEntity = wechatApiProvider.directPayApi(WxCons.tenantId).h5Pay(payParams);
-//
-//        ObjectNode body = responseEntity.getBody();
-//        System.out.println(JSONObject.toJSON(body));
+        log.info("wxPay h5 order data:{}",JSONObject.toJSON(payParams));
+        WechatResponseEntity<ObjectNode> responseEntity = wechatApiProvider.directPayApi(WxCons.tenantId).h5Pay(payParams);
+
+        ObjectNode body = responseEntity.getBody();
+        String h5_url = body.get("h5_url").asText();
+        log.info("wxPay h5 url:{}",JSONObject.toJSON(h5_url));
+        return h5_url;
     }
 
     @Override
@@ -225,18 +289,24 @@ public class OrderPayServiceImpl implements OrderPayService {
         }
 
         Map<Integer, CjOrderPay> orderMap = payList.stream().collect(Collectors.toMap(CjOrderPay::getId, Function.identity()));
-        List<Integer> productIdList = recordList.stream().map(CjLotteryRecord::getProductId).collect(Collectors.toList());
-        List<CjProductInfo> cjProductInfos = productInfoDao.selectByIds(productIdList);
+//        List<Integer> productIdList = recordList.stream().map(CjLotteryRecord::getProductId).collect(Collectors.toList());
+//        List<CjProductInfo> cjProductInfos = productInfoDao.selectByIds(productIdList);
+        Set<Integer> activityIdSet = recordList.stream().map(CjLotteryRecord::getActivityId).collect(Collectors.toSet());
+        List<CjLotteryActivity> activities = cjLotteryActivityDao.selectByIdList(Lists.newArrayList(activityIdSet));
         Map<Integer, Integer> rateMap = Maps.newHashMap();
-        if (!CollectionUtils.isEmpty(cjProductInfos)) {
-            rateMap = cjProductInfos.stream().collect(Collectors.toMap(CjProductInfo::getId, CjProductInfo::getCallbackRate));
+        if (!CollectionUtils.isEmpty(activities)) {
+            Optional<CjLotteryActivity> first = activities.stream().filter(s -> s.getActivityFlag() == ActivityFlagEnum.NEW_PEPOLE.getCode()).findFirst();
+            if (first.isPresent()){
+                return CjResult.fail(ErrorEnum.NEW_NOT_RECORVER);
+            }
+            rateMap = activities.stream().collect(Collectors.toMap(CjLotteryActivity::getId, CjLotteryActivity::getActivityRate));
         }
         //循环进行退款操作
         for (CjLotteryRecord record : recordList) {
             //获取订单信息
             CjOrderPay orderPay = orderMap.get(record.getOrderId());
             //获取折扣率
-            Integer rate = rateMap.get(record.getProductId());
+            Integer rate = rateMap.get(record.getActivityId());
             if (rate == null) {
                 //兜底
                 rate = zhekouRate;
@@ -244,7 +314,6 @@ public class OrderPayServiceImpl implements OrderPayService {
 
             RefundParams payParams = new RefundParams();
             String refundOrderNo = UuidUtils.getOrderNo();
-//            payParams.setTransactionId(orderPay.getTransactionId());
             payParams.setOutTradeNo(orderPay.getOutTradeNo());
             payParams.setOutRefundNo(refundOrderNo);
 
@@ -252,18 +321,19 @@ public class OrderPayServiceImpl implements OrderPayService {
             payParams.setNotifyUrl(refundNotifyUrl);
             RefundParams.RefundAmount amount = new RefundParams.RefundAmount();
             amount.setTotal(orderPay.getTotalFee());
-            Integer refundFee = (orderPay.getTotalFee() * 100) / rate;
+            Integer refundFee = (orderPay.getTotalFee() * rate) / 100;
             amount.setRefund(refundFee);
             amount.setCurrency("CNY");
             payParams.setAmount(amount);
-//            WechatResponseEntity<ObjectNode> responseEntity = wechatApiProvider.directPayApi(WxCons.tenantId).refund(payParams);
-//            ObjectNode body = responseEntity.getBody();
-//            log.info("lotteryRecover data:{}",JSONObject.toJSON(body));
+            WechatResponseEntity<ObjectNode> responseEntity = wechatApiProvider.directPayApi(WxCons.tenantId).refund(payParams);
+            ObjectNode body = responseEntity.getBody();
+            log.info("lotteryRecover data:{}",JSONObject.toJSON(body));
 
             //如果成功
             cjLotteryRecordDao.updateStatusById(PrizeStatusEnum.yi_hui_shou.getCode(), record.getId());
-            //暂不更新订单的状态，通过退款回调更新订单的状态
+//            暂不更新订单的状态，通过退款回调更新订单的状态
             this.createRefundOrder(orderPay, refundOrderNo, userId, refundFee);
+            eventPublishService.addMoney(this,orderPay.getCustomerId(),refundFee, ScoreTypeEnum.JIAN);
         }
         return CjResult.success();
     }
@@ -286,6 +356,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         orderPayDao.updateStatusById(orderPay.getId(),PayStatusEnum.PAY.getCode());
         //统计充值
         eventPublishService.addMoney(this,orderPay.getCustomerId(),data.getAmount().getTotal(), ScoreTypeEnum.ADD);
+
     }
 
     @Override
@@ -301,6 +372,7 @@ public class OrderPayServiceImpl implements OrderPayService {
             }
             return;
         }
+        log.info("wxRefundBack data:{}",JSONObject.toJSON(data));
         orderPayDao.updateStatusById(orderPay.getId(), PayStatusEnum.REFUND.getCode());
         notifyPayDao.updateStatusByOutTradeNo(orderPay.getOutTradeNo(), PayStatusEnum.REFUND.getCode());
 
@@ -392,7 +464,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         orderPay.setMchId(mchid);
         orderPay.setOutTradeNo(out_trade_no);
         //todo 晚些改回未支付状态
-        orderPay.setStatus(PayStatusEnum.PAY.getCode());
+        orderPay.setStatus(PayStatusEnum.NO_PAY.getCode());
         orderPay.setTradeType(payType.getCode());
         orderPay.setTotalFee(totalFee);
         orderPayDao.insertSelective(orderPay);
