@@ -29,7 +29,18 @@ public class CjPayScoreRecord implements Serializable {
     /**
      * 欧气值
      */
-    private Integer score;
+    private int score;
+
+    public void setScore(String score){
+        this.score = (int)(Float.valueOf(score) * 100);
+    }
+    public String getScore() {
+        if (score % 100 == 0) {
+            return (score / 100) + "";
+        } else {
+            return ((float) score / 100) + "";
+        }
+    }
 
     /**
      * 加减欧气值，0加，1减

@@ -2,11 +2,13 @@ package com.cj.lottery.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * cj_customer_info
- * @author 
+ *
+ * @author
  */
 @Data
 public class CjCustomerInfo implements Serializable {
@@ -23,12 +25,12 @@ public class CjCustomerInfo implements Serializable {
     /**
      * 用户名称
      */
-    private String customerName;
+    private Integer customerName;
 
     /**
      * 证件类型：1 身份证，2 军官证，3 护照
      */
-    private Byte identityCardType;
+    private Integer identityCardType;
 
     /**
      * 证件号码
@@ -55,6 +57,9 @@ public class CjCustomerInfo implements Serializable {
      */
     private Integer userMoney;
 
+    //支付次数
+    private Integer payCount;
+
     /**
      * 头像地址
      */
@@ -63,5 +68,20 @@ public class CjCustomerInfo implements Serializable {
      * 欧气值
      */
     private Integer score;
+
+    public void setScoreInFen(Float score) {
+        this.score = (int) (score * 100);
+    }
+
+    public String getScoreInFen() {
+        if (score % 100 == 0) {
+            return (score / 100) + "";
+        } else {
+            return ((float) score / 100) + "";
+        }
+    }
+
+
     private static final long serialVersionUID = 1L;
+
 }

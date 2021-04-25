@@ -2,6 +2,8 @@ package com.cj.lottery.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -32,6 +34,8 @@ public class CjLotteryActivity implements Serializable {
      * 活动限时
      */
     private Date activityDeadline;
+
+    private Date shelfLife;
     /**
      * 限时标识 true
      */
@@ -68,6 +72,9 @@ public class CjLotteryActivity implements Serializable {
     private Integer consumerMoney;
     //排序
     private Integer sort;
+
+
+    private List<String> lunboList;
 
 
 

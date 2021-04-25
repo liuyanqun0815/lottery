@@ -25,7 +25,7 @@ public class CjLotteryActivityImg implements Serializable {
     /**
      * 图片类型，1活动详情轮播图，2活动详情图
      */
-    private Byte type;
+    private Integer type;
 
     /**
      * 图片排序
@@ -40,7 +40,7 @@ public class CjLotteryActivityImg implements Serializable {
     /**
      * 活动状态，0有效，1无效
      */
-    private Byte status;
+    private Integer status;
 
     /**
      * 删除状态，默认0，1删除

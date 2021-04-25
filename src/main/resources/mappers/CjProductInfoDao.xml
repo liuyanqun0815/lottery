@@ -3,8 +3,8 @@
 <mapper namespace="com.cj.lottery.dao.CjProductInfoDao">
 
     <sql id="Base_Column_List">
-    id, product_code, product_name,activity_id, category_id, price, sale_price, `status`, shelf_life,
-    `desc`, callback_rate, product_img_url,product_flag
+    id, product_code, product_name, category_id, price, sale_price, `status`, shelf_life,
+    `desc`, callback_rate, product_img_url,product_flag,simple_name
   </sql>
     <sql id="tableName">
     cj_product_info
@@ -44,7 +44,12 @@
             <if test="productFlag!= null">
                 product_flag,
             </if>
-
+          <if test="simpleName!= null">
+              simple_name,
+          </if>
+            <if test="productImgUrl != null">
+                product_img_url,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="productCode != null">
@@ -75,7 +80,13 @@
                 #{callbackRate},
             </if>
             <if test="productFlag!= null">
-                #{productFlag}
+                #{productFlag},
+            </if>
+            <if test="simpleName!= null">
+                #{simpleName},
+            </if>
+            <if test="productImgUrl != null">
+                #{productImgUrl},
             </if>
         </trim>
     </insert>
@@ -109,10 +120,25 @@
             <if test="callbackRate != null">
                 callback_rate = #{callbackRate},
             </if>
-
+            <if test="simpleName != null">
+                simple_name = #{simpleName},
+            </if>
+            <if test="productImgUrl != null">
+                product_img_url =#{productImgUrl},
+            </if>
         </set>
         where id = #{id}
     </update>
+    <insert id="batchSave">
+        insert into <include refid="tableName"/>
+        (product_code,product_name,
+        `desc`, callback_rate, product_img_url,product_flag,simple_name)
+        values
+        <foreach collection="list" index="index" separator="," item="item" close=")" open="(">
+            #{item.productCode},#{item.productName},#{item.desc},#{item.callbackRate},#{item.productImgUrl},
+            #{item.simpleName}
+        </foreach>
+    </insert>
     <select id="selectById" resultType="com.cj.lottery.domain.CjProductInfo">
         select <include refid="Base_Column_List"/>
         from <include refid="tableName"/>
@@ -142,6 +168,12 @@
         and pool.`status` = info.`status`
         WHERE pool.is_delete =0
         and info.`status` = 0
+    </select>
+    <select id="selectAll" resultType="com.cj.lottery.domain.CjProductInfo">
+        select <include refid="Base_Column_List"/>
+        from <include refid="tableName"/>
+        where is_delete =0
+        and status = 0
     </select>
 
 

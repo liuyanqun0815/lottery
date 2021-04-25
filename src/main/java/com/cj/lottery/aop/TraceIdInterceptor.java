@@ -37,19 +37,17 @@ public class TraceIdInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String referer = response.getHeader("referer");
-        response.setHeader("referer","http://m.keyundz.cn");
-
         String traceId = UuidUtils.getTraceUUid();
         MDC.put(ContextCons.TRACE_ID, traceId);
         ContextUtils.setTraceId(traceId);
         String token = loginInterceptor.getToken(request);
         if (ObjectUtils.isEmpty(token)) {
-            log.info("request start url:{} ,param:{}", request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
+            log.info("TraceIdInterceptor request start token:{} url:{} ,param:{}",token, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
             return true;
         }
+        int userId = ContextUtils.getUserId();
         Integer userIdByToken = customerLoginService.getUserIdByToken(token);
-        log.info("request start userId:{}, url:{},param:{}", userIdByToken, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
+        log.info("TraceIdInterceptor request start token:{} userId:{}, url:{},param:{},user:{}",token, userIdByToken, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()),userId);
         if (ObjectUtils.isEmpty(userIdByToken)) {
             return true;
         }
@@ -70,6 +68,7 @@ public class TraceIdInterceptor implements HandlerInterceptor {
             throws Exception {
         //调用结束后删除
         MDC.remove(ContextCons.TRACE_ID);
+        MDC.remove(ContextCons.USER_ID);
     }
 
     private void returnJson(HttpServletResponse response, String json) throws Exception {

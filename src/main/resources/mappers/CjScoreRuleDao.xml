@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.CjScoreRuleDao">
+
+  <sql id="Base_Column_List">
+    id, pay_count, score, rule_id, operate, is_delete, create_time, update_time
+  </sql>
+
+  <sql id="table_name">
+    cj_score_rule
+  </sql>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.common.CjScoreRule" useGeneratedKeys="true">
+    insert into cj_score_rule (pay_count, score, rule_id, 
+      operate)
+    values (#{payCount}, #{score}, #{ruleId},
+      #{operate})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.common.CjScoreRule" useGeneratedKeys="true">
+    insert into cj_score_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="payCount != null">
+        pay_count,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="ruleId != null">
+        rule_id,
+      </if>
+      <if test="operate != null">
+        operate,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="payCount != null">
+        #{payCount},
+      </if>
+      <if test="score != null">
+        #{score},
+      </if>
+      <if test="ruleId != null">
+        #{ruleId},
+      </if>
+      <if test="operate != null">
+        #{operate},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.common.CjScoreRule">
+    update cj_score_rule
+    <set>
+      <if test="payCount != null">
+        pay_count = #{payCount},
+      </if>
+      <if test="score != null">
+        score = #{score},
+      </if>
+      <if test="ruleId != null">
+        rule_id = #{ruleId},
+      </if>
+      <if test="operate != null">
+        operate = #{operate},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <select id="selectAllRule" resultType="com.cj.lottery.domain.common.CjScoreRule">
+    select <include refid="Base_Column_List"/>
+    from <include refid="table_name"/>
+    where is_delete = 0
+  </select>
+
+</mapper>

@@ -20,4 +20,8 @@ public interface CjProductInfoDao {
 
     List<CjPrizePool> selectPoolPrice();
 
+    List<CjProductInfo> selectAll();
+
+    int batchSave(@Param("list") List<CjProductInfo> list);
+
 }

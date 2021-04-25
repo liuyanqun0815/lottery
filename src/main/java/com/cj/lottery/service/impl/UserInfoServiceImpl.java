@@ -82,7 +82,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     public String queryLatestToken(String loginAccount) {
         CjCustomerLogin login = customerLoginDao.selectByLoginPhone(loginAccount);
         if (login == null){
-            return saveUserInfo(loginAccount,RandomValueUtils.getChineseName(SexEnum.BOY.getCode()),SexEnum.BOY.getCode(),null);
+            return saveUserInfo(loginAccount,RandomValueUtils.getUserNumberId(),SexEnum.BOY.getCode(),null);
         }
         String token = cjCustomerLoginLogDao.selectTokenByCustomerId(login.getId());
         if (ObjectUtils.isEmpty(token)) {
@@ -97,12 +97,12 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public String saveUserInfo(String loginMark, String nickname, Integer sex, String headimgurl) {
+    public String saveUserInfo(String loginMark, int numId, Integer sex, String headimgurl) {
         CjCustomerLogin login = new CjCustomerLogin();
         login.setLoginPhone(loginMark);
         customerLoginDao.insertSelective(login);
         CjCustomerInfo info = new CjCustomerInfo();
-        info.setCustomerName(nickname);
+        info.setCustomerName(numId);
         info.setSex(sex);
         info.setHeadUrl(headimgurl);
         info.setCustomerId(login.getId());

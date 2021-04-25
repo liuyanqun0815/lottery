@@ -15,13 +15,13 @@ public class ScoreEvent extends ApplicationEvent {
 
     private int customerId;
 
-    private int score;
+    private String score;
     /**
      * 0 加，1减
      */
     private ScoreTypeEnum type;
 
-    public ScoreEvent(Object source,int customerId, int score, ScoreTypeEnum type) {
+    public ScoreEvent(Object source,int customerId, String score, ScoreTypeEnum type) {
         super(source);
         this.customerId = customerId;
         this.score = score;

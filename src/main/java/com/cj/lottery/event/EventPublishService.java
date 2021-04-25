@@ -26,7 +26,7 @@ public class EventPublishService {
         }
     }
 
-    public void addScore(Object source, int customerId, int score, ScoreTypeEnum type) {
+    public void addScore(Object source, int customerId, String score, ScoreTypeEnum type) {
         publish(new ScoreEvent(source, customerId, score, type));
     }
 

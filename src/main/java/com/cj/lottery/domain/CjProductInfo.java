@@ -2,6 +2,8 @@ package com.cj.lottery.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import lombok.Data;
 
 /**
@@ -24,6 +26,8 @@ public class CjProductInfo implements Serializable {
      * 商品名称
      */
     private String productName;
+
+    private String simpleName;
 
     /**
      * 分类id
@@ -67,5 +71,14 @@ public class CjProductInfo implements Serializable {
     private Integer productFlag;
 
 //    private int activityId;
+
+    private String activityInfoUrl;
+
+    private String lunboUrl;
+
+    private String activityName;
+    private Integer getFlag;
+
+
     private static final long serialVersionUID = 1L;
 }

@@ -29,8 +29,10 @@ public class PayListener {
         ScoreTypeEnum type = event.getType();
         if (ScoreTypeEnum.ADD.equals(type)) {
             CjCustomerInfo userInfo = new CjCustomerInfo();
+
             userInfo.setId(info.getId());
             userInfo.setUserMoney(event.getTotalFee() + info.getUserMoney());
+            userInfo.setPayCount(info.getPayCount()+1);
             customerInfoDao.updateByPrimaryKeySelective(userInfo);
         }
         if (ScoreTypeEnum.JIAN.equals(type)) {

@@ -47,7 +47,7 @@ public enum  ErrorEnum {
     PAY_TYPE_ERROR(4004,"支付类型错误"),
 
     NEW_NOT_RECORVER(4005,"含有新人活动奖品不允许回收"),
-
+    ORDER_PAY_TYPE(4006,"支付类型不存在"),
 
 
             ;

@@ -15,6 +15,9 @@ public class LotteryActivityInfoVo {
     @ApiModelProperty("活动唯一标识")
     private String activityCode;
 
+    @ApiModelProperty("活动名称")
+    private String activityName;
+
     @ApiModelProperty("轮播图url集合")
     List<String> headUrlList;
 
@@ -25,7 +28,7 @@ public class LotteryActivityInfoVo {
     private boolean limitTime;
 
     @ApiModelProperty("欧气值")
-    private int score;
+    private String score;
 
     @ApiModelProperty("限时倒计时")
     private Long activityDeadline;

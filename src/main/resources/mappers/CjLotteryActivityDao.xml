@@ -35,8 +35,8 @@
             <if test="shelfLife != null">
                 shelf_life,
             </if>
-            <if test="consumerNum != null">
-                consumer_num,
+            <if test="consumerMoney != null">
+                consumer_money,
             </if>
             <if test="activityFlag != null">
                 activity_flag,
@@ -48,7 +48,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="activityCode != null">
-                #{activityCode}
+                #{activityCode},
             </if>
             <if test="activityName != null">
                 #{activityName},
@@ -60,8 +60,7 @@
                 #{activityDeadline},
             </if>
             <if test="activityImg != null">
-                #{activityImg
-                },
+                #{activityImg},
             </if>
             <if test="status != null">
                 #{status},
@@ -69,8 +68,8 @@
             <if test="shelfLife != null">
                 #{shelfLife},
             </if>
-            <if test="consumerNum != null">
-                #{consumerNum},
+            <if test="consumerMoney != null">
+                #{consumerMoney},
             </if>
             <if test="activityFlag != null">
                 #{activityFlag},
@@ -79,6 +78,16 @@
                 #{sort},
             </if>
         </trim>
+    </insert>
+    <insert id="batchSave">
+        insert  into <include refid="tableName"/>
+        (activity_name ,activity_code,  activity_img,
+        activity_flag,activity_rate,consumer_money)
+        values
+        <foreach collection="list" open="(" close=")" item="item" separator="," index="index">
+            #{item.activityName},#{item.activityCode},#{item.activityImg},#{item.activityFlag},
+            #{item.activityRate},#{item.consumerMoney}
+        </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjLotteryActivity">
         update cj_lottery_activity
@@ -155,6 +164,12 @@
         </foreach>
         )
 
+    </select>
+    <select id="getAllActivities" resultType="com.cj.lottery.domain.CjLotteryActivity">
+        select <include refid="Base_Column_List"/>
+        from <include refid="tableName"/>
+        where is_delete =0
+        and status = 0
     </select>
 
 </mapper>

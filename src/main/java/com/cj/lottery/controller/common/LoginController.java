@@ -3,6 +3,7 @@ package com.cj.lottery.controller.common;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.service.UserInfoService;
+import com.cj.lottery.util.IpUtil;
 import com.cj.lottery.util.SmsUtil;
 import com.cj.lottery.util.UuidUtils;
 import com.cj.lottery.util.ValidUtil;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -39,12 +41,20 @@ public class LoginController {
 
     @ApiOperation("发送验证码")
     @PostMapping("send-sms-code")
-    public CjResult<Void> sendSmsCode(@ApiParam("手机号") @RequestParam("mobile") String mobile) {
-        String data = smsUtil.sendSms(mobile);
+    public CjResult<Void> sendSmsCode(HttpServletRequest request,
+                                      @ApiParam("手机号") @RequestParam("mobile") String mobile) {
+        String ipAddr = IpUtil.getIpAddr(request);
+        String data = smsUtil.sendSms(mobile,ipAddr);
         if (!ObjectUtils.isEmpty(data)) {
             return CjResult.fail(data);
         }
         return CjResult.success();
+    }
+
+    @ApiOperation("短信发送量")
+    @PostMapping("msg-user-time")
+    public CjResult<Object> msguUseTime(HttpServletRequest request) {
+        return CjResult.success(smsUtil.msgUserTime());
     }
 
     /**
@@ -90,6 +100,12 @@ public class LoginController {
     public CjResult<String> testCachePut(@RequestParam("mobile") String mobile) {
         String code = smsUtil.put(mobile);
         return CjResult.success(code);
+    }
+
+    @ApiOperation("登录校验")
+    @PostMapping("push-status")
+    public CjResult<Object> pushStatus(){
+        return CjResult.success(smsUtil.pushStatus());
     }
 
 }

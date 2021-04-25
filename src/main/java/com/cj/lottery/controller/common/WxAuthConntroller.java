@@ -8,6 +8,7 @@ import com.cj.lottery.domain.CjCustomerLogin;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.service.UserInfoService;
 import com.cj.lottery.util.AuthUtil;
+import com.cj.lottery.util.RandomValueUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +104,7 @@ public class WxAuthConntroller {
             String nickname = userInfo.getString("nickname");
             Integer sex = userInfo.getInteger("sex");
             String headimgurl = userInfo.getString("headimgurl");
-            String token = userInfoService.saveUserInfo(openid, nickname, sex, headimgurl);
+            String token = userInfoService.saveUserInfo(openid, RandomValueUtils.getUserNumberId(), sex, headimgurl);
             return CjResult.success(token);
         } catch (Exception e) {
             log.error("微信回调失败:", e);

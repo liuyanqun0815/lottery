@@ -123,4 +123,11 @@
         order by id desc
     </select>
 
+    <select id="selectPayCountByCustmerId" resultType="java.lang.Integer">
+        select count(*) from
+        <include refid="tableName"/>
+        where is_delete = 0
+        and customer_id = #{customerId}
+    </select>
+
 </mapper>

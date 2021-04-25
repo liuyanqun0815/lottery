@@ -34,5 +34,5 @@ public interface UserInfoService {
      * @param headimgurl
      * @return
      */
-    String saveUserInfo(String loginMark, String nickname, Integer sex, String headimgurl);
+    String saveUserInfo(String loginMark, int nickname, Integer sex, String headimgurl);
 }

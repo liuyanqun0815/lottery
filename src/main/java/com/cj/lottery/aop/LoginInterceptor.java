@@ -36,7 +36,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String token = getToken(request);
-        log.info("request param:{}", JSON.toJSONString(request.getParameterMap()));
+        log.info("LoginInterceptor request token:{} param:{}",token, JSON.toJSONString(request.getParameterMap()));
         if (ObjectUtils.isEmpty(token)){
             response.setHeader("ContentType", "application/json;charset=UTF-8");
             ServletOutputStream outputStream = response.getOutputStream();
@@ -71,6 +71,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
+
+        //调用结束后删除
+        MDC.remove(ContextCons.TRACE_ID);
+        MDC.remove(ContextCons.USER_ID);
     }
 
 }

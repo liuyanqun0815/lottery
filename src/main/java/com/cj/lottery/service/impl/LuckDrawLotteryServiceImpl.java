@@ -10,6 +10,7 @@ import com.cj.lottery.event.EventPublishService;
 import com.cj.lottery.mapper.CjProductInfoMapper;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.LuckDrawLotteryService;
+import com.cj.lottery.service.ScoreRuleService;
 import com.cj.lottery.service.UserInfoService;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,8 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     private UserInfoService userInfoService;
     @Autowired
     private CjLotteryMaopaoDao lotteryMaopaoDao;
+    @Autowired
+    private ScoreRuleService scoreRuleService;
 
     @Override
     @Transactional
@@ -67,7 +70,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         if (null == activity) {
             return CjResult.fail(ErrorEnum.NOT_ACITVITY);
         }
-        int score = getScore(activity.getConsumerMoney());
+        String score = scoreRuleService.getScore(userId);
         //试玩--@todo 待优化
         if (test) {
             return CjResult.success(this.testLottery(score, activity));
@@ -93,13 +96,13 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
                 }
             }
         }
-        CjPrizePool pool = this.randomPrize(activity.getId());
+        CjPrizePool pool = this.randomPrize(activity.getId(),userId);
         //去库存，根据 id+version进行更新
         int i = prizePoolDao.subtractionProductNum(pool.getId(), pool.getVersion());
         if (i == 0) {
             //防止高并发，去库存失败重新抽取---兜底方案
             while (true) {
-                pool = this.randomPrize(activity.getId());
+                pool = this.randomPrize(activity.getId(),userId);
                 i = prizePoolDao.subtractionProductNum(pool.getId(), pool.getVersion());
                 if (i > 0) {
                     break;
@@ -175,6 +178,8 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         if (CollectionUtils.isEmpty(maopaoList)) {
             return CjResult.success(Lists.newArrayList());
         }
+        int rd = new Random().nextInt(9);       //[0,9)
+        maopaoList = maopaoList.stream().skip(rd).limit(5).collect(Collectors.toList());
         List<CjLotteryMaopaoVo> maopaoVoList = maopaoList.stream().map(s -> CjLotteryMaopaoVo.DoToVo(s)).collect(Collectors.toList());
 //
 //        List<CjLotteryRecord> cjLotteryRecords = lotteryRecordDao.selectNewestRecord();
@@ -208,7 +213,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         return CjResult.success(maopaoVoList);
     }
 
-    public CjPrizePool randomPrize(int activityId) {
+    public CjPrizePool randomPrize(int activityId,int userId) {
         List<CjPrizePool> cjPrizePools = prizePoolDao.selectProductByActivityId(activityId);
         CjPrizePool pool = new CjPrizePool();
         if (CollectionUtils.isEmpty(cjPrizePools)) {
@@ -218,7 +223,19 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
                 return null;
             });
         } else {
-            pool = cjPrizePools.get(this.randomData(cjPrizePools.size()));
+            //如果抽到过奖品，第二次抽到可以抽到不同的奖品，直到都抽到过，变成随机抽取一个奖品
+            List<CjLotteryRecord> records = cjLotteryRecordDao.selectRecordByConsumerIdAndStatus(userId, PrizeStatusEnum.dai_fa_huo.getCode());
+            List<Integer> productIds = Lists.newArrayList();
+            if (!CollectionUtils.isEmpty(records)){
+                productIds = records.stream().map(CjLotteryRecord::getProductId).collect(Collectors.toList());
+            }
+            List<Integer> finalProductIds = productIds;
+            List<CjPrizePool>  pools = cjPrizePools.stream().filter(s-> !finalProductIds.contains(s.getProductId())).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(pools)){
+                pool = cjPrizePools.get(this.randomData(cjPrizePools.size()));
+            }else {
+                pool = pools.get(this.randomData(pools.size()));
+            }
         }
         CjProductInfo productInfo = productInfoDao.selectById(pool.getProductId());
         if (productInfo != null) {
@@ -258,21 +275,22 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
      * @param totalFee
      * @return
      */
-    private int getScore(int totalFee) {
-        totalFee = totalFee / 100;
-        if (totalFee == 1) {
-            return 1;
-        }
-        Random random = new Random();
-        int num = random.nextInt(9) + 5;
-        int score = totalFee * num / (10 * 10);
-        if (score == 0) {
-            score = 1;
-        }
-        return score;
-    }
+//    private int getScore(int totalFee) {
+//        totalFee = totalFee / 100;
+//        if (totalFee == 1) {
+//            return 1;
+//        }
+//        Random random = new Random();
+//        int num = random.nextInt(9) + 5;
+//        int score = totalFee * num / (10 * 10);
+//        if (score == 0) {
+//            score = 1;
+//        }
+//        return score;
+//    }
 
-    private LotteryData testLottery(int score, CjLotteryActivity activity) {
+
+    private LotteryData testLottery(String score, CjLotteryActivity activity) {
 
         CjPrizePool pool = this.testRandomPrize(activity.getId());
         LotteryData data = new LotteryData();

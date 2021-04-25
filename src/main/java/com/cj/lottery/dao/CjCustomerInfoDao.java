@@ -13,4 +13,5 @@ public interface CjCustomerInfoDao {
 
     CjCustomerInfo selectByCustomerId(int customerId);
 
+    int selectMaxConsumerId();
 }

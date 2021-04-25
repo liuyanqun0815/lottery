@@ -36,75 +36,54 @@
       <if test="status != null">
         `status`,
       </if>
-      <if test="isDelete != null">
-        is_delete,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="activityId != null">
-        #{activityId,jdbcType=INTEGER},
+        #{activityId},
       </if>
-      <if test="productd!= null">
-        #{productId}
+      <if test="productId!= null">
+        #{productId},
       </if>
       <if test="type != null">
-        #{type,jdbcType=TINYINT},
+        #{type},
       </if>
       <if test="sort != null">
-        #{sort,jdbcType=INTEGER},
+        #{sort},
       </if>
       <if test="imgUrl != null">
-        #{imgUrl,jdbcType=VARCHAR},
+        #{imgUrl},
       </if>
       <if test="status != null">
-        #{status,jdbcType=TINYINT},
+        #{status},
       </if>
-      <if test="isDelete != null">
-        #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjLotteryActivityImg">
     update cj_lottery_activity_img
     <set>
       <if test="activityId != null">
-        activity_id = #{activityId,jdbcType=INTEGER},
+        activity_id = #{activityId},
       </if>
       <if test="type != null">
-        `type` = #{type,jdbcType=TINYINT},
+        `type` = #{type},
       </if>
       <if test="sort != null">
-        sort = #{sort,jdbcType=INTEGER},
+        sort = #{sort},
       </if>
       <if test="imgUrl != null">
-        img_url = #{imgUrl,jdbcType=VARCHAR},
+        img_url = #{imgUrl},
       </if>
       <if test="status != null">
-        `status` = #{status,jdbcType=TINYINT},
+        `status` = #{status},
       </if>
       <if test="isDelete != null">
-        is_delete = #{isDelete,jdbcType=TINYINT},
+        is_delete = #{isDelete},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id}
   </update>
 
 </mapper>

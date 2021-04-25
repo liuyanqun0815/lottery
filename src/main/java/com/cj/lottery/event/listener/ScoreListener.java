@@ -32,13 +32,13 @@ public class ScoreListener {
         if (ScoreTypeEnum.ADD.equals(type)) {
             CjCustomerInfo userInfo = new CjCustomerInfo();
             userInfo.setId(info.getId());
-            userInfo.setScore(event.getScore() + info.getScore());
+            userInfo.setScoreInFen(Float.valueOf(event.getScore()) +Float.parseFloat( info.getScoreInFen()));
             customerInfoDao.updateByPrimaryKeySelective(userInfo);
         }
         if (ScoreTypeEnum.JIAN.equals(type)) {
             CjCustomerInfo userInfo = new CjCustomerInfo();
             userInfo.setId(info.getId());
-            userInfo.setScore(info.getScore() - event.getScore());
+            userInfo.setScoreInFen(Float.valueOf(info.getScore()) - Float.valueOf(event.getScore()));
             customerInfoDao.updateByPrimaryKeySelective(userInfo);
         }
 

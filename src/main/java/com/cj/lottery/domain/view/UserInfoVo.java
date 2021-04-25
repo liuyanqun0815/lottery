@@ -24,16 +24,18 @@ public class UserInfoVo {
      * 欧气值数量
      */
     @ApiModelProperty("欧气值")
-    private Integer score;
+    private String score;
 
     @ApiModelProperty("用户所获奖品(多个取最新一个)")
     private CjProductInfoVo cjProductInfoVo;
 
     public static UserInfoVo doToVo(CjCustomerInfo info){
         UserInfoVo vo = new UserInfoVo();
-        vo.setCustomerName(info.getCustomerName());
-        vo.setHeadUrl(info.getHeadUrl());
-        vo.setScore(info.getScore());
+        if (info != null) {
+            vo.setCustomerName("ID:" + info.getCustomerName() + "");
+            vo.setHeadUrl(info.getHeadUrl());
+            vo.setScore(info.getScoreInFen());
+        }
         return vo;
     }
 

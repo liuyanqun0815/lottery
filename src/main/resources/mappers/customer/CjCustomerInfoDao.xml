@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
     id, customer_id, customer_name, identity_card_type, identity_card_no, mobile_phone, 
-    customer_email, sex, user_money,head_url,score
+    customer_email, sex, user_money,head_url,score,pay_count
   </sql>
 
     <sql id="tableName">
@@ -103,7 +103,10 @@
                 user_money = #{userMoney},
             </if>
             <if test="score!= null">
-                score = #{score}
+                score = #{score},
+            </if>
+            <if test="payCount != null">
+                pay_count = #{payCount},
             </if>
 
         </set>
@@ -126,6 +129,9 @@
         where is_delete =0
         and customer_id = #{customerId}
 
+    </select>
+    <select id="selectMaxConsumerId" resultType="java.lang.Integer">
+        SELECT MAX(customer_name) from cj_customer_info;
     </select>
 
 </mapper>

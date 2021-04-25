@@ -69,6 +69,7 @@
     </select>
 
 
+
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.CjOrderPay"
             useGeneratedKeys="true">
         insert into cj_order_pay

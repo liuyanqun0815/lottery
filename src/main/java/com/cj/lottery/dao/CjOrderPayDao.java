@@ -33,4 +33,5 @@ public interface CjOrderPayDao {
 
     CjOrderPay selectByOutTradeNo(String outTradeNo);
 
+
 }

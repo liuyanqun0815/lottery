@@ -100,6 +100,7 @@ public class UserInfoController {
     @PostMapping("user-info")
     public CjResult<UserInfoVo> userInfo() {
         int userId = ContextUtils.getUserId();
+        log.info("userInfo userId :{}",userId);
         return CjResult.success(UserInfoVo.doToVo(userInfoService.queryUserInfoByCustomerId(userId)));
     }
 

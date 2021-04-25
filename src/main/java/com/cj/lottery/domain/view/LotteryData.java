@@ -22,6 +22,6 @@ public class LotteryData {
 
     private String productImgUrl;
 
-    private Integer score;
+    private String score;
 
 }

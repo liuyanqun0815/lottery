@@ -16,4 +16,6 @@ public interface CjNotifyPayDao {
 
     List<CjNotifyPay> selectSuccessByUserId(int userId);
 
+    int selectPayCountByCustmerId(int customerId);
+
 }

@@ -11,21 +11,17 @@ import com.cj.lottery.domain.*;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.PageView;
-import com.cj.lottery.enums.ActivityFlagEnum;
 import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.enums.ImgTypeEnum;
 import com.cj.lottery.enums.PayStatusEnum;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.UserInfoService;
-import com.cj.lottery.util.ContextUtils;
-import com.cj.lottery.util.DateUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -81,7 +77,7 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
 
                 //不是新人的话替换第一张图片
                 if (!ObjectUtils.isEmpty(activity_flag)) {
-                    pageVo.getRecords().stream().skip(0).limit(1).forEach(s -> s.setActivityImg("h5_img/index/2_red.jpg"));
+                    pageVo.getRecords().stream().skip(0).limit(1).forEach(s -> s.setActivityImg("h5_img/index/2_red.png"));
                 }
                 List<CjLotteryActivity> collect = pageVo.getRecords().stream().sorted((o1, o2) -> o2.getSort().compareTo(o2.getSort())).collect(Collectors.toList());
                 collect.stream().forEach(s->s.setActivityImg(ImgDomain.imgUrlDomain+s.getActivityImg()));
@@ -99,7 +95,7 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
             return CjResult.fail(ErrorEnum.NOT_ACITVITY);
         }
         LotteryActivityInfoVo infoVo = new LotteryActivityInfoVo();
-        infoVo.setActivityCode(activityCode);
+        infoVo.setActivityName(activity.getActivityName());
         infoVo.setConsumerMoney(activity.getConsumerMoney());
         infoVo.setLimitTime(activity.getActivityDeadline() == null ? false : true);
         infoVo.setActivityDeadline(activity.getActivityDeadline() == null ? 0 : activity.getActivityDeadline().getTime());
@@ -110,7 +106,7 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
         if (!CollectionUtils.isEmpty(cjLotteryActivityImgs)) {
             Set<Integer> productSet = cjLotteryActivityImgs.stream().map(CjLotteryActivityImg::getProductId).collect(Collectors.toSet());
             List<CjProductInfo> cjProductInfos = cjProductInfoDao.selectByIds(Lists.newArrayList(productSet));
-            Map<Integer, String> idNameMap = cjProductInfos.stream().collect(Collectors.toMap(CjProductInfo::getId, CjProductInfo::getProductName));
+            Map<Integer, String> idNameMap = cjProductInfos.stream().collect(Collectors.toMap(CjProductInfo::getId, CjProductInfo::getDesc));
             List<String> headUrls = cjLotteryActivityImgs.stream().
                     filter(s -> ImgTypeEnum.LUN_BO.getCode() == s.getType()).
                     sorted((o1, o2) -> o2.getSort().compareTo(o1.getSort())).
@@ -131,7 +127,7 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
 
         CjCustomerInfo cjCustomerInfo = userInfoService.queryUserInfoByCustomerId(userId);
         if (null != cjCustomerInfo) {
-            infoVo.setScore(cjCustomerInfo.getScore());
+            infoVo.setScore(cjCustomerInfo.getScoreInFen());
         }
         return CjResult.success(infoVo);
     }

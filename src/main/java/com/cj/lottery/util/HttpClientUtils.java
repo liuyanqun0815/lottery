@@ -2,8 +2,10 @@ package com.cj.lottery.util;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
@@ -28,6 +30,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.text.ParseException;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -397,4 +400,43 @@ public class HttpClientUtils {
         sc.init(null, new TrustManager[]{trustManager}, null);
         return sc;
     }
+
+
+    public static void httpGet(String url) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
+            // 创建httpget.
+            HttpGet httpget = new HttpGet(url);
+            httpget.addHeader("Referer","https://m.keyundz.cn/#/goodsDetail?goodId=93e6c4a7715447d5902bc797c59f1232");
+            httpget.addHeader("Host","m.keyundz.cn");
+            httpget.addHeader("User-Agent","Mozilla/5.0 (Linux; Android 10; SEA-AL10; HMSCore 5.2.0.333) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 HuaweiBrowser/11.1.0.300 Mobile Safari/537.36");
+            log.info("executing request :{}" , httpget.getURI());
+            // 执行get请求.
+            CloseableHttpResponse response = httpclient.execute(httpget);
+            try {
+                // 获取响应实体
+                HttpEntity entity = response.getEntity();
+                // 打印响应状态
+                System.out.println(response.getStatusLine());
+                if (entity != null) {
+                    // 打印响应内容长度
+                    log.info("Response content length: {}" ,entity.getContentLength());
+                    // 打印响应内容
+                    log.info("Response content:{} ", EntityUtils.toString(entity));
+                }
+            } finally {
+                response.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 关闭连接,释放资源
+            try {
+                httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
