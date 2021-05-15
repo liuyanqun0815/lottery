@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class LotteryApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
+//        System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
         SpringApplication.run(LotteryApplication.class, args);
     }
 

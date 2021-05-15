@@ -10,16 +10,16 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.cj.lottery.constant.AliCons;
 import com.cj.lottery.constant.WxCons;
 import com.cj.lottery.dao.CjCustomerInfoDao;
+import com.cj.lottery.dao.CjLotteryActivityDao;
 import com.cj.lottery.dao.CjOrderPayDao;
 import com.cj.lottery.domain.CjCustomerInfo;
+import com.cj.lottery.domain.CjLotteryActivity;
 import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.PaySuccessVo;
-import com.cj.lottery.enums.ErrorEnum;
-import com.cj.lottery.enums.PayStatusEnum;
-import com.cj.lottery.enums.PayTypeEnum;
-import com.cj.lottery.enums.ScoreTypeEnum;
+import com.cj.lottery.enums.*;
 import com.cj.lottery.event.EventPublishService;
+import com.cj.lottery.service.MaidianService;
 import com.cj.lottery.service.OrderPayService;
 import com.cj.lottery.service.ProductInfoService;
 import com.cj.lottery.service.UserInfoService;
@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,13 +64,19 @@ public class PayController {
     private CjOrderPayDao orderPayDao;
     @Value("${ali.pay.v1.alipay-public-cert-path}")
     private String aliPublicKey ;
-
+    @Autowired
+    private MaidianService maidianService;
     @Autowired
     private EventPublishService eventPublishService;
     @Autowired
     private UserInfoService userInfoService;
     @Autowired
     private CjCustomerInfoDao customerInfoDao;
+    @Autowired
+    private CjLotteryActivityDao cjLotteryActivityDao;
+    @Autowired
+    private CjOrderPayDao cjOrderPayDao;
+
 
     @ApiOperation("微信公众号充值接口")
     @PostMapping("wxGzhPay")
@@ -87,17 +94,37 @@ public class PayController {
                                           HttpServletResponse response,
                                           @ApiParam("充值金额(分)") @RequestParam int totalFee,
                                           @ApiParam("活动编码")@RequestParam String activityCode,
-                                          @ApiParam("支付类型")@RequestParam(required = false,defaultValue = "WX_H5")PayTypeEnum payType) {
+                                          @ApiParam("支付类型")@RequestParam(required = false,defaultValue = "WX_H5")PayTypeEnum payType,
+                                          @RequestParam(required = false)String channel) {
 
         int userId = ContextUtils.getUserId();
         String ipAddr = IpUtil.getIpAddr(request);
         if (ObjectUtils.isEmpty(ipAddr)){
             return CjResult.fail(ErrorEnum.IP_ERROR);
         }
+
+        CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
+        if (null == activity) {
+            return CjResult.fail(ErrorEnum.NOT_ACITVITY);
+        }
+        if (activity.getConsumerMoney() != totalFee){
+            return CjResult.fail(ErrorEnum.PAY_MONEY_ERROR);
+        }
+        //如果活动是新人活动，判断是否是新人
+        if (activity.getActivityFlag() == ActivityFlagEnum.NEW_PEPOLE.getCode()) {
+            List<CjOrderPay> orderPays = cjOrderPayDao.selectByUserId(userId);
+            if (!CollectionUtils.isEmpty(orderPays)) {
+                orderPays = orderPays.stream().filter(s -> s.getStatus() != PayStatusEnum.NO_PAY.getCode()).collect(Collectors.toList());
+                if (!CollectionUtils.isEmpty(orderPays) && orderPays.size() > 0) {
+                    return CjResult.fail(ErrorEnum.NOT_NEW_PEPOLE);
+                }
+            }
+        }
+        maidianService.saveRecord(MaidianTypeEnum.PAY_BUTTON,userId,ipAddr,activityCode,channel);
         if (PayTypeEnum.WX_H5 == payType){
-            return orderPayService.createWxH5OrderPay(userId, totalFee,ipAddr,activityCode);
+            return orderPayService.createWxH5OrderPay(userId, totalFee,ipAddr,activity);
         }else if (PayTypeEnum.ALI_H5 == payType){
-            return orderPayService.createAliH5OrderPay(userId, totalFee,ipAddr,activityCode,response);
+            return orderPayService.createAliH5OrderPay(userId, totalFee,ipAddr,activity,response);
         }
         return CjResult.fail(ErrorEnum.PAY_TYPE_ERROR);
 
@@ -114,6 +141,7 @@ public class PayController {
         if (ObjectUtils.isEmpty(ipAddr)){
             return CjResult.fail(ErrorEnum.IP_ERROR);
         }
+
         if (PayTypeEnum.WX_H5 == payType){
             return orderPayService.wxTransportPay(userId, totalFee,ipAddr,idList);
         }else if (PayTypeEnum.ALI_H5 == payType){
@@ -355,8 +383,8 @@ public class PayController {
         CjCustomerInfo info = userInfoService.queryUserInfoByCustomerId(userID);
         CjCustomerInfo userInfo = new CjCustomerInfo();
         userInfo.setId(info.getId());
-        userInfo.setScoreInFen(Float.valueOf(score) +Float.parseFloat( info.getScoreInFen()));
-        customerInfoDao.updateByPrimaryKeySelective(userInfo);
+//        userInfo.setScoreInFen(Float.valueOf(score) +Float.parseFloat( info.getScoreInFen()));
+//        customerInfoDao.updateByPrimaryKeySelective(userInfo);
 //        HttpClientResult dataata = HttpClientUtils.doGet(url);
 //        log.info("url:{}",data.getContent());
     }

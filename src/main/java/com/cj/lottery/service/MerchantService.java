@@ -10,4 +10,6 @@ public interface MerchantService {
      * @return
      */
     CjMerchant queryMerchant();
+
+    int saveMerchant(String channel);
 }

@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
     id, customer_id, customer_name, identity_card_type, identity_card_no, mobile_phone, 
-    customer_email, sex, user_money,head_url,score,pay_count
+    customer_email, sex, user_money,head_url,score,pay_count,channel
   </sql>
 
     <sql id="tableName">
@@ -42,6 +42,9 @@
             <if test="headUrl!= null">
                 head_url,
             </if>
+            <if test="channel != null">
+                channel,
+            </if>
 
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -70,7 +73,10 @@
                 #{userMoney},
             </if>
             <if test="headUrl!= null">
-                #{headUrl}
+                #{headUrl},
+            </if>
+            <if test="channel != null">
+                #{channel}
             </if>
 
         </trim>

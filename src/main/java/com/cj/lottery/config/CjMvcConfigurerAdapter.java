@@ -27,7 +27,7 @@ public class CjMvcConfigurerAdapter implements WebMvcConfigurer {
 //                .excludePathPatterns("/api/cj/test")
 //                .excludePathPatterns("/api/cj/login/**")
 //                .addPathPatterns("/api/cj/draw/**")
-                .addPathPatterns("/api/pay/**")
+//                .addPathPatterns("/api/pay/**")
                 .addPathPatterns("/api/prize/send-prize")
                 .excludePathPatterns("/api/pay/callbacks/**");
 

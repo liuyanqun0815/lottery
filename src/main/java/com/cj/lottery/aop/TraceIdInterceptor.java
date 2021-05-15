@@ -47,7 +47,7 @@ public class TraceIdInterceptor implements HandlerInterceptor {
         }
         int userId = ContextUtils.getUserId();
         Integer userIdByToken = customerLoginService.getUserIdByToken(token);
-        log.info("TraceIdInterceptor request start token:{} userId:{}, url:{},param:{},user:{}",token, userIdByToken, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()),userId);
+        log.info("TraceIdInterceptor request start token:{} userId:{}, url:{},param:{}",token, userIdByToken, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
         if (ObjectUtils.isEmpty(userIdByToken)) {
             return true;
         }
@@ -58,8 +58,6 @@ public class TraceIdInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
-        String content = null;
-        log.info("request end ,url:{},request code:{}---{}", request.getRequestURI(), response.getStatus(), content);
 
     }
 
@@ -69,6 +67,7 @@ public class TraceIdInterceptor implements HandlerInterceptor {
         //调用结束后删除
         MDC.remove(ContextCons.TRACE_ID);
         MDC.remove(ContextCons.USER_ID);
+        ContextUtils.clear();
     }
 
     private void returnJson(HttpServletResponse response, String json) throws Exception {

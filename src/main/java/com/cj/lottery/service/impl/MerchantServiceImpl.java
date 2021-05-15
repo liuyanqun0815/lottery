@@ -25,4 +25,11 @@ public class MerchantServiceImpl implements MerchantService {
         }
         return cjMerchants.get(0);
     }
+
+    @Override
+    public int saveMerchant(String channel) {
+        return merchantDao.insert(channel);
+    }
+
+
 }

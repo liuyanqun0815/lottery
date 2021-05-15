@@ -98,13 +98,13 @@ public class WxAuthConntroller {
             //去数据库查询此微信是否注册过
             CjCustomerLogin loginInfo = userInfoService.queryLoginInfoByLoginPhone(openid);
             if (loginInfo != null) {
-                String data = userInfoService.queryLatestToken(openid);
+                String data = userInfoService.queryLatestToken(openid,"wxgzh" );
                 return CjResult.success(data);
             }
             String nickname = userInfo.getString("nickname");
             Integer sex = userInfo.getInteger("sex");
             String headimgurl = userInfo.getString("headimgurl");
-            String token = userInfoService.saveUserInfo(openid, RandomValueUtils.getUserNumberId(), sex, headimgurl);
+            String token = userInfoService.saveUserInfo(openid, RandomValueUtils.getUserNumberId(), sex, headimgurl,"wxgzh");
             return CjResult.success(token);
         } catch (Exception e) {
             log.error("微信回调失败:", e);

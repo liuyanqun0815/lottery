@@ -1,14 +1,17 @@
 package com.cj.lottery.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * cj_pay_niuniu_record
  * @author 
  */
 @Data
+@Slf4j
 public class CjPayScoreRecord implements Serializable {
     /**
      * 主键id
@@ -31,10 +34,16 @@ public class CjPayScoreRecord implements Serializable {
      */
     private int score;
 
-    public void setScore(String score){
-        this.score = (int)(Float.valueOf(score) * 100);
+    public void setScoreInFen(Float score){
+
+        BigDecimal bigScore = new BigDecimal(String.valueOf(score));
+        BigDecimal big100 = new BigDecimal(String.valueOf(100));
+        BigDecimal multiply = big100.multiply(bigScore);
+        this.score = multiply.toBigInteger().intValue();
+        log.info("score:{}",score);
+
     }
-    public String getScore() {
+    public String getScoreInFent() {
         if (score % 100 == 0) {
             return (score / 100) + "";
         } else {

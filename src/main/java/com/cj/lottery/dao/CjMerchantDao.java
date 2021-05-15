@@ -10,4 +10,8 @@ public interface CjMerchantDao {
 
     List<CjMerchant> selelctAllMerchant();
 
+    int insert(String channel);
+
+
+
 }

@@ -21,10 +21,12 @@ public interface UserInfoService {
     /**
      * 获取用户最新的token
      *
+     *
+     * @param mobile
      * @param loginAccount
      * @return
      */
-    String queryLatestToken(String loginAccount);
+    String queryLatestToken(String mobile, String channel);
 
     /**
      * 首次登录，保存用户信息
@@ -34,5 +36,5 @@ public interface UserInfoService {
      * @param headimgurl
      * @return
      */
-    String saveUserInfo(String loginMark, int nickname, Integer sex, String headimgurl);
+    String saveUserInfo(String loginMark, int nickname, Integer sex, String headimgurl,String channel);
 }

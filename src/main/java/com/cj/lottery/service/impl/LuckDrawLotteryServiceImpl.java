@@ -1,5 +1,6 @@
 package com.cj.lottery.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.cj.lottery.constant.ImgDomain;
 import com.cj.lottery.controller.LuckDrawLotteryController;
 import com.cj.lottery.dao.*;
@@ -120,12 +121,13 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
         record.setStatus(PrizeStatusEnum.dai_fa_huo.getCode());
         record.setActivityId(activity.getId());
         cjLotteryRecordDao.insertSelective(record);
-
+//
         //记录欧气值生成记录
         CjPayScoreRecord scoreRecord = new CjPayScoreRecord();
         scoreRecord.setCustomerId(userId);
-        scoreRecord.setScore(score);
+        scoreRecord.setScoreInFen(Float.valueOf(score));
         scoreRecord.setOrderId(orderPay.getId());
+        log.info("scoreRecord:{}", JSON.toJSONString(scoreRecord));
         this.payScoreRecordDao.insertSelective(scoreRecord);
 
         LotteryData data = new LotteryData();
@@ -162,7 +164,6 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
                 return CjResult.success(vo);
             }
         }
-
         vo.setNewPepoleFlag(true);
         vo.setActivityCode(activity.getActivityCode());
         return CjResult.success(vo);

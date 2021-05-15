@@ -1,6 +1,5 @@
 package com.cj.lottery.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.cj.lottery.dao.CjCustomerAddressDao;
 import com.cj.lottery.dao.CjCustomerInfoDao;
 import com.cj.lottery.dao.CjCustomerLoginDao;
@@ -11,7 +10,6 @@ import com.cj.lottery.domain.CjCustomerLogin;
 import com.cj.lottery.domain.CjCustomerLoginLog;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
 import com.cj.lottery.enums.SexEnum;
-import com.cj.lottery.mapper.ConstumerAddressInfoMapper;
 import com.cj.lottery.service.UserInfoService;
 import com.cj.lottery.util.ContextUtils;
 import com.cj.lottery.util.RandomValueUtils;
@@ -22,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,10 +75,10 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 
     @Override
-    public String queryLatestToken(String loginAccount) {
-        CjCustomerLogin login = customerLoginDao.selectByLoginPhone(loginAccount);
+    public String queryLatestToken(String mobile, String channel) {
+        CjCustomerLogin login = customerLoginDao.selectByLoginPhone(mobile);
         if (login == null){
-            return saveUserInfo(loginAccount,RandomValueUtils.getUserNumberId(),SexEnum.BOY.getCode(),null);
+            return saveUserInfo(mobile,RandomValueUtils.getUserNumberId(),SexEnum.BOY.getCode(),null,channel);
         }
         String token = cjCustomerLoginLogDao.selectTokenByCustomerId(login.getId());
         if (ObjectUtils.isEmpty(token)) {
@@ -97,7 +93,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public String saveUserInfo(String loginMark, int numId, Integer sex, String headimgurl) {
+    public String saveUserInfo(String loginMark, int numId, Integer sex, String headimgurl,String channel) {
         CjCustomerLogin login = new CjCustomerLogin();
         login.setLoginPhone(loginMark);
         customerLoginDao.insertSelective(login);
@@ -106,7 +102,9 @@ public class UserInfoServiceImpl implements UserInfoService {
         info.setSex(sex);
         info.setHeadUrl(headimgurl);
         info.setCustomerId(login.getId());
+        info.setChannel(channel);
         customerInfoDao.insertSelective(info);
+
         String uniqueCode = UuidUtils.getUUid();
         CjCustomerLoginLog loginLog = new CjCustomerLoginLog();
         loginLog.setCustomerId(login.getId());

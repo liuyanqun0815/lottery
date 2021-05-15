@@ -1,6 +1,7 @@
 package com.cj.lottery.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Data;
@@ -69,8 +70,14 @@ public class CjCustomerInfo implements Serializable {
      */
     private Integer score;
 
-    public void setScoreInFen(Float score) {
-        this.score = (int) (score * 100);
+    private String channel;
+
+
+    public void setScoreInFen(String score) {
+        BigDecimal bigScore = new BigDecimal(score);
+        BigDecimal big100 = new BigDecimal(String.valueOf(100));
+        BigDecimal multiply = big100.multiply(bigScore);
+        this.score = multiply.toBigInteger().intValue();
     }
 
     public String getScoreInFen() {

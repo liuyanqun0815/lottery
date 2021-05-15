@@ -2,6 +2,7 @@ package com.cj.lottery.service;
 
 import cn.felord.payment.wechat.v3.model.RefundConsumeData;
 import cn.felord.payment.wechat.v3.model.TransactionConsumeData;
+import com.cj.lottery.domain.CjLotteryActivity;
 import com.cj.lottery.domain.CjOrderPay;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.PaySuccessVo;
@@ -33,7 +34,7 @@ public interface OrderPayService {
     CjResult<Boolean> queryOrderByUserIdAndOutTradeNo(int customerId,String outTradeNo);
 
 
-    CjResult<PaySuccessVo> createWxH5OrderPay(int userId, int totalFee, String ipAddr, String activityCode);
+    CjResult<PaySuccessVo> createWxH5OrderPay(int userId, int totalFee, String ipAddr,  CjLotteryActivity activity);
 
     CjResult<Void> lotteryRecover(int userId, List<Integer> idList);
 
@@ -45,7 +46,7 @@ public interface OrderPayService {
 
     CjResult wxTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList);
 
-    CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr, String activityCode, HttpServletResponse response);
+    CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr, CjLotteryActivity activity, HttpServletResponse response);
 
     /**
      * 回收

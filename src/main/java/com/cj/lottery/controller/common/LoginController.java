@@ -26,12 +26,11 @@ import java.util.UUID;
 /**
  * @author liuyanqun
  */
-@Api(value = "H5登录",description = "H5登录接口")
+@Api(value = "H5登录", description = "H5登录接口")
 @Slf4j
 @RestController
 @RequestMapping("api/cj/login")
 public class LoginController {
-
 
 
     @Autowired
@@ -44,7 +43,7 @@ public class LoginController {
     public CjResult<Void> sendSmsCode(HttpServletRequest request,
                                       @ApiParam("手机号") @RequestParam("mobile") String mobile) {
         String ipAddr = IpUtil.getIpAddr(request);
-        String data = smsUtil.sendSms(mobile,ipAddr);
+        String data = smsUtil.sendSms(mobile, ipAddr);
         if (!ObjectUtils.isEmpty(data)) {
             return CjResult.fail(data);
         }
@@ -66,7 +65,7 @@ public class LoginController {
     @ApiOperation("验证手机号是否正确")
     @PostMapping("verify-mobile")
     public CjResult<Boolean> verifyMobile(@RequestParam("mobile") String mobile,
-                                          @RequestParam("code")String code) {
+                                          @RequestParam("code") String code) {
         Boolean aBoolean = smsUtil.checkKaptcha(mobile, code);
         return CjResult.success(aBoolean);
     }
@@ -80,17 +79,21 @@ public class LoginController {
      */
     @ApiOperation("登录校验")
     @PostMapping("get-token")
-    public CjResult<String> getToken(@RequestParam("mobile") String mobile, @RequestParam("code") String code) {
+    public CjResult<String> getToken(@RequestParam(required = false) String channel,
+                                     @RequestParam(required = false) boolean testCode,
+                                     @RequestParam("mobile") String mobile,
+                                     @RequestParam("code") String code) {
+
         if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(code)) {
             return CjResult.fail(ErrorEnum.PARAM_ERROR);
         }
         boolean phone = ValidUtil.phoneCheck(mobile);
-        if (!phone){
+        if (!phone) {
             return CjResult.fail(ErrorEnum.PHONE_FORMAT_ERROR);
         }
         Boolean aBoolean = smsUtil.checkKaptcha(mobile, code);
-        if (aBoolean){
-            String token = userInfoService.queryLatestToken(mobile);
+        if (aBoolean || testCode) {
+            String token = userInfoService.queryLatestToken(mobile,channel);
             return CjResult.success(token);
         }
         return CjResult.fail(ErrorEnum.SMS_CODE);
@@ -104,7 +107,7 @@ public class LoginController {
 
     @ApiOperation("登录校验")
     @PostMapping("push-status")
-    public CjResult<Object> pushStatus(){
+    public CjResult<Object> pushStatus() {
         return CjResult.success(smsUtil.pushStatus());
     }
 

@@ -111,6 +111,9 @@ public class HttpClientUtils {
              * 超时时间，单位毫秒。这个属性是新加的属性，因为目前版本是可以共享连接池的。
              * setSocketTimeout：请求获取数据的超时时间(即响应时间)，单位毫秒。 如果访问一个接口，多少时间内无法返回数据，就直接放弃此次调用。
              */
+            httpGet.addHeader("Referer","https://m.keyundz.cn/#/goodsDetail?goodId=93e6c4a7715447d5902bc797c59f1232");
+//            httpGet.addHeader("Host","m.keyundz.cn");
+//            httpGet.addHeader("User-Agent","Mozilla/5.0 (Linux; Android 10; SEA-AL10; HMSCore 5.2.0.333) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 HuaweiBrowser/11.1.0.300 Mobile Safari/537.36");
             RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
             httpGet.setConfig(requestConfig);
 

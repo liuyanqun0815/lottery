@@ -3,11 +3,10 @@ package com.cj.lottery.controller;
 import com.cj.lottery.constant.ContextCons;
 import com.cj.lottery.domain.view.*;
 import com.cj.lottery.enums.ErrorEnum;
-import com.cj.lottery.service.CustomerLoginService;
-import com.cj.lottery.service.LotteryActivityService;
-import com.cj.lottery.service.LuckDrawLotteryService;
-import com.cj.lottery.service.PrizePoolService;
+import com.cj.lottery.enums.MaidianTypeEnum;
+import com.cj.lottery.service.*;
 import com.cj.lottery.util.ContextUtils;
+import com.cj.lottery.util.IpUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -37,27 +36,36 @@ public class lotteryActivityController {
     private LuckDrawLotteryService luckDrawLotteryService;
     @Autowired
     private CustomerLoginService customerLoginService;
+    @Autowired
+    private MaidianService maidianService;
 
 
     @ApiOperation("获取活动列表")
     @PostMapping("list-activity")
     public CjResult<PageView> listActity(HttpServletRequest request,
                                          @RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
-                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                         @RequestParam(required = false)String channel) {
         String token = request.getHeader(ContextCons.TOKEN);
         Integer userId = null;
         if (com.baomidou.mybatisplus.core.toolkit.ObjectUtils.isNotEmpty(token)) {
             userId = customerLoginService.getUserIdByToken(token);
         }
-
+        String ipAddr = IpUtil.getIpAddr(request);
+        //埋点
+        maidianService.saveRecord(MaidianTypeEnum.SHOU_YE,userId,ipAddr,null,channel);
         PageView pageView = lotteryActivityService.queryActivityListByPage(pageIndex, pageSize,userId);
         return CjResult.success(pageView);
     }
 
     @ApiOperation("获取活动详情")
     @PostMapping("activity-info")
-    public CjResult<LotteryActivityInfoVo> actityInfo(@RequestParam String activityCode){
+    public CjResult<LotteryActivityInfoVo> actityInfo(HttpServletRequest request,
+                                                      @RequestParam String activityCode,
+                                                      @RequestParam(required = false)String channel){
         int userId = ContextUtils.getUserId();
+        String ipAddr = IpUtil.getIpAddr(request);
+        maidianService.saveRecord(MaidianTypeEnum.ACTIVITY_INFO,userId,ipAddr,activityCode,channel);
         return lotteryActivityService.queryActivityDetailsByPage( userId,activityCode);
     }
 

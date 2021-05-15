@@ -1,8 +1,11 @@
 package com.cj.lottery.config;
 
+import com.alibaba.fastjson.JSON;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.enums.ErrorEnum;
+import com.cj.lottery.util.MailUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +22,9 @@ import java.sql.SQLException;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @Autowired
+    private MailUtils mailUtils;
+
     /**
      * 处理空指针的异常
      *
@@ -30,6 +36,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public CjResult exceptionHandler(HttpServletRequest req, NullPointerException e) {
         log.error("发生空指针异常！原因是:", e);
+        mailUtils.sendMail(JSON.toJSONString(e));
         return CjResult.fail(ErrorEnum.NullPointer);
     }
 
@@ -44,6 +51,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public CjResult exceptionHandler(HttpServletRequest req, SQLException e) {
         log.error("sql异常！原因是:", e);
+        mailUtils.sendMail(JSON.toJSONString(e));
         return CjResult.fail(ErrorEnum.SQL_ERROR);
     }
 
@@ -58,6 +66,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public CjResult exceptionHandler(HttpServletRequest req, Exception e) {
         log.error("未知异常！原因是:", e);
+        mailUtils.sendMail(JSON.toJSONString(e));
         return CjResult.fail(ErrorEnum.SYSTEM_ERROR);
     }
 

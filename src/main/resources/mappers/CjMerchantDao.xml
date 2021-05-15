@@ -5,6 +5,9 @@
   <sql id="Base_Column_List">
     id, merchant_code, appid, mch_id, `status`
   </sql>
+  <sql id="table_name">
+    cj_merchant
+  </sql>
 
   <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjMerchant">
     update cj_merchant
@@ -31,5 +34,10 @@
     where status = 0
     and is_delete = 0
   </select>
+
+  <insert id="insert">
+    insert ignore into <include refid="table_name"/>
+    (channel) value (#{channel})
+  </insert>
 
 </mapper>

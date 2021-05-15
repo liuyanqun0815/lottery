@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -158,22 +159,29 @@ public class OrderPayServiceImpl implements OrderPayService {
     }
 
     @Override
-    public CjResult<PaySuccessVo> createWxH5OrderPay(int userId, int totalFee, String ipAddr, String activityCode) {
+    public CjResult<PaySuccessVo> createWxH5OrderPay(int userId, int totalFee, String ipAddr, CjLotteryActivity activity) {
         PaySuccessVo vo = new PaySuccessVo();
-        CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
-        if (null == activity) {
-            return CjResult.fail(ErrorEnum.NOT_ACITVITY);
-        }
-        if (activity.getConsumerMoney() != totalFee){
-            return CjResult.fail(ErrorEnum.PAY_MONEY_ERROR);
-        }
+//        CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
+//        if (null == activity) {
+//            return CjResult.fail(ErrorEnum.NOT_ACITVITY);
+//        }
+//        if (activity.getConsumerMoney() != totalFee){
+//            return CjResult.fail(ErrorEnum.PAY_MONEY_ERROR);
+//        }
         String out_trade_no = UuidUtils.getOrderNo();
         vo.setOutTradeNo(out_trade_no);
         String h5Url= this.h5Pay(activity.getActivityName(), totalFee, out_trade_no, ipAddr, null);
 
         vo.setH5_url(h5Url);
-        HttpClientUtils.httpGet(h5Url);
+        //拼接上跳转地址
+//        h5Url = h5Url +"&redirect_url="+ URLEncoder.encode("https://m.keyundz.cn/#/goodsDetail?goodId="+activityCode);
+//        HttpClientResult data = HttpClientUtils.doGet(h5Url);
 //        log.info("url:{}",data.getContent());
+//        String content = data.getContent();
+//        content = content.substring(content.indexOf("var url=")+9, content.indexOf("\n" +
+//                "                    var redirect_url")-2);
+//        log.info("新连接url：{}",content);
+//        vo.setH5_url(content);
         //保存订单
         CjOrderPay cjOrderPay = this.buildOrderPayDO(userId, totalFee, out_trade_no, activity.getActivityName(), PayTypeEnum.WX_H5);
         return CjResult.success(vo);
@@ -183,7 +191,7 @@ public class OrderPayServiceImpl implements OrderPayService {
     public CjResult<PaySuccessVo> wxTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList){
         PaySuccessVo vo = new PaySuccessVo();
         String out_trade_no = UuidUtils.getOrderNo();
-        String h5Url = this.h5Pay("奖品运费", totalFee, out_trade_no, ipAddr, idList);
+        String h5Url = this.h5Pay("商品邮费", totalFee, out_trade_no, ipAddr, idList);
         //保存订单
         vo.setH5_url(h5Url);
         vo.setOutTradeNo(out_trade_no);
@@ -195,11 +203,11 @@ public class OrderPayServiceImpl implements OrderPayService {
     public CjResult aliTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList) {
 
         PaySuccessVo vo = new PaySuccessVo();
-        String body = "奖品运费";
+        String body = "商品邮费";
         String money = intToFloat(totalFee);
         String out_trade_no = UuidUtils.getOrderNo();
         AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
-        request.setReturnUrl("https://m.keyundz.cn/#/paySuccess?idList="+ StringUtils.join(idList,",")+"&totalFee="+totalFee+"&orderNo="+out_trade_no);
+        request.setReturnUrl("https://m.keyundz.cn/#/paySuccess?idList="+ StringUtils.join(idList,",")+"&payMoney="+totalFee+"&orderNo="+out_trade_no);
         request.setNotifyUrl(aliNotifyUrl);//在公共参数中设置回跳和通知地址
         // 封装请求支付信息
         AlipayTradeWapPayModel model=new AlipayTradeWapPayModel();
@@ -275,21 +283,14 @@ public class OrderPayServiceImpl implements OrderPayService {
 
     @SneakyThrows
     @Override
-    public CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr, String activityCode, HttpServletResponse response) {
+    public CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr, CjLotteryActivity activity, HttpServletResponse response) {
         PaySuccessVo vo = new PaySuccessVo();
-        CjLotteryActivity activity = cjLotteryActivityDao.selectActivityByCode(activityCode);
-        if (null == activity) {
-            return CjResult.fail(ErrorEnum.NOT_ACITVITY);
-        }
-        if (activity.getConsumerMoney() != totalFee){
-            return CjResult.fail(ErrorEnum.PAY_MONEY_ERROR);
-        }
         String money = intToFloat(totalFee);
         String out_trade_no = UuidUtils.getOrderNo();
         vo.setOutTradeNo(out_trade_no);
         AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
 
-        request.setReturnUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activityCode);
+        request.setReturnUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activity.getActivityCode());
         request.setNotifyUrl(aliNotifyUrl);//在公共参数中设置回跳和通知地址
         // 封装请求支付信息
         AlipayTradeWapPayModel model=new AlipayTradeWapPayModel();
@@ -299,7 +300,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         // 销售产品码 必填
         String product_code="QUICK_WAP_WAY";
         model.setProductCode(product_code);
-        model.setQuitUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activityCode);
+        model.setQuitUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activity.getActivityCode());
 
         request.setBizModel(model);
         try {

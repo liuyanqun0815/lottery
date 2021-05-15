@@ -16,17 +16,23 @@ import com.cj.lottery.enums.ImgTypeEnum;
 import com.cj.lottery.enums.PayStatusEnum;
 import com.cj.lottery.service.LotteryActivityService;
 import com.cj.lottery.service.UserInfoService;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -47,23 +53,49 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
     @Autowired
     private CjOrderPayDao orderPayDao;
 
+    private LoadingCache<Long, Optional<IPage<CjLotteryActivity>>> allActivity = CacheBuilder
+            .newBuilder()
+            .maximumSize(5)
+            .expireAfterWrite(60, TimeUnit.SECONDS)
+            .build(new CacheLoader<Long, Optional<IPage<CjLotteryActivity>>>() {
+                @Override
+                public Optional<IPage<CjLotteryActivity>> load(Long param) {
+                    return getActivityList(param);
+                }
+            });
+
+    public Optional<IPage<CjLotteryActivity>> getActivityList(Long param) {
+        Page<CjLotteryActivity> page = new Page<>(1, 20);
+        IPage<CjLotteryActivity> pageVo = cjLotteryActivityDao.selectPageVo(page, param == 0L ? null : param + "");
+        return Optional.ofNullable(pageVo);
+    }
 
     @Override
-    public PageView queryActivityListByPage(int current, int size,Integer userId) {
-        String activity_flag = null;
+    public PageView queryActivityListByPage(int current, int size, Integer userId) {
+        Long param = 0L;
         //判断是否拥有新人福利活动
-        if (userId != null){
+        if (userId != null) {
             List<CjOrderPay> orderPays = orderPayDao.selectByUserId(userId);
             if (!CollectionUtils.isEmpty(orderPays)) {
                 Optional<CjOrderPay> first = orderPays.stream().filter(s -> s.getStatus() != PayStatusEnum.NO_PAY.getCode()).findFirst();
                 if (first.isPresent()) {
-                    activity_flag = "1";
+                    param = 1L;
                 }
             }
         }
         PageView pageView = new PageView();
         Page<CjLotteryActivity> page = new Page<>(current, size);
-        IPage<CjLotteryActivity> pageVo = cjLotteryActivityDao.selectPageVo(page,activity_flag);
+
+        IPage<CjLotteryActivity> pageVo = null;
+        try {
+//            Optional<IPage<CjLotteryActivity>> activityIPage = allActivity.get(activity_flag);
+//            if (activityIPage.isPresent()) {
+//                pageVo = activityIPage.get();
+//            }
+            pageVo = cjLotteryActivityDao.selectPageVo(page, param == 0L ? null : param + "");
+        } catch (Exception e) {
+            log.info("queryActivityListByPage ex:", e);
+        }
         if (pageVo != null) {
             pageView.setSize(pageVo.getTotal());
             if (!CollectionUtils.isEmpty(pageVo.getRecords())) {
@@ -74,13 +106,12 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
                         s.setActivityDeadlineFlag(true);
                     }
                 });
-
                 //不是新人的话替换第一张图片
-                if (!ObjectUtils.isEmpty(activity_flag)) {
+                if (param==1) {
                     pageVo.getRecords().stream().skip(0).limit(1).forEach(s -> s.setActivityImg("h5_img/index/2_red.png"));
                 }
                 List<CjLotteryActivity> collect = pageVo.getRecords().stream().sorted((o1, o2) -> o2.getSort().compareTo(o2.getSort())).collect(Collectors.toList());
-                collect.stream().forEach(s->s.setActivityImg(ImgDomain.imgUrlDomain+s.getActivityImg()));
+                collect.stream().forEach(s -> s.setActivityImg(ImgDomain.imgUrlDomain + s.getActivityImg()));
                 pageView.setModelList(collect);
             }
         }
@@ -110,13 +141,13 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
             List<String> headUrls = cjLotteryActivityImgs.stream().
                     filter(s -> ImgTypeEnum.LUN_BO.getCode() == s.getType()).
                     sorted((o1, o2) -> o2.getSort().compareTo(o1.getSort())).
-                    map(s -> ImgDomain.imgUrlDomain+ s.getImgUrl()).collect(Collectors.toList());
+                    map(s -> ImgDomain.imgUrlDomain + s.getImgUrl()).collect(Collectors.toList());
             List<ImgNameVo> imgNameVos = Lists.newArrayList();
             cjLotteryActivityImgs = cjLotteryActivityImgs.stream().
                     filter(s -> ImgTypeEnum.IMG_BODY.getCode() == s.getType()).sorted((o1, o2) -> o2.getSort().compareTo(o1.getSort())).collect(Collectors.toList());
             cjLotteryActivityImgs.stream().forEach(s -> {
                         ImgNameVo vo = new ImgNameVo();
-                        vo.setImgUrl(ImgDomain.imgUrlDomain+s.getImgUrl());
+                        vo.setImgUrl(ImgDomain.imgUrlDomain + s.getImgUrl());
                         vo.setProductName(idNameMap.get(s.getProductId()));
                         imgNameVos.add(vo);
                     }

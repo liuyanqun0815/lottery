@@ -21,7 +21,7 @@ public enum  ErrorEnum {
     PARAM_ERROR(2000,"参数错误"),
     USERINFO_NOT_EXIST(2001,"用户信息不存在"),
     NOT_TOKEN(2002,"未登录"),
-    NOT_NEW_PEPOLE(2003,"不是新用户！"),
+    NOT_NEW_PEPOLE(2003,"新人活动不允许重复参与"),
     NOT_ACITVITY(2004,"活动不存在！"),
     NOT_PRIZE(2005,"不存在奖品"),
     PRIZE_PAY(2006,"奖品不满5件，请先支付运费"),
@@ -46,7 +46,7 @@ public enum  ErrorEnum {
     USER_ADDRESS_NOT(4003,"用户地址信息有误"),
     PAY_TYPE_ERROR(4004,"支付类型错误"),
 
-    NEW_NOT_RECORVER(4005,"含有新人活动奖品不允许回收"),
+    NEW_NOT_RECORVER(4005,"新人活动不能回收"),
     ORDER_PAY_TYPE(4006,"支付类型不存在"),
 
 

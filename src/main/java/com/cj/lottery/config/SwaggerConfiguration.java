@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @Configuration
-@EnableSwagger2 //开启Swagger2
+//@EnableSwagger2 //开启Swagger2
 public class SwaggerConfiguration {
 
     //配置 Swagger的Docket的Bean实例
