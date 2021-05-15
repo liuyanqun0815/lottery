@@ -7,9 +7,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://1.15.80.82:3306/lottery?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: dbuser
-    password: '@#23wesdxc'
+    url: jdbc:mysql://1.15.xx.xx:3306/lottery?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: xxxxx
+    password: 'xxxxx'
     type: com.alibaba.druid.pool.DruidDataSource
   main:
     allow-bean-definition-overriding: true
@@ -43,6 +43,17 @@ spring:
     web-stat-filter:
       enabled: true
       url-pattern: /*
+  mail:
+    host: smtp.qq.com
+    username: xxxxxxx@qq.com
+    password: wvztvojdamzyhebg
+    properties:
+      mail:
+        auth: true
+        starttls:
+          enable: true
+          required: true
+
 #    stat-view-servlet:
 #      enabled: true                   # 启用StatViewServlet
 #      url-pattern: /druid/*           # 访问内置监控页面的路径，内置监控页面的首页是/druid/index.html
@@ -75,8 +86,8 @@ logging:
 app:
   weixin:
     gzh:
-      appid: wx4f43a6c5c3b7fe13
-      secret: cb5d31f7c17c06e99b28bd39b5b289c1
+      appid: xxxxx
+      secret: xxxxxxx
     pay:
       appid: '22'
       mchid: '11'
@@ -88,11 +99,11 @@ app:
 
 ###### 阿里云短信
 msg:
-  account: al0001
-  password: al0001
+  account: xxx
+  password: xxxx
   sendMsgUrl: http://211.149.255.237:81/smsJson.aspx
-#  templateCode: ''
-#  paramName: ''
+  #  templateCode: ''
+  #  paramName: ''
 
 
   ### 微信支付
@@ -102,15 +113,15 @@ wechat:
       # 租户id
       lottery:
         # 应用appId 必填
-        app-id: wx41c40c70db4b6774
+        app-id: xxxxx
         # v2 api 密钥  1.0.5版本以后如果用到V2的接口时必填，单纯V3不需要
-        app-secret: felordcn
+        app-secret: xxx
         # api v3 密钥 必填
-        app-v3-secret: 1JvpMFrKoUqAuiSyPe3kzUbsKPiu34QB
+        app-v3-secret: xxxx
         # 微信支付商户号 必填
-        mch-id: 1607180898
+        mch-id: xxxx
         # 商户服务器域名 用于回调  回调路径为 domain + notifyUrl  需要放开回调接口的安全策略 必填
-        domain: https://m.keyundz.cn
+        domain: https://xxxx
         # 商户 api 证书路径 必填  填写classpath路径 位于 maven项目的resources文件下
         cert-path: wechat/apiclient_cert.p12
 #        notify-url: https://m.keyundz.cn/lottery/api/pay/callbacks/transaction
@@ -118,7 +129,7 @@ wechat:
 ali:
   pay:
     v1:
-      app-id: 2021002140657575
+      app-id: xxxxxxxx
       app-private-key-path: alipay-sandbox/app_rsa
       alipay-public-cert-path: alipay-sandbox/alipayCertPublicKey_RSA2.crt
       alipay-root-cert-path: alipay-sandbox/alipayRootCert.crt
@@ -128,4 +139,17 @@ ali:
       charset: UTF-8
       format: json
       sign-type: RSA2
-      notify: https://m.keyundz.cn/lottery/api/pay/callbacks/aliNotify
+      notify: https://xxxxxx/lottery/api/pay/callbacks/aliNotify
+
+
+#  # QQ邮箱配置
+#  spring:
+#    mail.host=smtp.qq.com
+#  #发件人QQ邮箱地址
+#  spring.mail.username=xxxxx@qq.com
+#  #QQ邮箱授权码
+#  spring.mail.password=wvztvoxxjdamzyhebg
+#  #以下三项不用改动
+#  spring.mail.properties.mail.smtp.auth=true
+#  spring.mail.properties.mail.smtp.starttls.enable=true
+#  spring.mail.properties.mail.smtp.starttls.required=true
