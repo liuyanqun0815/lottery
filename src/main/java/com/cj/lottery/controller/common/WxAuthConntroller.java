@@ -48,7 +48,7 @@ public class WxAuthConntroller {
     @Autowired
     private CjCustomerLoginLogDao cjCustomerLoginLogDao;
 
-    @PostMapping("/weixin/login")
+    @RequestMapping("/weixin/login")
     @ApiOperation(value = "微信授权登录", httpMethod = "POST", produces = "application/json;charset=UTF-8")
     public void weixinLogin(HttpServletRequest request, HttpServletResponse response, @RequestParam(required = false,defaultValue = "lottery_channel") String channel) {
 
@@ -98,13 +98,13 @@ public class WxAuthConntroller {
             //去数据库查询此微信是否注册过
             CjCustomerLogin loginInfo = userInfoService.queryLoginInfoByLoginPhone(openid);
             if (loginInfo != null) {
-                String data = userInfoService.queryLatestToken(openid,"wxgzh" );
+                String data = userInfoService.queryLatestToken( openid,"wxgzh","wxgzh" );
                 return CjResult.success(data);
             }
             String nickname = userInfo.getString("nickname");
             Integer sex = userInfo.getInteger("sex");
             String headimgurl = userInfo.getString("headimgurl");
-            String token = userInfoService.saveUserInfo(openid, RandomValueUtils.getUserNumberId(), sex, headimgurl,"wxgzh");
+            String token = userInfoService.saveUserInfo(openid, RandomValueUtils.getUserNumberId(), sex, headimgurl,"wxgzh","wxgzh");
             return CjResult.success(token);
         } catch (Exception e) {
             log.error("微信回调失败:", e);

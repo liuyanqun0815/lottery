@@ -2,15 +2,14 @@ package com.cj.lottery.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cj.lottery.dao.*;
 import com.cj.lottery.domain.*;
-import com.cj.lottery.domain.view.CjProductInfoVo;
-import com.cj.lottery.domain.view.CjResult;
-import com.cj.lottery.domain.view.PrizeStatusVo;
+import com.cj.lottery.domain.view.*;
 import com.cj.lottery.enums.ErrorEnum;
 import com.cj.lottery.enums.PrizeStatusEnum;
 import com.cj.lottery.event.EventPublishService;
-import com.cj.lottery.mapper.CjProductInfoMapper;
 import com.cj.lottery.service.ProductInfoService;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +39,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     private EventPublishService eventPublishService;
     @Autowired
     private CjLotteryActivityDao lotteryActivityDao;
+    @Autowired
+    private CjPrizePoolDao prizePoolDao;
 
 
     @Override
@@ -91,6 +92,35 @@ public class ProductInfoServiceImpl implements ProductInfoService {
             this.saveSendRecord(cjCustomerAddresses.get(0).getId(),record.getProductId(),userId,postageFlag);
         }
         return CjResult.success();
+    }
+
+    @Override
+    public CjResult<PageView> pageProduct(int currentPage, int pageSize, String productName) {
+        PageView pageView = new PageView();
+        Page<CjProductInfoComplexVo> page = new Page<>(currentPage, pageSize);
+
+        IPage<CjProductInfoComplexVo> pageVo = productInfoDao.selectListProduct(page,productName);
+        if (pageVo == null){
+            return CjResult.success(pageView);
+        }
+        List<CjProductInfoComplexVo> records = pageVo.getRecords();
+        records.stream().forEach(s->s.setProductImgUrl("https://cos.keyundz.cn/"+s.getProductImgUrl()));
+        pageView.setModelList(records);
+        pageView.setSize(pageVo.getTotal());
+        return CjResult.success(pageView);
+    }
+
+    @Override
+    public CjResult<PageView> pageProductPool(int currentPage, int pageSize, String productName, String activityCode, Integer status, Integer used) {
+        PageView pageView = new PageView();
+        Page<ProductPoolVo> page = new Page<>(currentPage, pageSize);
+        IPage<ProductPoolVo> pageVo = prizePoolDao.selectPagePool(page, productName, activityCode, status,used);
+        if (pageVo == null){
+            return CjResult.success(pageView);
+        }
+        pageView.setModelList(pageVo.getRecords());
+        pageView.setSize(pageVo.getTotal());
+        return CjResult.success(pageView);
     }
 
     private void saveSendRecord(Integer addressId,Integer productId,Integer userId,boolean postageFlag){

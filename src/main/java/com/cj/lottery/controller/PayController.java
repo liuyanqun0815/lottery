@@ -15,14 +15,13 @@ import com.cj.lottery.dao.CjOrderPayDao;
 import com.cj.lottery.domain.CjCustomerInfo;
 import com.cj.lottery.domain.CjLotteryActivity;
 import com.cj.lottery.domain.CjOrderPay;
+import com.cj.lottery.domain.simple.CjSimpleLotteryActivity;
+import com.cj.lottery.domain.simple.CjSimpleOrderPay;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.PaySuccessVo;
 import com.cj.lottery.enums.*;
 import com.cj.lottery.event.EventPublishService;
-import com.cj.lottery.service.MaidianService;
-import com.cj.lottery.service.OrderPayService;
-import com.cj.lottery.service.ProductInfoService;
-import com.cj.lottery.service.UserInfoService;
+import com.cj.lottery.service.*;
 import com.cj.lottery.util.*;
 import com.google.common.cache.Cache;
 import io.swagger.annotations.Api;
@@ -76,6 +75,8 @@ public class PayController {
     private CjLotteryActivityDao cjLotteryActivityDao;
     @Autowired
     private CjOrderPayDao cjOrderPayDao;
+    @Autowired
+    private SimpleActivityService simpleActivityService;
 
 
     @ApiOperation("微信公众号充值接口")
@@ -124,7 +125,7 @@ public class PayController {
         if (PayTypeEnum.WX_H5 == payType){
             return orderPayService.createWxH5OrderPay(userId, totalFee,ipAddr,activity);
         }else if (PayTypeEnum.ALI_H5 == payType){
-            return orderPayService.createAliH5OrderPay(userId, totalFee,ipAddr,activity,response);
+            return orderPayService.createAliH5OrderPay(userId, totalFee,ipAddr,activity,response,channel);
         }
         return CjResult.fail(ErrorEnum.PAY_TYPE_ERROR);
 
@@ -135,7 +136,8 @@ public class PayController {
     public CjResult<PaySuccessVo> prizeTransportFare(HttpServletRequest request,
                                        @ApiParam("充值金额(分)") @RequestParam int totalFee,
                                        @ApiParam("奖品记录唯一标识") @RequestParam List<Integer> idList,
-                                       @ApiParam("支付类型")@RequestParam(required = false,defaultValue = "WX_H5")PayTypeEnum payType) {
+                                       @ApiParam("支付类型")@RequestParam(required = false,defaultValue = "WX_H5")PayTypeEnum payType,
+                                                     @RequestParam(required = false)String channel) {
         int userId = ContextUtils.getUserId();
         String ipAddr = IpUtil.getIpAddr(request);
         if (ObjectUtils.isEmpty(ipAddr)){
@@ -145,7 +147,7 @@ public class PayController {
         if (PayTypeEnum.WX_H5 == payType){
             return orderPayService.wxTransportPay(userId, totalFee,ipAddr,idList);
         }else if (PayTypeEnum.ALI_H5 == payType){
-            return orderPayService.aliTransportPay(userId, totalFee,ipAddr,idList);
+            return orderPayService.aliTransportPay(userId, totalFee,ipAddr,idList,channel);
         }
         return CjResult.fail(ErrorEnum.PAY_TYPE_ERROR);
     }
@@ -237,7 +239,14 @@ public class PayController {
                     return;
                 }
                 cache.put(id,id);
-                orderPayService.wxRefundBack(data);
+                String outTradeNo = data.getOutTradeNo();
+                CjSimpleOrderPay orderPay =  simpleActivityService.queryOrderPay(outTradeNo);
+                //简版位置支付成功
+                if (orderPay!= null){
+                    simpleActivityService.paySuccess(outTradeNo);
+                }else {
+                    orderPayService.wxRefundBack(data);
+                }
 
             });
         }catch (Exception ex){
@@ -340,6 +349,13 @@ public class PayController {
                     }
                     log.info("liCallbacks success----trade_no:{}", trade_no);
                     cache.put(trade_no, trade_no);
+
+                    CjSimpleOrderPay simpleOrderPay =  simpleActivityService.queryOrderPay(out_trade_no);
+                    //简版位置支付成功
+                    if (simpleOrderPay!= null){
+                        simpleActivityService.paySuccess(out_trade_no);
+                        return "SUCCESS";
+                    }
                     CjOrderPay orderPay = orderPayDao.selectByOutTradeNo(out_trade_no);
                     if (orderPay == null) {
                         log.info("aliCallbacks not query orderInfo trade_no:{}", trade_no);

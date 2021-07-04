@@ -1,14 +1,15 @@
 package com.cj.lottery.service.impl;
 
-import com.cj.lottery.dao.CjCustomerAddressDao;
-import com.cj.lottery.dao.CjCustomerInfoDao;
-import com.cj.lottery.dao.CjCustomerLoginDao;
-import com.cj.lottery.dao.CjCustomerLoginLogDao;
-import com.cj.lottery.domain.CjCustomerAddress;
-import com.cj.lottery.domain.CjCustomerInfo;
-import com.cj.lottery.domain.CjCustomerLogin;
-import com.cj.lottery.domain.CjCustomerLoginLog;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cj.lottery.dao.*;
+import com.cj.lottery.domain.*;
+import com.cj.lottery.domain.manage.UserBaseInfo;
+import com.cj.lottery.domain.manage.UserLotteryRecordVo;
+import com.cj.lottery.domain.manage.UserPayRecordVo;
+import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
+import com.cj.lottery.domain.view.PageView;
 import com.cj.lottery.enums.SexEnum;
 import com.cj.lottery.service.UserInfoService;
 import com.cj.lottery.util.ContextUtils;
@@ -36,6 +37,12 @@ public class UserInfoServiceImpl implements UserInfoService {
     private CjCustomerLoginDao customerLoginDao;
     @Autowired
     private CjCustomerLoginLogDao cjCustomerLoginLogDao;
+    @Autowired
+    private CjNotifyPayDao notifyPayDao;
+    @Autowired
+    private CjLotteryRecordDao lotteryRecordDao;
+    @Autowired
+    private CjMerchantDao merchantDao;
 
     @Override
     public List<ConstumerAddressInfoVo> queryAddressListByConstmerId(int constmerId) {
@@ -75,10 +82,10 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 
     @Override
-    public String queryLatestToken(String mobile, String channel) {
+    public String queryLatestToken(String mobile, String channel,String ua) {
         CjCustomerLogin login = customerLoginDao.selectByLoginPhone(mobile);
         if (login == null){
-            return saveUserInfo(mobile,RandomValueUtils.getUserNumberId(),SexEnum.BOY.getCode(),null,channel);
+            return saveUserInfo(mobile,RandomValueUtils.getUserNumberId(),SexEnum.BOY.getCode(),null,channel,ua);
         }
         String token = cjCustomerLoginLogDao.selectTokenByCustomerId(login.getId());
         if (ObjectUtils.isEmpty(token)) {
@@ -93,7 +100,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public String saveUserInfo(String loginMark, int numId, Integer sex, String headimgurl,String channel) {
+    public String saveUserInfo(String loginMark, int numId, Integer sex, String headimgurl,String channel,String ua) {
         CjCustomerLogin login = new CjCustomerLogin();
         login.setLoginPhone(loginMark);
         customerLoginDao.insertSelective(login);
@@ -103,6 +110,8 @@ public class UserInfoServiceImpl implements UserInfoService {
         info.setHeadUrl(headimgurl);
         info.setCustomerId(login.getId());
         info.setChannel(channel);
+        info.setUa(ua);
+        info.setAccount(loginMark);
         customerInfoDao.insertSelective(info);
 
         String uniqueCode = UuidUtils.getUUid();
@@ -111,5 +120,53 @@ public class UserInfoServiceImpl implements UserInfoService {
         loginLog.setUniqueCode(uniqueCode);
         cjCustomerLoginLogDao.insertSelective(loginLog);
         return uniqueCode;
+    }
+
+    @Override
+    public CjResult<PageView> listUserBaseInfo(int currentPage, int pageSize, String account, String customerCode, String startTime, String endTime,String channel) {
+        PageView pageView = new PageView();
+        Page<UserBaseInfo> page = new Page<>(currentPage, pageSize);
+
+        IPage<UserBaseInfo> userPage = customerInfoDao.selectBaseUserInfo(page,account, customerCode, startTime, endTime,channel);
+        long total = userPage.getTotal();
+        pageView.setSize(total);
+        pageView.setModelList(userPage.getRecords());
+        return CjResult.success(pageView);
+    }
+
+    @Override
+    public CjResult<PageView> listUserPayRecord(int currentPage, int pageSize, String account, String customerCode, String startTime, String endTime, Integer status, String channel) {
+        PageView pageView = new PageView();
+        Page<UserPayRecordVo> page = new Page<>(currentPage, pageSize);
+        IPage<UserPayRecordVo> pageVo = notifyPayDao.selectPayRecord(page,account,customerCode,startTime,endTime,channel,status);
+        pageView.setSize(pageVo.getTotal());
+        pageView.setModelList(pageVo.getRecords());
+        return CjResult.success(pageView);
+    }
+
+    @Override
+    public CjResult<PageView> listUserLotteryRecord(int currentPage, int pageSize, String account, String customerCode, String startTime, String endTime, Integer status, String channel) {
+        PageView pageView = new PageView();
+        Page<UserLotteryRecordVo> page = new Page<>(currentPage, pageSize);
+        IPage<UserLotteryRecordVo> pageVo = lotteryRecordDao.selectLotterRecord(page,account,customerCode,startTime,endTime,channel,status);
+        pageView.setSize(pageVo.getTotal());
+        pageView.setModelList(pageVo.getRecords());
+        return CjResult.success(pageView);
+    }
+
+    @Override
+    public CjResult<PageView> listChannelRecord(int currentPage, int pageSize, String channel, String channelName) {
+        PageView pageView = new PageView();
+        Page<CjMerchant> page = new Page<>(currentPage, pageSize);
+        IPage<CjMerchant> pageVo = merchantDao.selectChannelRecord(page,channel,channelName);
+        pageView.setSize(pageVo.getTotal());
+        pageView.setModelList(pageVo.getRecords());
+        return CjResult.success(pageView);
+    }
+
+    @Override
+    public CjResult<Boolean> login(String account, String password) {
+        CjCustomerInfo info = customerLoginDao.selectByAccountAndPassword(account,password);
+        return info == null ?CjResult.success(false):CjResult.success(true);
     }
 }

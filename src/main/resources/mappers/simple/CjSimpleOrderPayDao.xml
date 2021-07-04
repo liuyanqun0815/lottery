@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.simple.CjSimpleOrderPayDao">
+
+  <sql id="Base_Column_List">
+    id, body, out_trade_no, transaction_id, total_fee, trade_type, time_start, `status`, 
+    channel, is_delete, create_time, update_time
+  </sql>
+
+  <sql id="table_name">
+    cj_simple_order_pay
+  </sql>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.simple.CjSimpleOrderPay" useGeneratedKeys="true">
+    insert into cj_simple_order_pay
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="body != null">
+        body,
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no,
+      </if>
+      <if test="transactionId != null">
+        transaction_id,
+      </if>
+      <if test="totalFee != null">
+        total_fee,
+      </if>
+      <if test="tradeType != null">
+        trade_type,
+      </if>
+      <if test="timeStart != null">
+        time_start,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="channel != null">
+        channel,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="body != null">
+        #{body},
+      </if>
+      <if test="outTradeNo != null">
+        #{outTradeNo},
+      </if>
+      <if test="transactionId != null">
+        #{transactionId},
+      </if>
+      <if test="totalFee != null">
+        #{totalFee},
+      </if>
+      <if test="tradeType != null">
+        #{tradeType},
+      </if>
+      <if test="timeStart != null">
+        #{timeStart},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="channel != null">
+        #{channel},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.simple.CjSimpleOrderPay">
+    update cj_simple_order_pay
+    <set>
+      <if test="body != null">
+        body = #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null">
+        total_fee = #{totalFee,jdbcType=INTEGER},
+      </if>
+      <if test="tradeType != null">
+        trade_type = #{tradeType,jdbcType=INTEGER},
+      </if>
+      <if test="timeStart != null">
+        time_start = #{timeStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=TINYINT},
+
+      </if>
+      <if test="channel != null">
+        channel = #{channel,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateOrderStatusByOutradeNo">
+    update <include refid="table_name"/>
+    set status = #{status}
+    where
+    is_delete = 0
+    and out_trade_no = #{outTradeNo}
+  </update>
+  <select id="selectByOutTradeNo" resultType="com.cj.lottery.domain.simple.CjSimpleOrderPay">
+      select <include refid="Base_Column_List"/>
+      from <include refid="table_name"/>
+      where is_delete = 0
+      and out_trade_no = #{outTradeNo}
+      limit 1
+    </select>
+
+</mapper>

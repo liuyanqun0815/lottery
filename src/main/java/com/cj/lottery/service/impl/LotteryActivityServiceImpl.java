@@ -9,6 +9,7 @@ import com.cj.lottery.dao.CjOrderPayDao;
 import com.cj.lottery.dao.CjProductInfoDao;
 import com.cj.lottery.domain.*;
 import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.EnumVo;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.PageView;
 import com.cj.lottery.enums.ErrorEnum;
@@ -161,5 +162,12 @@ public class LotteryActivityServiceImpl implements LotteryActivityService {
             infoVo.setScore(cjCustomerInfo.getScoreInFen());
         }
         return CjResult.success(infoVo);
+    }
+
+    @Override
+    public CjResult<List<EnumVo>> queryAllActivity() {
+        List<CjLotteryActivity> allActivities = cjLotteryActivityDao.getAllActivities();
+
+        return CjResult.success(allActivities.stream().map(s->EnumVo.toVo(s)).collect(Collectors.toList()));
     }
 }

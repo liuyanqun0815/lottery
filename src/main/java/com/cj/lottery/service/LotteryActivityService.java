@@ -2,6 +2,7 @@ package com.cj.lottery.service;
 
 import com.cj.lottery.domain.CjLotteryActivityImg;
 import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.EnumVo;
 import com.cj.lottery.domain.view.LotteryActivityInfoVo;
 import com.cj.lottery.domain.view.PageView;
 
@@ -26,4 +27,5 @@ public interface LotteryActivityService {
     CjResult<LotteryActivityInfoVo> queryActivityDetailsByPage(int userId,String activityCode);
 
 
+    CjResult<List<EnumVo>> queryAllActivity();
 }

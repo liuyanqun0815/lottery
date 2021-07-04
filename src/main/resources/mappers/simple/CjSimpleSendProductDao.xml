@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.simple.CjSimpleSendProductDao">
+
+  <sql id="Base_Column_List">
+    id, product_id, `name`, mobile, address, address_info, channel, is_delete, create_time, out_trade_no
+    update_time
+  </sql>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.simple.CjSimpleSendProduct" useGeneratedKeys="true">
+    insert into cj_simple_send_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="addressInfo != null">
+        address_info,
+      </if>
+      <if test="channel != null">
+        channel,
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        #{productId},
+      </if>
+      <if test="name != null">
+        #{name},
+      </if>
+      <if test="mobile != null">
+        #{mobile},
+      </if>
+      <if test="address != null">
+        #{address},
+      </if>
+      <if test="addressInfo != null">
+        #{addressInfo},
+      </if>
+      <if test="channel != null">
+        #{channel},
+      </if>
+      <if test="outTradeNo!= null">
+        #{outTradeNo},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.simple.CjSimpleSendProduct">
+    update cj_simple_send_product
+    <set>
+      <if test="productId != null">
+        product_id = #{productId},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="addressInfo != null">
+        address_info = #{addressInfo,jdbcType=INTEGER},
+      </if>
+      <if test="channel != null">
+        channel = #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

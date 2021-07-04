@@ -1,7 +1,7 @@
 package com.cj.lottery.service;
 
-import com.cj.lottery.domain.CjProductInfo;
 import com.cj.lottery.domain.view.CjResult;
+import com.cj.lottery.domain.view.PageView;
 import com.cj.lottery.domain.view.PrizeStatusVo;
 import com.cj.lottery.enums.PrizeStatusEnum;
 import com.cj.lottery.domain.view.CjProductInfoVo;
@@ -23,4 +23,10 @@ public interface ProductInfoService {
     List<CjProductInfoVo> queryProductByStatusAndUserId(PrizeStatusEnum status,Integer userId);
 
     CjResult<Void> sendGoods(List<Integer> idList, int userId,boolean postageFlag);
+
+    CjResult<PageView> pageProduct(int currentPage, int pageSize, String productName);
+
+    CjResult<PageView> pageProductPool(int currentPage, int pageSize, String productName, String activityCode, Integer status, Integer used);
+
+
 }

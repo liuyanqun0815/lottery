@@ -3,6 +3,8 @@ package com.cj.lottery.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ParameterBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @Configuration
-//@EnableSwagger2 //开启Swagger2
+@EnableSwagger2 //开启Swagger2
 public class SwaggerConfiguration {
 
     //配置 Swagger的Docket的Bean实例
@@ -22,12 +24,16 @@ public class SwaggerConfiguration {
     public Docket docket() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
+                .select()
+                .paths(PathSelectors.ant("/api/cj/simple/activity/**"))// 设置过滤的 mapperHandler 路径，满足条件则扫描api；/hello/** 包含/hello
+                .build()
                 .globalOperationParameters(Collections.singletonList(
                         new ParameterBuilder()
                                 .name("token")
                                 .description("token")
                                 .modelRef(new ModelRef("string"))
                                 .parameterType("header")
+
                                 .build()
                 ));
     }

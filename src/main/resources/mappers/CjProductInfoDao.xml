@@ -176,5 +176,28 @@
         and status = 0
     </select>
 
+    <select id="selectListProduct" resultType="com.cj.lottery.domain.view.CjProductInfoComplexVo">
+        SELECT
+            info.product_name as productName,
+            info.product_img_url as productImgUrl,
+            activity.activity_name as activityName,
+            activity.activity_rate as activityRate,
+            activity.consumer_money as price,
+            info.create_time as createTime
+        FROM
+            cj_product_info info
+            LEFT JOIN cj_prize_pool pool ON info.id = pool.product_id
+            AND info.is_delete = pool.is_delete
+            LEFT JOIN cj_lottery_activity activity ON pool.activity_id = activity.id
+            AND activity.is_delete = pool.is_delete
+        WHERE
+            info.is_delete = 0
+            AND info.`status` = 0
+            <if test="productName!= null">
+                and info.product_name like concat ('%',#{productName},'%')
+            </if>
+        ORDER BY
+            activity.id ASC
+    </select>
 
 </mapper>

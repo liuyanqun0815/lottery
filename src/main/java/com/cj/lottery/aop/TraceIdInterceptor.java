@@ -41,13 +41,20 @@ public class TraceIdInterceptor implements HandlerInterceptor {
         MDC.put(ContextCons.TRACE_ID, traceId);
         ContextUtils.setTraceId(traceId);
         String token = loginInterceptor.getToken(request);
+        String header = request.getHeader("User-Agent");
+        String Referer = request.getHeader("Referer");
+        String channel = request.getParameter("channel");
+
         if (ObjectUtils.isEmpty(token)) {
-            log.info("TraceIdInterceptor request start token:{} url:{} ,param:{}",token, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
+            log.info("TraceIdInterceptor request start channel:{} Referer:{} UA:{} token:{} url:{} ,param:{}",channel,Referer,header,token, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
             return true;
         }
+//        if (ObjectUtils.isEmpty(channel)){
+//            return false;
+//        }
         int userId = ContextUtils.getUserId();
         Integer userIdByToken = customerLoginService.getUserIdByToken(token);
-        log.info("TraceIdInterceptor request start token:{} userId:{}, url:{},param:{}",token, userIdByToken, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
+        log.info("TraceIdInterceptor request  start channel:{} Referer:{} UA:{} token:{} userId:{}, url:{},param:{}",channel,Referer,header,token, userIdByToken, request.getRequestURI(), JSON.toJSONString(request.getParameterMap()));
         if (ObjectUtils.isEmpty(userIdByToken)) {
             return true;
         }

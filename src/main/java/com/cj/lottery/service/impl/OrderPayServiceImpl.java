@@ -13,18 +13,21 @@ import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.cj.lottery.constant.WxCons;
 import com.cj.lottery.dao.*;
+import com.cj.lottery.dao.simple.CjSimpleOrderPayDao;
 import com.cj.lottery.domain.*;
+import com.cj.lottery.domain.simple.CjSimpleLotteryActivity;
+import com.cj.lottery.domain.simple.CjSimpleOrderPay;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.PaySuccessVo;
 import com.cj.lottery.enums.*;
 import com.cj.lottery.event.EventPublishService;
+import com.cj.lottery.service.LuckDrawLotteryService;
 import com.cj.lottery.service.OrderPayService;
 import com.cj.lottery.service.ProductInfoService;
-import com.cj.lottery.util.DateUtil;
-import com.cj.lottery.util.HttpClientResult;
-import com.cj.lottery.util.HttpClientUtils;
-import com.cj.lottery.util.UuidUtils;
+import com.cj.lottery.service.SimpleActivityService;
+import com.cj.lottery.util.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.cache.Cache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
@@ -37,7 +40,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -91,9 +93,18 @@ public class OrderPayServiceImpl implements OrderPayService {
     private CjNotifyPayDao notifyPayDao;
     @Autowired
     private ProductInfoService productInfoService;
-
+    @Autowired
+    private LuckDrawLotteryService luckDrawLotteryService;
+    @Autowired
+    private SimpleActivityService simpleActivityService;
+    @Autowired
+    private CjSimpleOrderPayDao cjSimpleOrderPayDao;
+    @Autowired
+    private SmsUtil smsUtil;
     @Autowired
     AlipayClient alipayClient;
+    @Autowired
+    public Cache<String, String> smsCache;
 
     @Override
     public CjResult<String> createWxOrderPay(int customerId, int totalFee, String activityCode) {
@@ -200,14 +211,14 @@ public class OrderPayServiceImpl implements OrderPayService {
     }
 
     @Override
-    public CjResult aliTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList) {
+    public CjResult aliTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList,String channel) {
 
         PaySuccessVo vo = new PaySuccessVo();
         String body = "商品邮费";
         String money = intToFloat(totalFee);
         String out_trade_no = UuidUtils.getOrderNo();
         AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
-        request.setReturnUrl("https://m.keyundz.cn/#/paySuccess?idList="+ StringUtils.join(idList,",")+"&payMoney="+totalFee+"&orderNo="+out_trade_no);
+        request.setReturnUrl("https://m.keyundz.cn/#/paySuccess?idList="+ StringUtils.join(idList,",")+"&payMoney="+totalFee+"&orderNo="+out_trade_no+"&channel="+channel);
         request.setNotifyUrl(aliNotifyUrl);//在公共参数中设置回跳和通知地址
         // 封装请求支付信息
         AlipayTradeWapPayModel model=new AlipayTradeWapPayModel();
@@ -216,7 +227,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         model.setTotalAmount(money);
         // 销售产品码 必填
         model.setProductCode("QUICK_WAP_WAY");
-        model.setQuitUrl("https://m.keyundz.cn/#/sureSend/confirmPay?payMoney="+totalFee+"&ids="+StringUtils.join(idList,","));
+        model.setQuitUrl("https://m.keyundz.cn/#/sureSend/confirmPay?payMoney="+totalFee+"&ids="+StringUtils.join(idList,",")+"&channel="+channel);
         model.setPassbackParams(StringUtils.join(idList,","));
         request.setBizModel(model);
         try {
@@ -266,6 +277,78 @@ public class OrderPayServiceImpl implements OrderPayService {
 
     }
 
+    @Override
+    public CjResult<PaySuccessVo> createSimpleWxH5OrderPay(String ipAddr, CjSimpleLotteryActivity activityVo, String productCode, String channel) {
+        PaySuccessVo vo = new PaySuccessVo();
+        String out_trade_no = UuidUtils.getOrderNo();
+        vo.setOutTradeNo(out_trade_no);
+        String h5Url= this.h5Pay(activityVo.getActivityName(), activityVo.getMoney(), out_trade_no, ipAddr, null);
+
+        CjSimpleOrderPay pay = new CjSimpleOrderPay();
+        pay.setBody(activityVo.getActivityName());
+        pay.setChannel(channel);
+        pay.setOutTradeNo(out_trade_no);
+        pay.setStatus(PayStatusEnum.NO_PAY.getCode());
+        pay.setTotalFee(activityVo.getMoney());
+        pay.setTradeType(PayTypeEnum.WX_H5.getCode());
+        pay.setTimeStart(new Date());
+        int i = cjSimpleOrderPayDao.insertSelective(pay);
+        vo.setH5_url(h5Url);
+        vo.setOutTradeNo(out_trade_no);
+        String kaptcha = smsUtil.getKaptcha();
+        vo.setRandom(kaptcha);
+        smsCache.put(out_trade_no,kaptcha);
+        return CjResult.success(vo);
+    }
+
+    @Override
+    public CjResult<PaySuccessVo> createSimpleAliH5OrderPay(String ipAddr, CjSimpleLotteryActivity activity, HttpServletResponse response, String channel) {
+        PaySuccessVo vo = new PaySuccessVo();
+        String money = intToFloat(activity.getMoney());
+        String out_trade_no = UuidUtils.getOrderNo();
+        vo.setOutTradeNo(out_trade_no);
+        AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
+
+//        request.setReturnUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activity.getActivityCode()+"&channel="+channel);
+        request.setReturnUrl("https://m.keyundz.cn/#/");
+        request.setNotifyUrl(aliNotifyUrl);//在公共参数中设置回跳和通知地址
+        // 封装请求支付信息
+        AlipayTradeWapPayModel model=new AlipayTradeWapPayModel();
+        model.setOutTradeNo(out_trade_no);
+        model.setSubject(activity.getActivityName());
+        model.setTotalAmount(money);
+        // 销售产品码 必填
+        String product_code="QUICK_WAP_WAY";
+        model.setProductCode(product_code);
+//        model.setQuitUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activity.getActivityCode()+"&channel="+channel);
+        model.setQuitUrl("https://m.keyundz.cn/#/");
+        request.setBizModel(model);
+        try {
+            log.info("AlipayResponse param:{}",JSONObject.toJSON(request));
+            String form = alipayClient.pageExecute(request).getBody();
+            log.info("execute = {}",JSONObject.toJSON(form));
+
+            CjSimpleOrderPay pay = new CjSimpleOrderPay();
+            pay.setBody(activity.getActivityName());
+            pay.setChannel(channel);
+            pay.setOutTradeNo(out_trade_no);
+            pay.setStatus(PayStatusEnum.NO_PAY.getCode());
+            pay.setTotalFee(activity.getMoney());
+            pay.setTradeType(PayTypeEnum.ALI_H5.getCode());
+            pay.setTimeStart(new Date());
+            int i = cjSimpleOrderPayDao.insertSelective(pay);
+            vo.setOutTradeNo(out_trade_no);
+            vo.setH5_url(form);
+            String kaptcha = smsUtil.getKaptcha();
+            vo.setRandom(kaptcha);
+            smsCache.put(out_trade_no,kaptcha);
+            return CjResult.success(vo);
+        } catch (Exception e) {
+            log.info("createAliH5OrderPay exception:",e);
+        }
+        return CjResult.success();
+    }
+
     private void createAliPayNotify(Map<String, String> params, CjOrderPay orderPay) {
         CjNotifyPay notifyPay = new CjNotifyPay();
         notifyPay.setMchId(params.get("app_id"));
@@ -283,14 +366,14 @@ public class OrderPayServiceImpl implements OrderPayService {
 
     @SneakyThrows
     @Override
-    public CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr, CjLotteryActivity activity, HttpServletResponse response) {
+    public CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr, CjLotteryActivity activity, HttpServletResponse response,String channel) {
         PaySuccessVo vo = new PaySuccessVo();
         String money = intToFloat(totalFee);
         String out_trade_no = UuidUtils.getOrderNo();
         vo.setOutTradeNo(out_trade_no);
         AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
 
-        request.setReturnUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activity.getActivityCode());
+        request.setReturnUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activity.getActivityCode()+"&channel="+channel);
         request.setNotifyUrl(aliNotifyUrl);//在公共参数中设置回跳和通知地址
         // 封装请求支付信息
         AlipayTradeWapPayModel model=new AlipayTradeWapPayModel();
@@ -300,7 +383,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         // 销售产品码 必填
         String product_code="QUICK_WAP_WAY";
         model.setProductCode(product_code);
-        model.setQuitUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activity.getActivityCode());
+        model.setQuitUrl("https://m.keyundz.cn/#/goodsDetail?goodId="+activity.getActivityCode()+"&channel="+channel);
 
         request.setBizModel(model);
         try {

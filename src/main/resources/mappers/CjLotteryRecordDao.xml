@@ -117,4 +117,47 @@
     limit 1
   </select>
 
+  <select id="selectLotterRecord" resultType="com.cj.lottery.domain.manage.UserLotteryRecordVo">
+    SELECT
+	info.account AS account,
+	info.customer_name AS customerCode,
+	info.channel AS channel,
+	activity.activity_name AS activityName,
+	activity.consumer_money AS totalFee,
+	p.product_name AS productName,
+	record.STATUS AS STATUS,
+	record.create_time AS createTime
+FROM
+	cj_lottery_record record
+	LEFT JOIN cj_customer_info info ON record.customer_id = info.customer_id
+	AND record.is_delete = info.is_delete
+	LEFT JOIN cj_lottery_activity activity ON activity.id = record.activity_id
+	AND activity.is_delete = record.is_delete
+	LEFT JOIN cj_product_info p ON p.id = record.product_id
+	AND p.is_delete = record.is_delete
+WHERE
+	info.is_delete = 0
+    <if test="channel != null and channel!=''">
+      and info.channel = #{channel}
+    </if>
+    <if test="account != null and account!=''">
+      and info.account = #{account}
+    </if>
+    <if test="customerCode!= null and customerCode!=''">
+      and info.customer_name = #{customerCode}
+    </if>
+    <if test="startTime!= null and startTime!=''">
+      and record.create_time > #{startTime}
+    </if>
+    <if test="endTime !=null and endTime!=''">
+      and record.create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+    <if test="status != null and status!=''">
+      and record.status = #{status}
+    </if>
+ORDER BY
+	record.id DESC
+
+  </select>
+
 </mapper>

@@ -125,11 +125,13 @@
         and product_latest_num>0
     </select>
     <select id="selectAllProduct" resultType="com.cj.lottery.domain.CjPrizePool">
-        select <include refid="Base_Column_List"/>
-        from <include refid="tableName"/>
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="tableName"/>
         where is_delete = 0
         and status = 0
-        and  product_latest_num>0
+        and product_latest_num>0
     </select>
 
     <select id="selectAllProductByActivityId" resultType="com.cj.lottery.domain.CjPrizePool">
@@ -140,5 +142,40 @@
         where is_delete = 0
         and status = 0
         and activity_id = #{activityId}
+    </select>
+
+    <select id="selectPagePool" resultType="com.cj.lottery.domain.view.ProductPoolVo">
+        SELECT
+        activity.activity_name as activityName,
+        activity.consumer_money as price,
+        info.product_name as productName,
+        pool.product_num as productNum,
+        pool.product_latest_num as productLatestNum,
+        pool.`status` as status,
+        pool.create_time as createTime
+        FROM
+        cj_prize_pool pool
+        LEFT JOIN cj_product_info info ON pool.product_id = info.id
+        AND pool.is_delete = info.is_delete
+        LEFT JOIN cj_lottery_activity activity ON activity.id = pool.activity_id
+        AND activity.is_delete = pool.is_delete
+        WHERE
+        pool.is_delete = 0
+        AND activity.`status` =0
+        <if test="productName!= null and productName!=''">
+            and info.product_name like concat ('%',#{productName},'%')
+        </if>
+        <if test="activityCode!= null and activityCode!=''">
+            and activity.activity_code = #{activityCode}
+        </if>
+        <if test="status != null">
+            and pool.status =#{status}
+        </if>
+        <if test="used!= null and used==0">
+            and pool.product_latest_num >0
+        </if>
+        <if test="used!= null and used==1">
+            and pool.product_latest_num=0
+        </if>
     </select>
 </mapper>

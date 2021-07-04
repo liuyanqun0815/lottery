@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.simple.CjSimpleLotteryActivityDao">
+
+  <sql id="Base_Column_List">
+    id, activity_code, activity_name, activity_desc, activity_flag, activity_img, sort, 
+    `status`, money, is_delete, create_time, update_time
+  </sql>
+<sql id="table_name">
+  cj_simple_lottery_activity
+</sql>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.simple.CjSimpleLotteryActivity" useGeneratedKeys="true">
+    insert into cj_simple_lottery_activity
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="activityCode != null">
+        activity_code,
+      </if>
+      <if test="activityName != null">
+        activity_name,
+      </if>
+      <if test="activityDesc != null">
+        activity_desc,
+      </if>
+      <if test="activityFlag != null">
+        activity_flag,
+      </if>
+      <if test="activityImg != null">
+        activity_img,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="money != null">
+        money,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="activityCode != null">
+        #{activityCode},
+      </if>
+      <if test="activityName != null">
+        #{activityName},
+      </if>
+      <if test="activityDesc != null">
+        #{activityDesc},
+      </if>
+      <if test="activityFlag != null">
+        #{activityFlag},
+      </if>
+      <if test="activityImg != null">
+        #{activityImg},
+      </if>
+      <if test="sort != null">
+        #{sort},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="money != null">
+        #{money},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.simple.CjSimpleLotteryActivity">
+    update cj_simple_lottery_activity
+    <set>
+      <if test="activityCode != null">
+        activity_code = #{activityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="activityName != null">
+        activity_name = #{activityName,jdbcType=VARCHAR},
+      </if>
+      <if test="activityDesc != null">
+        activity_desc = #{activityDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="activityFlag != null">
+        activity_flag = #{activityFlag,jdbcType=TINYINT},
+      </if>
+      <if test="activityImg != null">
+        activity_img = #{activityImg,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+
+      <if test="money != null">
+        money = #{money,jdbcType=INTEGER},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <select id="selectByCode" resultType="com.cj.lottery.domain.simple.CjSimpleLotteryActivity">
+      select <include refid="Base_Column_List"/>
+      from <include refid="table_name"/>
+      where is_delete = 0
+      and  activity_code = #{activityCode}
+      limit 1
+    </select>
+  <select id="selectAll" resultType="com.cj.lottery.domain.simple.CjSimpleLotteryActivity">
+    select <include refid="Base_Column_List"/>
+    from <include refid="table_name"/>
+    where is_delete =0
+    and status = 0
+    order by sort
+  </select>
+
+</mapper>

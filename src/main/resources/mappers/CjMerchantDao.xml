@@ -3,7 +3,7 @@
 <mapper namespace="com.cj.lottery.dao.CjMerchantDao">
 
   <sql id="Base_Column_List">
-    id, merchant_code, appid, mch_id, `status`
+    id, merchant_code, appid, mch_id, `status`,channel,channel_name
   </sql>
   <sql id="table_name">
     cj_merchant
@@ -33,6 +33,17 @@
     from cj_merchant
     where status = 0
     and is_delete = 0
+  </select>
+  <select id="selectChannelRecord" resultType="com.cj.lottery.domain.CjMerchant">
+    select * from <include refid="table_name"/>
+    where is_delete = 0
+    <if test="channel!= null and channel!=''">
+      and channel = #{channel}
+    </if>
+    <if test="channelName != null and channelName!=''">
+      and channel_name = #{channelName}
+    </if>
+    order by id desc
   </select>
 
   <insert id="insert">

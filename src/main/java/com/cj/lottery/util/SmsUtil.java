@@ -75,7 +75,7 @@ public class SmsUtil {
         map.put("password",password);
         map.put("ac",ac);
         map.put("mobiles",mobile);
-        map.put("content","【客云科技】验证码："+kaptcha+"。您正在进行手机号码验证，如非本人操作，请忽略改短信");
+        map.put("content","【欢乐赏】验证码："+kaptcha+"。您正在进行手机号码验证，如非本人操作，请忽略改短信");
 
         try {
             HttpClientResult httpClientResult = HttpClientUtils.doPost(sendMsgUrl, map);
@@ -130,7 +130,7 @@ public class SmsUtil {
      *
      * @return kaptcha
      */
-    private String getKaptcha() {
+    public String getKaptcha() {
         StringBuilder str = new StringBuilder();
         Random random = new Random();
 

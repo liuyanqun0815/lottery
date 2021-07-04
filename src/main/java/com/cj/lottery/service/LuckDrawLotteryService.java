@@ -28,4 +28,5 @@ public interface LuckDrawLotteryService {
      */
     CjResult<List<CjLotteryMaopaoVo>> getAwardwinningUserInfo(String activityCode);
 
+    CjResult<List<CjLotteryMaopaoVo>> getSimpleAwardwinningUserInfo(String activityCode);
 }

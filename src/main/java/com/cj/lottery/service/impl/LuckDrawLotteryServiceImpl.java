@@ -5,14 +5,12 @@ import com.cj.lottery.constant.ImgDomain;
 import com.cj.lottery.controller.LuckDrawLotteryController;
 import com.cj.lottery.dao.*;
 import com.cj.lottery.domain.*;
+import com.cj.lottery.domain.simple.CjSimpleLotteryActivity;
 import com.cj.lottery.domain.view.*;
 import com.cj.lottery.enums.*;
 import com.cj.lottery.event.EventPublishService;
 import com.cj.lottery.mapper.CjProductInfoMapper;
-import com.cj.lottery.service.LotteryActivityService;
-import com.cj.lottery.service.LuckDrawLotteryService;
-import com.cj.lottery.service.ScoreRuleService;
-import com.cj.lottery.service.UserInfoService;
+import com.cj.lottery.service.*;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +60,8 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
     private CjLotteryMaopaoDao lotteryMaopaoDao;
     @Autowired
     private ScoreRuleService scoreRuleService;
+    @Autowired
+    private SimpleActivityService simpleActivityService;
 
     @Override
     @Transactional
@@ -171,7 +171,7 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
 
     @Override
     public CjResult<List<CjLotteryMaopaoVo>> getAwardwinningUserInfo(String activityCode) {
-        CjLotteryActivity cjLotteryActivity = cjLotteryActivityDao.selectActivityByCode(activityCode);
+        CjSimpleLotteryActivity cjLotteryActivity = simpleActivityService.queryActivityByCode(activityCode);
         if (cjLotteryActivity == null) {
             return CjResult.fail(ErrorEnum.NOT_ACITVITY);
         }
@@ -211,6 +211,22 @@ public class LuckDrawLotteryServiceImpl implements LuckDrawLotteryService {
 //            }
 //            userInfoVos.add(infoVo);
 //        });
+        return CjResult.success(maopaoVoList);
+    }
+
+    @Override
+    public CjResult<List<CjLotteryMaopaoVo>> getSimpleAwardwinningUserInfo(String activityCode) {
+        CjSimpleLotteryActivity cjLotteryActivity = simpleActivityService.queryActivityByCode(activityCode);
+        if (cjLotteryActivity == null) {
+            return CjResult.fail(ErrorEnum.NOT_ACITVITY);
+        }
+        List<CjLotteryMaopao> maopaoList = lotteryMaopaoDao.selectByActivityCode(cjLotteryActivity.getId());
+        if (CollectionUtils.isEmpty(maopaoList)) {
+            return CjResult.success(Lists.newArrayList());
+        }
+        int rd = new Random().nextInt(9);       //[0,9)
+        maopaoList = maopaoList.stream().skip(rd).limit(5).collect(Collectors.toList());
+        List<CjLotteryMaopaoVo> maopaoVoList = maopaoList.stream().map(s -> CjLotteryMaopaoVo.DoToVo(s)).collect(Collectors.toList());
         return CjResult.success(maopaoVoList);
     }
 

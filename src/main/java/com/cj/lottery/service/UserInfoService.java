@@ -2,7 +2,9 @@ package com.cj.lottery.service;
 
 import com.cj.lottery.domain.CjCustomerInfo;
 import com.cj.lottery.domain.CjCustomerLogin;
+import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.ConstumerAddressInfoVo;
+import com.cj.lottery.domain.view.PageView;
 
 import java.util.List;
 
@@ -22,11 +24,12 @@ public interface UserInfoService {
      * 获取用户最新的token
      *
      *
-     * @param mobile
      * @param loginAccount
+     * @param s
+     * @param mobile
      * @return
      */
-    String queryLatestToken(String mobile, String channel);
+    String queryLatestToken(String mobile, String channel, String ua);
 
     /**
      * 首次登录，保存用户信息
@@ -36,5 +39,16 @@ public interface UserInfoService {
      * @param headimgurl
      * @return
      */
-    String saveUserInfo(String loginMark, int nickname, Integer sex, String headimgurl,String channel);
+    String saveUserInfo(String loginMark, int nickname, Integer sex, String headimgurl,String channel,String ua);
+
+    CjResult<PageView> listUserBaseInfo(int currentPage, int pageSize, String account,
+                                        String customerCode, String startTime, String endTime,String channel);
+
+    CjResult<PageView> listUserPayRecord(int currentPage, int pageSize, String account, String customerCode, String startTime, String endTime, Integer status, String channel);
+
+    CjResult<PageView> listUserLotteryRecord(int currentPage, int pageSize, String account, String customerCode, String startTime, String endTime, Integer status, String channel);
+
+    CjResult<PageView> listChannelRecord(int currentPage, int pageSize, String channel, String channelName);
+
+    CjResult<Boolean> login(String account, String password);
 }

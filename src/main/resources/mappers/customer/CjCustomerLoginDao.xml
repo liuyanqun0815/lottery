@@ -76,5 +76,11 @@
         and login_phone = #{login}
         limit 1
     </select>
-
+    <select id="selectByAccountAndPassword" resultType="com.cj.lottery.domain.CjCustomerInfo">
+        select <include refid="Base_Column_List"/>
+        from <include refid="tableName"/>
+        where is_delete = 0
+        and login_phone = #{account}
+        and password = #{password}
+    </select>
 </mapper>

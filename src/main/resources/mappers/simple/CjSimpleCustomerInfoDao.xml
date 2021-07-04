@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.lottery.dao.simple.CjSimpleCustomerInfoDao">
+
+  <sql id="Base_Column_List">
+    id, `name`, mobile, channel, ua, create_time, update_time, is_delete
+  </sql>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cj.lottery.domain.simple.CjSimpleCustomerInfo" useGeneratedKeys="true">
+    insert into cj_simple_customer_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="channel != null">
+        channel,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name},
+      </if>
+      <if test="mobile != null">
+        #{mobile},
+      </if>
+      <if test="channel != null">
+        #{channel},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.simple.CjSimpleCustomerInfo">
+    update cj_simple_customer_info
+    <set>
+      <if test="name != null">
+        `name` = #{name},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile},
+      </if>
+      <if test="channel != null">
+        channel = #{channel},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

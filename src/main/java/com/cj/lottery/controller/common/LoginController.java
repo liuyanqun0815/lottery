@@ -79,11 +79,13 @@ public class LoginController {
      */
     @ApiOperation("登录校验")
     @PostMapping("get-token")
-    public CjResult<String> getToken(@RequestParam(required = false) String channel,
+    public CjResult<String> getToken(HttpServletRequest request,
+                                     @RequestParam(required = false) String channel,
                                      @RequestParam(required = false) boolean testCode,
                                      @RequestParam("mobile") String mobile,
                                      @RequestParam("code") String code) {
 
+        String ua = request.getHeader("User-Agent");
         if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(code)) {
             return CjResult.fail(ErrorEnum.PARAM_ERROR);
         }
@@ -93,7 +95,7 @@ public class LoginController {
         }
         Boolean aBoolean = smsUtil.checkKaptcha(mobile, code);
         if (aBoolean || testCode) {
-            String token = userInfoService.queryLatestToken(mobile,channel);
+            String token = userInfoService.queryLatestToken(mobile,channel,ua);
             return CjResult.success(token);
         }
         return CjResult.fail(ErrorEnum.SMS_CODE);

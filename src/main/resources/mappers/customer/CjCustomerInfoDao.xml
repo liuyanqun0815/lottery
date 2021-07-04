@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
     id, customer_id, customer_name, identity_card_type, identity_card_no, mobile_phone, 
-    customer_email, sex, user_money,head_url,score,pay_count,channel
+    customer_email, sex, user_money,head_url,score,pay_count,channel,ua,account
   </sql>
 
     <sql id="tableName">
@@ -45,6 +45,12 @@
             <if test="channel != null">
                 channel,
             </if>
+            <if test="ua != null">
+                ua,
+            </if>
+            <if test="account!= null">
+                account,
+            </if>
 
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -76,9 +82,14 @@
                 #{headUrl},
             </if>
             <if test="channel != null">
-                #{channel}
+                #{channel},
             </if>
-
+            <if test="ua != null">
+                #{ua},
+            </if>
+            <if test="account!= null">
+                #{account},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.cj.lottery.domain.CjCustomerInfo">
@@ -138,6 +149,37 @@
     </select>
     <select id="selectMaxConsumerId" resultType="java.lang.Integer">
         SELECT MAX(customer_name) from cj_customer_info;
+    </select>
+
+    <select id="selectBaseUserInfo" resultType="com.cj.lottery.domain.manage.UserBaseInfo">
+        SELECT
+        info.account AS account,
+        info.create_time AS createTime,
+        info.customer_name AS customerCode,
+        info.pay_count AS payCount,
+        info.user_money AS userMoney,
+        info.score AS score,
+        info.channel AS channel
+        FROM
+        cj_customer_info info
+        WHERE
+        info.is_delete =0
+        <if test="channel != null and channel!=''">
+            and info.channel = #{channel}
+        </if>
+        <if test="account != null and account !=''">
+            and info.account = #{account}
+        </if>
+        <if test="customerCode!= null and customerCode!=''">
+            and info.customer_name = #{customerCode}
+        </if>
+        <if test="startTime!= null and startTime!=''">
+            and info.create_time > #{startTime}
+        </if>
+        <if test="endTime !=null and endTime!='' ">
+            and info.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        order by info.id desc
     </select>
 
 </mapper>

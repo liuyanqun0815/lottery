@@ -18,14 +18,14 @@ public class CjLotteryMaopaoVo {
      * 奖品图片
      */
 
-    @ApiModelProperty("商品图片url")
-    private String productImgUrl;
+//    @ApiModelProperty("商品图片url")
+//    private String productImgUrl;
 
 
     public static CjLotteryMaopaoVo DoToVo(CjLotteryMaopao maopao){
         CjLotteryMaopaoVo mao = new CjLotteryMaopaoVo();
         mao.setCustomerName(maopao.getCustomerContent());
-        mao.setProductImgUrl(maopao.getPrizeImg());
+//        mao.setProductImgUrl(maopao.getPrizeImg());
 
         BeanUtils.copyProperties(maopao,mao);
         return mao;

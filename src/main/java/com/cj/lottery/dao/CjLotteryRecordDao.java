@@ -1,6 +1,9 @@
 package com.cj.lottery.dao;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cj.lottery.domain.CjLotteryRecord;
+import com.cj.lottery.domain.manage.UserLotteryRecordVo;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,4 +31,12 @@ public interface CjLotteryRecordDao {
     int updateStatusById(@Param("status") int status,@Param("id") Integer id);
 
     CjLotteryRecord selectByOrderId(Integer orderId);
+
+    IPage<UserLotteryRecordVo> selectLotterRecord(Page<?> page,
+                                                  @Param("account") String account,
+                                                  @Param("customerCode") String customerCode,
+                                                  @Param("startTime")String startTime,
+                                                  @Param("endTime")String endTime,
+                                                  @Param("channel")String channel,
+                                                  @Param("status") Integer status);
 }

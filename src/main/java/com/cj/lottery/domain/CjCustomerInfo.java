@@ -72,6 +72,10 @@ public class CjCustomerInfo implements Serializable {
 
     private String channel;
 
+    private String ua;
+
+    private String account;
+
 
     public void setScoreInFen(String score) {
         BigDecimal bigScore = new BigDecimal(score);

@@ -1,6 +1,8 @@
 package com.cj.lottery.dao;
 
+import com.cj.lottery.domain.CjCustomerInfo;
 import com.cj.lottery.domain.CjCustomerLogin;
+import org.apache.ibatis.annotations.Param;
 
 public interface CjCustomerLoginDao {
 
@@ -14,5 +16,6 @@ public interface CjCustomerLoginDao {
 
 
     CjCustomerLogin selectByLoginPhone(String login);
+    CjCustomerInfo selectByAccountAndPassword(@Param("account") String account, @Param("password") String password);
 
 }

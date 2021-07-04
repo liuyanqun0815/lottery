@@ -35,6 +35,11 @@ public class CjMerchant implements Serializable {
      */
     private Integer status;
 
+    private String channel;
+
+    private String channelName;
+
+    private String createTime;
 
 
     private static final long serialVersionUID = 1L;

@@ -4,6 +4,7 @@ import cn.felord.payment.wechat.v3.model.RefundConsumeData;
 import cn.felord.payment.wechat.v3.model.TransactionConsumeData;
 import com.cj.lottery.domain.CjLotteryActivity;
 import com.cj.lottery.domain.CjOrderPay;
+import com.cj.lottery.domain.simple.CjSimpleLotteryActivity;
 import com.cj.lottery.domain.view.CjResult;
 import com.cj.lottery.domain.view.PaySuccessVo;
 
@@ -46,7 +47,9 @@ public interface OrderPayService {
 
     CjResult wxTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList);
 
-    CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr, CjLotteryActivity activity, HttpServletResponse response);
+    CjResult<PaySuccessVo> createAliH5OrderPay(int userId, int totalFee, String ipAddr,
+                                               CjLotteryActivity activity,
+                                               HttpServletResponse response,String channel);
 
     /**
      * 回收
@@ -56,9 +59,13 @@ public interface OrderPayService {
      */
     CjResult<Void> lotteryAliH5Recorver(int userId, List<Integer> idList);
 
-    CjResult aliTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList);
+    CjResult aliTransportPay(int userId, int totalFee, String ipAddr, List<Integer> idList,String channel);
 
     CjResult<Boolean> manHandleRefund(int userId, String outTradeNo);
 
     void saveAliCallbackData(Map<String, String> params,CjOrderPay orderPay);
+
+    CjResult<PaySuccessVo> createSimpleWxH5OrderPay(String ipAddr, CjSimpleLotteryActivity activityCode, String productCode, String channel);
+
+    CjResult<PaySuccessVo> createSimpleAliH5OrderPay(String ipAddr, CjSimpleLotteryActivity activityCode, HttpServletResponse response, String channel);
 }

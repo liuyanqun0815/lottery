@@ -130,4 +130,39 @@
         and customer_id = #{customerId}
     </select>
 
+    <select id="selectPayRecord" resultType="com.cj.lottery.domain.manage.UserPayRecordVo">
+        SELECT
+	info.account AS account,
+	info.customer_name AS customerCode,
+	info.channel AS channel,
+	pay.out_trade_no AS outTradeNo,
+	pay.total_fee AS totalFee,
+	pay.`status` AS STATUS,
+	pay.create_time AS createTime
+    FROM
+	cj_notify_pay pay
+	LEFT JOIN cj_customer_info info ON pay.customer_id = info.customer_id
+	AND pay.is_delete = info.is_delete
+    WHERE
+	info.is_delete = 0
+        <if test="channel != null and channel!=''">
+            and info.channel = #{channel}
+        </if>
+        <if test="account != null and account!=''">
+            and info.account = #{account}
+        </if>
+        <if test="customerCode!= null and customerCode!=''">
+            and info.customer_name = #{customerCode}
+        </if>
+        <if test="startTime!= null and startTime!=''">
+            and pay.create_time > #{startTime}
+        </if>
+        <if test="endTime !=null and endTime!=''">
+            and pay.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="status != null and status!=''">
+            and pay.status = #{status}
+        </if>
+        order by pay.id desc
+    </select>
 </mapper>
