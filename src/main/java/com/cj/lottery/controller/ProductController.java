@@ -68,4 +68,7 @@ public class ProductController {
         return productInfoService.sendGoods(idList, ContextUtils.getUserId(),false);
     }
 
+    public static void main(String[] args) {
+
+    }
 }
