@@ -104,4 +104,7 @@ public class UserInfoController {
         return CjResult.success(UserInfoVo.doToVo(userInfoService.queryUserInfoByCustomerId(userId)));
     }
 
+    public static void main(String[] args) {
+
+    }
 }
